@@ -1,0 +1,110 @@
+import { redirect, notFound } from 'next/navigation'
+import Link from 'next/link'
+import { createClient } from '@/lib/supabase/server'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Clock, Hash, AlertCircle, CheckCircle2 } from 'lucide-react'
+
+interface InstructionsPageProps {
+  params: Promise<{ id: string }>
+}
+
+export default async function InstructionsPage({ params }: InstructionsPageProps) {
+  const { id } = await params
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
+
+  const { data: access } = await supabase
+    .from('test_access').select('test_id').eq('test_id', id).eq('student_id', user.id).single()
+
+  if (!access) redirect('/student/dashboard')
+
+  const { data: test } = await supabase
+    .from('tests').select('*, teacher:profiles(full_name)').eq('id', id).eq('status', 'published').single()
+
+  if (!test) notFound()
+
+  const { count: questionCount } = await supabase
+    .from('questions').select('*', { count: 'exact', head: true }).eq('test_id', id)
+
+  const { data: existingSub } = await supabase
+    .from('submissions').select('id, status').eq('test_id', id).eq('student_id', user.id).single()
+
+  const alreadySubmitted =
+    existingSub?.status === 'submitted' || existingSub?.status === 'evaluated'
+
+  return (
+    <div className="space-y-6 max-w-2xl">
+      <div>
+        <h1 className="text-2xl font-bold">{test.title}</h1>
+        {(test.teacher as any)?.full_name && (
+          <p className="text-muted-foreground text-sm mt-1">by {(test.teacher as any).full_name}</p>
+        )}
+      </div>
+
+      {alreadySubmitted && (
+        <Card className="border-green-200 bg-green-50">
+          <CardContent className="p-4 flex items-center gap-3">
+            <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0" />
+            <p className="text-sm text-green-800">You have already submitted this test.</p>
+          </CardContent>
+        </Card>
+      )}
+
+      <div className="grid grid-cols-2 gap-3">
+        <Card>
+          <CardContent className="p-4 flex items-center gap-3">
+            <Clock className="h-5 w-5 text-muted-foreground" />
+            <div><p className="text-xl font-bold">{test.duration_minutes}</p><p className="text-xs text-muted-foreground">minutes</p></div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 flex items-center gap-3">
+            <Hash className="h-5 w-5 text-muted-foreground" />
+            <div><p className="text-xl font-bold">{questionCount ?? 0}</p><p className="text-xs text-muted-foreground">questions</p></div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {test.instructions && (
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base">Instructions</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm whitespace-pre-wrap text-muted-foreground leading-relaxed">{test.instructions}</p>
+          </CardContent>
+        </Card>
+      )}
+
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">Before You Begin</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ul className="space-y-2 text-sm text-muted-foreground">
+            {[
+              'Once you start, the timer will begin and cannot be paused.',
+              'Your answers are saved automatically as you go.',
+              'The test will auto-submit when time runs out.',
+              'You can navigate between questions and review before submitting.',
+            ].map(rule => (
+              <li key={rule} className="flex items-start gap-2">
+                <AlertCircle className="h-4 w-4 mt-0.5 text-orange-500 shrink-0" />
+                {rule}
+              </li>
+            ))}
+          </ul>
+        </CardContent>
+      </Card>
+
+      {!alreadySubmitted && (
+        <Button size="lg" className="w-full sm:w-auto" render={<Link href={`/student/tests/${id}/take`} />}>
+          {existingSub?.status === 'in_progress' ? 'Continue Test' : 'Start Test'}
+        </Button>
+      )}
+    </div>
+  )
+}
