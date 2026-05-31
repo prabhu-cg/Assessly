@@ -13,7 +13,7 @@ import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Progress } from '@/components/ui/progress'
 import { Separator } from '@/components/ui/separator'
-import { CheckCircle2, Loader2, Save } from 'lucide-react'
+import { AlertTriangle, CheckCircle2, Loader2, Save } from 'lucide-react'
 
 export default function EvaluationPage() {
   const params = useParams()
@@ -114,7 +114,7 @@ export default function EvaluationPage() {
             </span>
           </div>
           <Progress value={progressPct} />
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Badge
               variant={
                 submission.status === 'evaluated'
@@ -124,6 +124,12 @@ export default function EvaluationPage() {
             >
               {submission.status}
             </Badge>
+            {submission.focus_violations > 0 && (
+              <Badge variant="outline" className="text-amber-600 border-amber-300 gap-1">
+                <AlertTriangle className="h-3 w-3" />
+                {submission.focus_violations} focus violation{submission.focus_violations !== 1 ? 's' : ''}
+              </Badge>
+            )}
             {submission.status === 'evaluated' && (
               <span className="text-sm text-muted-foreground">
                 Final score: {submission.obtained_marks}/{submission.total_marks}

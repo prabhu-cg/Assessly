@@ -59,7 +59,7 @@ export default async function TeacherTestsPage({
           return (
             <Card key={test.id}>
               <CardContent className="p-5">
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap mb-1">
                       <Link

@@ -92,17 +92,21 @@ create index questions_test_id_idx on public.questions(test_id, order_index);
 -- One submission per student per test
 -- ============================================================
 create table public.submissions (
-  id              uuid primary key default gen_random_uuid(),
-  test_id         uuid not null references public.tests(id) on delete cascade,
-  student_id      uuid not null references public.profiles(id) on delete cascade,
-  status          text not null default 'in_progress' check (status in ('in_progress', 'submitted', 'evaluated')),
-  started_at      timestamptz not null default now(),
-  submitted_at    timestamptz,
-  total_marks     integer,
-  obtained_marks  integer,
-  created_at      timestamptz not null default now(),
+  id               uuid primary key default gen_random_uuid(),
+  test_id          uuid not null references public.tests(id) on delete cascade,
+  student_id       uuid not null references public.profiles(id) on delete cascade,
+  status           text not null default 'in_progress' check (status in ('in_progress', 'submitted', 'evaluated')),
+  started_at       timestamptz not null default now(),
+  submitted_at     timestamptz,
+  total_marks      integer,
+  obtained_marks   integer,
+  focus_violations integer not null default 0,
+  created_at       timestamptz not null default now(),
   unique (test_id, student_id)
 );
+
+-- Migration (run if table already exists):
+-- alter table public.submissions add column if not exists focus_violations integer not null default 0;
 
 -- ============================================================
 -- ANSWERS

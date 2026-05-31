@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { ClipboardList } from 'lucide-react'
+import { AlertTriangle, ClipboardList } from 'lucide-react'
 
 interface SubmissionsPageProps {
   searchParams: Promise<{ test?: string; status?: string }>
@@ -22,7 +22,7 @@ export default async function SubmissionsPage({ searchParams }: SubmissionsPageP
 
   let query = supabase
     .from('submissions')
-    .select(`id, status, submitted_at, obtained_marks, total_marks,
+    .select(`id, status, submitted_at, obtained_marks, total_marks, focus_violations,
       student:profiles(full_name, email),
       test:tests(id, title, teacher_id)`)
     .order('submitted_at', { ascending: false })
@@ -101,7 +101,13 @@ export default async function SubmissionsPage({ searchParams }: SubmissionsPageP
                   </p>
                 )}
               </div>
-              <div className="flex items-center gap-3 shrink-0">
+              <div className="flex items-center gap-3 shrink-0 flex-wrap justify-end">
+                {sub.focus_violations > 0 && (
+                  <Badge variant="outline" className="text-amber-600 border-amber-300 gap-1">
+                    <AlertTriangle className="h-3 w-3" />
+                    {sub.focus_violations}
+                  </Badge>
+                )}
                 {sub.status === 'evaluated' && sub.obtained_marks !== null && (
                   <span className="text-sm font-semibold">{sub.obtained_marks}/{sub.total_marks}</span>
                 )}

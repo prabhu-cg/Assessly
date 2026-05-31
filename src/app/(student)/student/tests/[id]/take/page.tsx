@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef, useTransition } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { startSubmission, saveAnswer, submitTest } from '@/app/actions/submissions'
+import { startSubmission, saveAnswer, submitTest, recordViolation } from '@/app/actions/submissions'
 import { TestTimer } from '@/components/student/test-timer'
 import { QuestionNavigator, type QuestionState } from '@/components/student/question-navigator'
 import { Card, CardContent } from '@/components/ui/card'
@@ -14,7 +14,7 @@ import { Label } from '@/components/ui/label'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
-import { ChevronLeft, ChevronRight, SkipForward, Send, Menu, X, Save } from 'lucide-react'
+import { ChevronLeft, ChevronRight, SkipForward, Send, Menu, X, Save, AlertTriangle } from 'lucide-react'
 import type { Question, Test } from '@/types/database'
 
 export default function TakeTestPage() {
@@ -35,6 +35,16 @@ export default function TakeTestPage() {
   const [loading, setLoading] = useState(true)
   const saveTimersRef = useRef<Record<string, NodeJS.Timeout>>({})
   const [isPending, startTransition] = useTransition()
+
+  // Anti-cheat
+  const MAX_VIOLATIONS = 3
+  const [violations, setViolations] = useState(0)
+  const [showViolationWarning, setShowViolationWarning] = useState(false)
+  const lastViolationRef = useRef(0)
+  const violationsRef = useRef(0)
+  const autoSubmittedRef = useRef(false)
+  // Always points to the latest flushAllSaves so the violation handler isn't stale
+  const flushAllSavesRef = useRef<() => Promise<void>>(async () => {})
 
   // Initialize: load test, questions, start/resume submission
   useEffect(() => {
@@ -119,6 +129,59 @@ export default function TakeTestPage() {
     )
   }, [answers, submissionId])
 
+  // Keep flushAllSavesRef current so violation handler always flushes latest answers
+  useEffect(() => { flushAllSavesRef.current = flushAllSaves }, [flushAllSaves])
+
+  // Auto-submit once violations hit the limit
+  useEffect(() => {
+    if (violations < MAX_VIOLATIONS || autoSubmittedRef.current || !submissionId) return
+    autoSubmittedRef.current = true
+    setIsSubmitting(true)
+    flushAllSavesRef.current().then(() => submitTest(submissionId, testId))
+  }, [violations, submissionId, testId])
+
+  // Show warning dialog whenever a new violation is recorded (below the limit)
+  useEffect(() => {
+    if (violations > 0 && violations < MAX_VIOLATIONS) setShowViolationWarning(true)
+  }, [violations])
+
+  // Detect tab switch and window focus loss
+  useEffect(() => {
+    if (loading || !submissionId) return
+
+    const onFocusLoss = () => {
+      const now = Date.now()
+      if (now - lastViolationRef.current < 2000) return // debounce dual events
+      lastViolationRef.current = now
+      violationsRef.current += 1
+      setViolations(violationsRef.current)
+      recordViolation(submissionId)
+    }
+
+    const onVisibilityChange = () => { if (document.hidden) onFocusLoss() }
+    document.addEventListener('visibilitychange', onVisibilityChange)
+    window.addEventListener('blur', onFocusLoss)
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+      window.removeEventListener('blur', onFocusLoss)
+    }
+  }, [loading, submissionId])
+
+  // Block right-click and keyboard shortcuts that open new tabs / devtools
+  useEffect(() => {
+    const blockMenu = (e: MouseEvent) => e.preventDefault()
+    const blockKeys = (e: KeyboardEvent) => {
+      if (e.ctrlKey && ['t', 'n', 'w'].includes(e.key.toLowerCase())) e.preventDefault()
+      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['i', 'j', 'c'].includes(e.key.toLowerCase()))) e.preventDefault()
+    }
+    document.addEventListener('contextmenu', blockMenu)
+    document.addEventListener('keydown', blockKeys)
+    return () => {
+      document.removeEventListener('contextmenu', blockMenu)
+      document.removeEventListener('keydown', blockKeys)
+    }
+  }, [])
+
   const updateAnswer = (questionId: string, value: Partial<{ text?: string; option?: string; skipped?: boolean }>) => {
     setAnswers(prev => {
       const updated = { ...prev, [questionId]: { ...prev[questionId], ...value } }
@@ -188,7 +251,7 @@ export default function TakeTestPage() {
   const currentAnswer = answers[currentQuestion?.id] ?? {}
 
   return (
-    <div className="min-h-screen flex flex-col bg-muted/20">
+    <div className="min-h-svh flex flex-col bg-muted/20">
       {/* Test Header */}
       <div className="sticky top-14 z-40 bg-background border-b shadow-sm">
         <div className="flex items-center justify-between px-4 py-2 max-w-7xl mx-auto gap-4">
@@ -200,6 +263,12 @@ export default function TakeTestPage() {
           </div>
 
           <div className="flex items-center gap-2">
+            {violations > 0 && (
+              <Badge variant="outline" className="text-xs text-amber-600 border-amber-400 shrink-0 hidden sm:flex">
+                <AlertTriangle className="h-3 w-3 mr-1" />
+                {violations}/{MAX_VIOLATIONS} warnings
+              </Badge>
+            )}
             <TestTimer endsAt={endsAt} onTimeUp={handleTimeUp} />
             <Button
               variant="ghost"
@@ -385,6 +454,35 @@ export default function TakeTestPage() {
             </Button>
             <Button size="sm" onClick={() => { setShowNav(false); setShowReview(true) }}>
               Review & Submit
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Violation Warning Dialog */}
+      <Dialog open={showViolationWarning} onOpenChange={setShowViolationWarning}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-amber-600">
+              <AlertTriangle className="h-5 w-5" />
+              Focus Lost Detected
+            </DialogTitle>
+            <DialogDescription>
+              You switched away from the test window. This has been recorded and your teacher will be notified.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="text-center py-3 space-y-1">
+            <p className="text-4xl font-bold text-amber-600">{violations}</p>
+            <p className="text-sm text-muted-foreground">violation{violations !== 1 ? 's' : ''} recorded</p>
+            <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
+              Your test will be <span className="font-semibold text-red-500">automatically submitted</span> after{' '}
+              {MAX_VIOLATIONS} violations. You have{' '}
+              <span className="font-semibold text-red-500">{MAX_VIOLATIONS - violations}</span> remaining.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button onClick={() => setShowViolationWarning(false)} className="w-full">
+              Return to Test
             </Button>
           </DialogFooter>
         </DialogContent>

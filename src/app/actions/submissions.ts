@@ -123,6 +123,25 @@ export async function submitTest(submissionId: string, testId: string) {
   redirect(`/student/tests/${testId}/results?submission=${submissionId}`)
 }
 
+export async function recordViolation(submissionId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return
+
+  const { data: current } = await supabase
+    .from('submissions')
+    .select('focus_violations')
+    .eq('id', submissionId)
+    .eq('student_id', user.id)
+    .single()
+
+  await supabase
+    .from('submissions')
+    .update({ focus_violations: (current?.focus_violations ?? 0) + 1 })
+    .eq('id', submissionId)
+    .eq('student_id', user.id)
+}
+
 export async function evaluateAnswer(answerId: string, data: unknown) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
