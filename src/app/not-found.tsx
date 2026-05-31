@@ -86,7 +86,7 @@ export default function NotFound() {
         {/* CTAs */}
         <div className="flex flex-col sm:flex-row gap-3 mt-6">
           <Link
-            href="/"
+            href="/login"
             className="inline-flex items-center justify-center px-6 py-2.5 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
             style={{ backgroundColor: '#ee661d' }}
           >

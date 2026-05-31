@@ -42,7 +42,7 @@ export async function proxy(request: NextRequest) {
         .eq('id', user.id)
         .single()
 
-      const redirect = profile?.role === 'teacher' ? '/dashboard' : '/dashboard'
+      const redirect = profile?.role === 'teacher' ? '/teacher/dashboard' : '/student/dashboard'
       return NextResponse.redirect(new URL(redirect, request.url))
     }
     return supabaseResponse
@@ -64,7 +64,7 @@ export async function proxy(request: NextRequest) {
   const role = profile?.role
 
   if (pathname.startsWith('/teacher') && role !== 'teacher') {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
+    return NextResponse.redirect(new URL('/student/dashboard', request.url))
   }
 
   if (pathname.startsWith('/student') && role !== 'student') {
