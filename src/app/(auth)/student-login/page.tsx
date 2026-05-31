@@ -1,7 +1,10 @@
+'use client'
+
 import Link from 'next/link'
 import { LogoMark } from '@/components/shared/logo'
 import { Footer } from '@/components/shared/footer'
 import { Link2 } from 'lucide-react'
+import { logout } from '@/app/actions/auth'
 
 export default function StudentLoginPage() {
   return (
@@ -55,6 +58,15 @@ export default function StudentLoginPage() {
             <Link href="/login" className="font-semibold text-foreground underline underline-offset-2">
               Sign in here
             </Link>
+          </p>
+          <p className="text-xs text-muted-foreground mt-2">
+            Need to switch account?{' '}
+            <button
+              onClick={() => logout()}
+              className="font-semibold text-foreground underline underline-offset-2"
+            >
+              Sign out
+            </button>
           </p>
         </div>
       </div>

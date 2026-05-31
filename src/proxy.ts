@@ -35,15 +35,25 @@ export async function proxy(request: NextRequest) {
 
   if (publicPaths.includes(pathname)) {
     if (user) {
-      // Redirect logged-in users away from login
       const { data: profile } = await supabase
         .from('profiles')
         .select('role')
         .eq('id', user.id)
         .single()
 
-      const redirect = profile?.role === 'teacher' ? '/teacher/dashboard' : '/student/dashboard'
-      return NextResponse.redirect(new URL(redirect, request.url))
+      // Only auto-redirect from the teacher login if already a teacher —
+      // a student session must never block access to /login so teachers
+      // can always sign in from any device.
+      if (pathname === '/login' && profile?.role === 'teacher') {
+        return NextResponse.redirect(new URL('/teacher/dashboard', request.url))
+      }
+      if (pathname === '/student-login' && profile?.role === 'student') {
+        return NextResponse.redirect(new URL('/student/dashboard', request.url))
+      }
+      if (pathname === '/') {
+        const dest = profile?.role === 'teacher' ? '/teacher/dashboard' : '/student/dashboard'
+        return NextResponse.redirect(new URL(dest, request.url))
+      }
     }
     return supabaseResponse
   }
