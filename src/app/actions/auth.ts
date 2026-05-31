@@ -66,24 +66,29 @@ export async function createStudent(formData: FormData) {
   }
 
   const parsed = createStudentSchema.safeParse({
-    full_name: formData.get('full_name'),
-    email: formData.get('email'),
+    first_name: formData.get('first_name'),
+    last_name: formData.get('last_name'),
   })
 
   if (!parsed.success) {
     return { error: parsed.error.issues[0].message }
   }
 
-  // The access_token acts as both the URL token and the Supabase Auth password
+  const fullName = `${parsed.data.first_name.trim()} ${parsed.data.last_name.trim()}`
   const accessToken = crypto.randomUUID()
+
+  // Auto-generate an internal email — students never see or use it
+  const sanitize = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 20)
+  const shortId = accessToken.replace(/-/g, '').slice(0, 8)
+  const email = `${sanitize(parsed.data.first_name)}.${sanitize(parsed.data.last_name)}.${shortId}@assessly.internal`
 
   const admin = createAdminClient()
   const { data, error } = await admin.auth.admin.createUser({
-    email: parsed.data.email,
+    email,
     password: accessToken,
     email_confirm: true,
     user_metadata: {
-      full_name: parsed.data.full_name,
+      full_name: fullName,
       role: 'student',
     },
   })

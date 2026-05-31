@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent } from '@/components/ui/card'
-import { Users, Mail } from 'lucide-react'
+import { Users } from 'lucide-react'
 import { StudentActions } from '@/components/teacher/student-actions'
 import { CreateStudentDrawer } from '@/components/teacher/create-student-drawer'
 
@@ -17,7 +17,7 @@ export default async function StudentsPage({
 
   const { data: students } = await supabase
     .from('profiles')
-    .select('id, full_name, email, created_at')
+    .select('id, full_name, created_at')
     .eq('created_by', user.id)
     .eq('role', 'student')
     .order('full_name')
@@ -58,9 +58,6 @@ export default async function StudentsPage({
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-medium">{student.full_name}</p>
-                <p className="text-sm text-muted-foreground flex items-center gap-1">
-                  <Mail className="h-3 w-3" />{student.email}
-                </p>
               </div>
               <p className="text-xs text-muted-foreground hidden sm:block">
                 Added {new Date(student.created_at).toLocaleDateString()}

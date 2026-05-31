@@ -91,19 +91,17 @@ export default function NewStudentPage() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               {error && <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>}
 
-              <div className="space-y-2">
-                <Label htmlFor="full_name">Full Name *</Label>
-                <Input id="full_name" {...register('full_name')} placeholder="Jane Smith" />
-                {errors.full_name && <p className="text-sm text-destructive">{errors.full_name.message}</p>}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="email">Email Address *</Label>
-                <Input id="email" type="email" {...register('email')} placeholder="jane@example.com" />
-                {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
-                <p className="text-xs text-muted-foreground">
-                  Used to identify the account. Students don't need to know or use this to log in.
-                </p>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label htmlFor="first_name">First Name *</Label>
+                  <Input id="first_name" {...register('first_name')} placeholder="Jane" />
+                  {errors.first_name && <p className="text-sm text-destructive">{errors.first_name.message}</p>}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="last_name">Last Name *</Label>
+                  <Input id="last_name" {...register('last_name')} placeholder="Smith" />
+                  {errors.last_name && <p className="text-sm text-destructive">{errors.last_name.message}</p>}
+                </div>
               </div>
 
               <div className="rounded-lg bg-blue-50 border border-blue-200 p-3">

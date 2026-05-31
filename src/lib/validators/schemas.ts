@@ -6,8 +6,8 @@ export const loginSchema = z.object({
 })
 
 export const createStudentSchema = z.object({
-  full_name: z.string().min(2, 'Name must be at least 2 characters').max(100),
-  email: z.string().email('Please enter a valid email address'),
+  first_name: z.string().min(1, 'First name is required').max(50),
+  last_name: z.string().min(1, 'Last name is required').max(50),
 })
 
 export const updateStudentSchema = z.object({
