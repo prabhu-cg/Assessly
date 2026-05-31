@@ -115,12 +115,6 @@ export default function LoginPage() {
               </Button>
             </form>
 
-            <div className="mt-5 rounded-xl bg-muted/60 border border-border p-3 text-center">
-              <p className="text-xs text-muted-foreground">
-                <span className="font-semibold text-foreground">Are you a student?</span>
-                {' '}Use the personal link your teacher shared with you — no password needed.
-              </p>
-            </div>
           </div>
 
         </div>
