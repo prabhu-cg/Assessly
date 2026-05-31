@@ -29,7 +29,7 @@ export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
   // Public paths that don't require auth
-  const publicPaths = ['/login', '/']
+  const publicPaths = ['/login', '/student-login', '/']
   const isStudentLink = pathname.startsWith('/s/')
   if (isStudentLink) return supabaseResponse
 
@@ -50,7 +50,8 @@ export async function proxy(request: NextRequest) {
 
   // Require auth for all other routes
   if (!user) {
-    return NextResponse.redirect(new URL('/login', request.url))
+    const dest = pathname.startsWith('/student') ? '/student-login' : '/login'
+    return NextResponse.redirect(new URL(dest, request.url))
   }
 
   // Role-based route protection
