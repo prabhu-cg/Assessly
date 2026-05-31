@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { logout } from '@/app/actions/auth'
 import type { Profile } from '@/types/database'
+import { LogoMark } from '@/components/shared/logo'
 
 interface NavbarProps {
   profile: Profile
@@ -32,9 +33,7 @@ export function Navbar({ profile }: NavbarProps) {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-14 items-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <Link href={dashboardHref} className="flex items-center gap-2 mr-6">
-          <div className="h-7 w-7 rounded-md bg-primary flex items-center justify-center">
-            <span className="text-primary-foreground text-xs font-bold">A</span>
-          </div>
+          <LogoMark className="h-7 w-auto" />
           <span className="font-semibold text-sm hidden sm:inline-block">Assessly</span>
         </Link>
 

@@ -1,11 +1,16 @@
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Users, Plus, Mail } from 'lucide-react'
+import { Users, Mail } from 'lucide-react'
+import { StudentActions } from '@/components/teacher/student-actions'
+import { CreateStudentDrawer } from '@/components/teacher/create-student-drawer'
 
-export default async function StudentsPage() {
+export default async function StudentsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ new?: string }>
+}) {
+  const params = await searchParams
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
@@ -26,10 +31,7 @@ export default async function StudentsPage() {
             {students?.length ?? 0} student{students?.length !== 1 ? 's' : ''} registered
           </p>
         </div>
-        <Button render={<Link href="/teacher/students/new" />}>
-          <Plus className="h-4 w-4 mr-2" />
-          Add Student
-        </Button>
+        <CreateStudentDrawer defaultOpen={params.new === 'true'} />
       </div>
 
       {students?.length === 0 && (
@@ -40,7 +42,7 @@ export default async function StudentsPage() {
             </div>
             <h3 className="font-semibold mb-1">No students yet</h3>
             <p className="text-sm text-muted-foreground mb-4">Create student accounts to get started</p>
-            <Button render={<Link href="/teacher/students/new" />}>Add Student</Button>
+            <CreateStudentDrawer label="Add Student" />
           </CardContent>
         </Card>
       )}
@@ -63,6 +65,7 @@ export default async function StudentsPage() {
               <p className="text-xs text-muted-foreground hidden sm:block">
                 Added {new Date(student.created_at).toLocaleDateString()}
               </p>
+              <StudentActions studentId={student.id} studentName={student.full_name} />
             </CardContent>
           </Card>
         ))}

@@ -151,6 +151,27 @@ returns text language sql security definer stable as $$
   select role from public.profiles where id = auth.uid();
 $$;
 
+-- Helper: check if student has access to a test (bypasses RLS to avoid recursion)
+create or replace function public.user_has_test_access(p_test_id uuid)
+returns boolean language sql security definer stable as $$
+  select exists (
+    select 1 from public.test_access ta
+    join public.tests t on t.id = ta.test_id
+    where ta.test_id = p_test_id
+      and ta.student_id = auth.uid()
+      and t.status = 'published'
+  );
+$$;
+
+-- Helper: check if current user owns a test (bypasses RLS to avoid recursion)
+create or replace function public.teacher_owns_test(p_test_id uuid)
+returns boolean language sql security definer stable as $$
+  select exists (
+    select 1 from public.tests
+    where id = p_test_id and teacher_id = auth.uid()
+  );
+$$;
+
 -- --------------------------------------------------------
 -- profiles
 -- --------------------------------------------------------
@@ -183,11 +204,9 @@ create policy "Teachers can manage own tests"
 create policy "Students can view accessible published tests"
   on public.tests for select
   using (
-    status = 'published'
-    and exists (
-      select 1 from public.test_access
-      where test_id = tests.id and student_id = auth.uid()
-    )
+    public.current_role() = 'student'
+    and status = 'published'
+    and public.user_has_test_access(id)
   );
 
 -- --------------------------------------------------------
@@ -205,13 +224,8 @@ create policy "Teachers can manage questions for own tests"
 create policy "Students can view questions for accessible tests"
   on public.questions for select
   using (
-    exists (
-      select 1 from public.test_access ta
-      join public.tests t on t.id = ta.test_id
-      where ta.test_id = questions.test_id
-        and ta.student_id = auth.uid()
-        and t.status = 'published'
-    )
+    public.current_role() = 'student'
+    and public.user_has_test_access(test_id)
   );
 
 -- --------------------------------------------------------
@@ -266,12 +280,7 @@ create policy "Teachers view and update answers for their tests"
 -- --------------------------------------------------------
 create policy "Teachers manage access for their tests"
   on public.test_access for all
-  using (
-    exists (
-      select 1 from public.tests
-      where id = test_access.test_id and teacher_id = auth.uid()
-    )
-  );
+  using (public.teacher_owns_test(test_id));
 
 create policy "Students view own access"
   on public.test_access for select

@@ -1,19 +1,18 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { joinTestSchema, type JoinTestInput } from '@/lib/validators/schemas'
 import { joinTest } from '@/app/actions/tests'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Loader2, Hash } from 'lucide-react'
+import { toast } from 'sonner'
 
 export default function JoinTestPage() {
-  const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
   const { register, handleSubmit, formState: { errors } } = useForm<JoinTestInput>({
@@ -25,12 +24,12 @@ export default function JoinTestPage() {
     formData.append('invite_code', data.invite_code.toUpperCase())
     startTransition(async () => {
       const result = await joinTest(formData)
-      if (result?.error) setError(result.error)
+      if (result?.error) toast.error(result.error)
     })
   }
 
   return (
-    <div className="space-y-6 max-w-md">
+    <div className="space-y-6 max-w-md mx-auto">
       <div>
         <h1 className="text-2xl font-bold">Join a Test</h1>
         <p className="text-muted-foreground text-sm mt-1">
@@ -41,12 +40,6 @@ export default function JoinTestPage() {
       <Card>
         <CardContent className="pt-6">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            {error && (
-              <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
-
             <div className="space-y-2">
               <Label htmlFor="invite_code">Invite Code</Label>
               <div className="relative">

@@ -33,7 +33,7 @@ export default function TakeTestPage() {
   const [showNav, setShowNav] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [loading, setLoading] = useState(true)
-  const saveTimerRef = useRef<NodeJS.Timeout | null>(null)
+  const saveTimersRef = useRef<Record<string, NodeJS.Timeout>>({})
   const [isPending, startTransition] = useTransition()
 
   // Initialize: load test, questions, start/resume submission
@@ -87,10 +87,11 @@ export default function TakeTestPage() {
     init()
   }, [testId])
 
-  // Debounced autosave
+  // Per-question debounced autosave — each question has its own timer
+  // so navigating between questions doesn't cancel pending saves for other questions
   const triggerSave = useCallback((questionId: string) => {
-    if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
-    saveTimerRef.current = setTimeout(async () => {
+    if (saveTimersRef.current[questionId]) clearTimeout(saveTimersRef.current[questionId])
+    saveTimersRef.current[questionId] = setTimeout(async () => {
       if (!submissionId) return
       const ans = answers[questionId]
       await saveAnswer(submissionId, questionId, {
@@ -100,6 +101,22 @@ export default function TakeTestPage() {
       })
       setSavedState(s => ({ ...s, [questionId]: true }))
     }, 800)
+  }, [answers, submissionId])
+
+  // Flush all pending saves immediately (called before final submit)
+  const flushAllSaves = useCallback(async () => {
+    if (!submissionId) return
+    Object.keys(saveTimersRef.current).forEach(id => clearTimeout(saveTimersRef.current[id]))
+    saveTimersRef.current = {}
+    await Promise.all(
+      Object.entries(answers).map(([questionId, ans]) =>
+        saveAnswer(submissionId, questionId, {
+          answer_text: ans?.text,
+          selected_option_id: ans?.option,
+          is_skipped: ans?.skipped ?? false,
+        })
+      )
+    )
   }, [answers, submissionId])
 
   const updateAnswer = (questionId: string, value: Partial<{ text?: string; option?: string; skipped?: boolean }>) => {
@@ -128,15 +145,17 @@ export default function TakeTestPage() {
   const handleSubmit = async () => {
     if (!submissionId) return
     setIsSubmitting(true)
+    await flushAllSaves()
     await submitTest(submissionId, testId)
   }
 
-  const handleTimeUp = useCallback(() => {
+  const handleTimeUp = useCallback(async () => {
     if (!isSubmitting && submissionId) {
       setIsSubmitting(true)
+      await flushAllSaves()
       submitTest(submissionId, testId)
     }
-  }, [isSubmitting, submissionId, testId])
+  }, [isSubmitting, submissionId, testId, flushAllSaves])
 
   const getQuestionState = (questionId: string, index: number): QuestionState => {
     if (index === currentIndex) return 'current'
@@ -147,8 +166,14 @@ export default function TakeTestPage() {
   }
 
   const states: QuestionState[] = questions.map((q, i) => getQuestionState(q.id, i))
-  const answeredCount = states.filter(s => s === 'answered').length
-  const skippedCount = states.filter(s => s === 'skipped').length
+
+  // Count from raw answers — not from states — so the current question
+  // is counted correctly even when it's highlighted as 'current' in the navigator
+  const answeredCount = questions.filter(q => {
+    const ans = answers[q.id]
+    return !ans?.skipped && (ans?.option || ans?.text)
+  }).length
+  const skippedCount = questions.filter(q => answers[q.id]?.skipped).length
   const remainingCount = questions.length - answeredCount - skippedCount
 
   if (loading || !test || !endsAt) {
@@ -406,7 +431,7 @@ export default function TakeTestPage() {
             <Button
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+              className=""
             >
               {isSubmitting ? 'Submitting...' : 'Submit Test'}
             </Button>

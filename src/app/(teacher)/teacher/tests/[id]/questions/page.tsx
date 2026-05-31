@@ -1,18 +1,19 @@
 'use client'
 
-import { useState, useTransition } from 'react'
-import { useParams, useRouter } from 'next/navigation'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useState, useTransition, useEffect } from 'react'
+import { useParams } from 'next/navigation'
+import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { QuestionForm } from '@/components/teacher/question-form'
 import { deleteQuestion } from '@/app/actions/questions'
 import { updateTestStatus } from '@/app/actions/tests'
-import { Pencil, Trash2, Plus, ArrowUp, ArrowDown, Share2 } from 'lucide-react'
+import { Pencil, Trash2, Plus, Share2, X } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
-import { useEffect } from 'react'
+import { cn } from '@/lib/utils'
+import { toast } from 'sonner'
+import { ConfirmDialog } from '@/components/shared/confirm-dialog'
 import type { Question, Test } from '@/types/database'
 
 export default function QuestionsPage() {
@@ -20,11 +21,17 @@ export default function QuestionsPage() {
   const testId = params.id as string
   const [test, setTest] = useState<Test | null>(null)
   const [questions, setQuestions] = useState<Question[]>([])
-  const [showForm, setShowForm] = useState(false)
+
+  // Drawer state: `mounted` controls whether the DOM exists,
+  // `open` drives the CSS transform (separated so transitions animate)
+  const [mounted, setMounted] = useState(false)
+  const [open, setOpen] = useState(false)
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null)
+
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
   const [isCopied, setIsCopied] = useState(false)
+  const [deleteTarget, setDeleteTarget] = useState<Question | null>(null)
 
   const refresh = async () => {
     const supabase = createClient()
@@ -38,12 +45,33 @@ export default function QuestionsPage() {
 
   useEffect(() => { refresh() }, [testId])
 
-  const handleDelete = (questionId: string) => {
-    if (!confirm('Delete this question?')) return
+  // Mount first, then trigger enter animation on the next frame
+  useEffect(() => {
+    if (mounted) {
+      const id = requestAnimationFrame(() => setOpen(true))
+      return () => cancelAnimationFrame(id)
+    }
+  }, [mounted])
+
+  function openDrawer(question: Question | null = null) {
+    setEditingQuestion(question)
+    setMounted(true)
+  }
+
+  function closeDrawer() {
+    setOpen(false)
+    setTimeout(() => {
+      setMounted(false)
+      setEditingQuestion(null)
+    }, 300) // match transition duration
+  }
+
+  const handleDelete = () => {
+    if (!deleteTarget) return
     startTransition(async () => {
-      const result = await deleteQuestion(questionId, testId)
+      const result = await deleteQuestion(deleteTarget.id, testId)
       if (result?.error) setError(result.error)
-      else refresh()
+      else { setDeleteTarget(null); refresh() }
     })
   }
 
@@ -51,7 +79,7 @@ export default function QuestionsPage() {
     startTransition(async () => {
       const newStatus = test?.status === 'published' ? 'draft' : 'published'
       const result = await updateTestStatus(testId, newStatus)
-      if (result?.error) setError(result.error)
+      if (result?.error) toast.error(result.error)
       else refresh()
     })
   }
@@ -95,7 +123,7 @@ export default function QuestionsPage() {
           >
             {test?.status === 'published' ? 'Unpublish' : 'Publish Test'}
           </Button>
-          <Button size="sm" onClick={() => { setEditingQuestion(null); setShowForm(true) }}>
+          <Button size="sm" onClick={() => openDrawer(null)}>
             <Plus className="h-4 w-4 mr-2" />
             Add Question
           </Button>
@@ -112,7 +140,7 @@ export default function QuestionsPage() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-16 text-center">
             <p className="text-muted-foreground mb-4">No questions yet. Add your first question to get started.</p>
-            <Button onClick={() => setShowForm(true)}>
+            <Button onClick={() => openDrawer(null)}>
               <Plus className="h-4 w-4 mr-2" />
               Add First Question
             </Button>
@@ -132,7 +160,7 @@ export default function QuestionsPage() {
                   <p className="text-sm font-medium leading-snug">{q.content}</p>
                   {q.type === 'mcq' && q.options && (
                     <ul className="mt-2 space-y-1">
-                      {q.options.map((opt, i) => (
+                      {(q.options as { id: string; text: string }[]).map((opt, i) => (
                         <li
                           key={opt.id}
                           className={`text-xs px-2 py-1 rounded ${
@@ -157,7 +185,7 @@ export default function QuestionsPage() {
                     variant="ghost"
                     size="icon"
                     className="h-8 w-8"
-                    onClick={() => { setEditingQuestion(q); setShowForm(true) }}
+                    onClick={() => openDrawer(q)}
                   >
                     <Pencil className="h-4 w-4" />
                   </Button>
@@ -165,7 +193,7 @@ export default function QuestionsPage() {
                     variant="ghost"
                     size="icon"
                     className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                    onClick={() => handleDelete(q.id)}
+                    onClick={() => setDeleteTarget(q)}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -176,19 +204,70 @@ export default function QuestionsPage() {
         ))}
       </div>
 
-      <Dialog open={showForm} onOpenChange={setShowForm}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>{editingQuestion ? 'Edit Question' : 'Add Question'}</DialogTitle>
-          </DialogHeader>
-          <QuestionForm
-            testId={testId}
-            question={editingQuestion ?? undefined}
-            onSuccess={() => { setShowForm(false); setEditingQuestion(null); refresh() }}
-            onCancel={() => { setShowForm(false); setEditingQuestion(null) }}
+      {/* ── Delete Confirmation ── */}
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onOpenChange={open => { if (!open) setDeleteTarget(null) }}
+        title="Delete question?"
+        description={deleteTarget ? `"${deleteTarget.content.slice(0, 80)}${deleteTarget.content.length > 80 ? '…' : ''}" will be permanently removed.` : ''}
+        confirmLabel="Delete Question"
+        onConfirm={handleDelete}
+        isPending={isPending}
+      />
+
+      {/* ── Question Drawer ── */}
+      {mounted && (
+        <>
+          {/* Backdrop */}
+          <div
+            className={cn(
+              'fixed inset-0 bg-black/40 z-[60] transition-opacity duration-300',
+              open ? 'opacity-100' : 'opacity-0',
+            )}
+            onClick={closeDrawer}
           />
-        </DialogContent>
-      </Dialog>
+
+          {/* Panel */}
+          <div
+            className={cn(
+              'fixed top-0 right-0 h-full w-full max-w-[520px] bg-white z-[61]',
+              'flex flex-col border-l border-border shadow-2xl',
+              'transition-transform duration-300 ease-in-out',
+              open ? 'translate-x-0' : 'translate-x-full',
+            )}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
+              <div>
+                <h2 className="text-base font-semibold">
+                  {editingQuestion ? 'Edit Question' : 'Add Question'}
+                </h2>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {editingQuestion ? 'Update the question details below' : 'Fill in the details to add a question'}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={closeDrawer}
+                className="h-8 w-8 flex items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            {/* Scrollable content */}
+            <div className="flex-1 overflow-y-auto p-6">
+              <QuestionForm
+                key={editingQuestion?.id ?? 'new'}
+                testId={testId}
+                question={editingQuestion ?? undefined}
+                onSuccess={() => { closeDrawer(); refresh() }}
+                onCancel={closeDrawer}
+              />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }

@@ -1,6 +1,7 @@
-import { redirect, notFound } from 'next/navigation'
+import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -16,15 +17,25 @@ export default async function InstructionsPage({ params }: InstructionsPageProps
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: access } = await supabase
-    .from('test_access').select('test_id').eq('test_id', id).eq('student_id', user.id).single()
+  // Use admin client for all data fetching — the student is authenticated above,
+  // and RLS evaluation on test_access/tests can silently block valid queries.
+  const admin = createAdminClient()
+
+  const { data: access } = await admin
+    .from('test_access')
+    .select('test_id')
+    .eq('test_id', id)
+    .eq('student_id', user.id)
+    .single()
 
   if (!access) redirect('/student/dashboard')
 
-  const { data: test } = await supabase
-    .from('tests').select('*, teacher:profiles(full_name)').eq('id', id).eq('status', 'published').single()
+  const { data: test } = await admin.from('tests').select('*').eq('id', id).single()
 
-  if (!test) notFound()
+  if (!test || test.status !== 'published') redirect('/student/dashboard?notice=unavailable')
+
+  const { data: teacher } = await admin
+    .from('profiles').select('full_name').eq('id', test.teacher_id).single()
 
   const { count: questionCount } = await supabase
     .from('questions').select('*', { count: 'exact', head: true }).eq('test_id', id)
@@ -39,8 +50,8 @@ export default async function InstructionsPage({ params }: InstructionsPageProps
     <div className="space-y-6 max-w-2xl">
       <div>
         <h1 className="text-2xl font-bold">{test.title}</h1>
-        {(test.teacher as any)?.full_name && (
-          <p className="text-muted-foreground text-sm mt-1">by {(test.teacher as any).full_name}</p>
+        {teacher?.full_name && (
+          <p className="text-muted-foreground text-sm mt-1">by {teacher.full_name}</p>
         )}
       </div>
 

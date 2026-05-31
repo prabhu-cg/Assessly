@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { ClipboardList } from 'lucide-react'
 
 interface SubmissionsPageProps {
   searchParams: Promise<{ test?: string; status?: string }>
@@ -32,10 +33,10 @@ export default async function SubmissionsPage({ searchParams }: SubmissionsPageP
   const { data: submissions } = await query
   const mySubmissions = submissions?.filter((s: any) => s.test?.teacher_id === user.id) ?? []
 
-  const statusVariant: Record<string, 'default' | 'secondary' | 'outline'> = {
+  const statusVariant: Record<string, 'success' | 'secondary' | 'outline'> = {
     in_progress: 'outline',
     submitted: 'secondary',
-    evaluated: 'default',
+    evaluated: 'success',
   }
 
   return (
@@ -73,15 +74,23 @@ export default async function SubmissionsPage({ searchParams }: SubmissionsPageP
 
       {mySubmissions.length === 0 && (
         <Card>
-          <CardContent className="flex items-center justify-center py-16">
-            <p className="text-muted-foreground">No submissions found.</p>
+          <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="h-12 w-12 rounded-2xl bg-muted flex items-center justify-center mb-4">
+              <ClipboardList className="h-6 w-6 text-muted-foreground" />
+            </div>
+            <h3 className="font-semibold mb-1">No submissions found</h3>
+            <p className="text-sm text-muted-foreground">
+              {params.test || params.status
+                ? 'No submissions match your current filter.'
+                : 'Submissions will appear here once students complete your tests.'}
+            </p>
           </CardContent>
         </Card>
       )}
 
       <div className="space-y-3">
         {mySubmissions.map((sub: any) => (
-          <Card key={sub.id} className="hover:shadow-sm transition-shadow">
+          <Card key={sub.id}>
             <CardContent className="p-4 flex items-center justify-between gap-4">
               <div className="flex-1 min-w-0">
                 <p className="font-medium">{sub.student?.full_name ?? 'Unknown'}</p>

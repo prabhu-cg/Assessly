@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { createStudentSchema, loginSchema } from '@/lib/validators/schemas'
+import { createStudentSchema, loginSchema, updateStudentSchema } from '@/lib/validators/schemas'
 
 export async function login(formData: FormData) {
   const supabase = await createClient()
@@ -99,4 +99,59 @@ export async function createStudent(formData: FormData) {
 
   revalidatePath('/teacher/students')
   return { success: true, userId: data.user?.id }
+}
+
+export async function updateStudent(studentId: string, formData: FormData) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+
+  const parsed = updateStudentSchema.safeParse({
+    full_name: formData.get('full_name'),
+  })
+  if (!parsed.success) return { error: parsed.error.issues[0].message }
+
+  const admin = createAdminClient()
+  const { data: student } = await admin
+    .from('profiles')
+    .select('id')
+    .eq('id', studentId)
+    .eq('created_by', user.id)
+    .eq('role', 'student')
+    .single()
+
+  if (!student) return { error: 'Student not found' }
+
+  const { error } = await admin
+    .from('profiles')
+    .update({ full_name: parsed.data.full_name })
+    .eq('id', studentId)
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/teacher/students')
+  return { success: true }
+}
+
+export async function deleteStudent(studentId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+
+  const admin = createAdminClient()
+  const { data: student } = await admin
+    .from('profiles')
+    .select('id')
+    .eq('id', studentId)
+    .eq('created_by', user.id)
+    .eq('role', 'student')
+    .single()
+
+  if (!student) return { error: 'Student not found' }
+
+  const { error } = await admin.auth.admin.deleteUser(studentId)
+  if (error) return { error: error.message }
+
+  revalidatePath('/teacher/students')
+  return { success: true }
 }

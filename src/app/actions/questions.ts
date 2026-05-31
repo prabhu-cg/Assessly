@@ -10,16 +10,7 @@ export async function createQuestion(testId: string, data: unknown) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
 
-  // Verify teacher owns the test
-  const { data: test } = await supabase
-    .from('tests')
-    .select('id')
-    .eq('id', testId)
-    .eq('teacher_id', user.id)
-    .single()
-
-  if (!test) return { error: 'Test not found' }
-
+  // Ownership is enforced by the questions RLS policy — no need to SELECT from tests
   const parsed = questionSchema.safeParse(data)
   if (!parsed.success) {
     return { error: parsed.error.issues[0].message }

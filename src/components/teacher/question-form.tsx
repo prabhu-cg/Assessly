@@ -10,9 +10,9 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Loader2, Plus, Trash2 } from 'lucide-react'
+import { toast } from 'sonner'
 import type { Question } from '@/types/database'
 import type { QuestionType } from '@/types/database'
 
@@ -42,7 +42,6 @@ interface OpenFormValues {
 type FormValues = MCQFormValues | OpenFormValues
 
 export function QuestionForm({ testId, question, onSuccess, onCancel }: QuestionFormProps) {
-  const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
   const [qType, setQType] = useState<QuestionType>(question?.type ?? 'mcq')
 
@@ -81,7 +80,7 @@ export function QuestionForm({ testId, question, onSuccess, onCancel }: Question
         : await createQuestion(testId, payload)
 
       if (result?.error) {
-        setError(result.error)
+        toast.error(result.error)
       } else {
         onSuccess?.()
       }
@@ -96,12 +95,6 @@ export function QuestionForm({ testId, question, onSuccess, onCancel }: Question
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      {error && (
-        <Alert variant="destructive">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label>Question Type</Label>

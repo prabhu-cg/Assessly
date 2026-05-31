@@ -1,5 +1,6 @@
 import { redirect, notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { TestForm } from '@/components/teacher/test-form'
 import type { Test } from '@/types/database'
 
@@ -23,12 +24,16 @@ export default async function EditTestPage({ params }: EditTestPageProps) {
   if (!test) notFound()
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Edit Test</h1>
-        <p className="text-muted-foreground text-sm mt-1">{test.title}</p>
-      </div>
-      <TestForm test={test as Test} />
+    <div className="max-w-2xl mx-auto">
+      <Card>
+        <CardHeader>
+          <CardTitle>Edit Test</CardTitle>
+          <CardDescription>{test.title}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <TestForm test={test as Test} />
+        </CardContent>
+      </Card>
     </div>
   )
 }

@@ -4,7 +4,9 @@ import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Clock, BookOpen, CheckCircle2, LogIn } from 'lucide-react'
+import { Clock, BookOpen, CheckCircle2, LogIn, ArrowRight } from 'lucide-react'
+import { Suspense } from 'react'
+import { NoticeToast } from '@/components/shared/notice-toast'
 
 export default async function StudentDashboard() {
   const supabase = await createClient()
@@ -37,6 +39,7 @@ export default async function StudentDashboard() {
 
   return (
     <div className="space-y-8">
+      <Suspense><NoticeToast /></Suspense>
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">My Dashboard</h1>
@@ -76,7 +79,7 @@ export default async function StudentDashboard() {
             {availableTests.map((test: any) => {
               const sub = submissionMap[test.id]
               return (
-                <Card key={test.id} className="hover:shadow-md transition-shadow">
+                <Card key={test.id}>
                   <CardContent className="p-5 flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold">{test.title}</p>
@@ -120,14 +123,27 @@ export default async function StudentDashboard() {
                         </p>
                       )}
                       {sub?.status === 'evaluated' && sub.obtained_marks !== null && (
-                        <p className="text-sm font-medium mt-1 text-green-700">
-                          Score: {sub.obtained_marks}/{sub.total_marks}
+                        <p className="text-sm font-semibold mt-1 text-green-700">
+                          Score: {sub.obtained_marks} / {sub.total_marks}
                         </p>
                       )}
                     </div>
-                    <Badge variant={sub?.status === 'evaluated' ? 'default' : 'secondary'}>
-                      {sub?.status === 'evaluated' ? 'Evaluated' : 'Submitted'}
-                    </Badge>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <Badge
+                        variant="secondary"
+                        className={sub?.status === 'evaluated' ? 'bg-green-100 text-green-700 border-green-200' : ''}
+                      >
+                        {sub?.status === 'evaluated' ? 'Evaluated' : 'Submitted'}
+                      </Badge>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        render={<Link href={`/student/tests/${test.id}/results?submission=${sub?.id}`} />}
+                      >
+                        {sub?.status === 'evaluated' ? 'View Results' : 'View'}
+                        <ArrowRight className="h-3.5 w-3.5 ml-1" />
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               )

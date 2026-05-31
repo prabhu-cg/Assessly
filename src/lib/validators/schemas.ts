@@ -11,12 +11,16 @@ export const createStudentSchema = z.object({
   password: z.string().min(8, 'Password must be at least 8 characters'),
 })
 
+export const updateStudentSchema = z.object({
+  full_name: z.string().min(2, 'Name must be at least 2 characters').max(100),
+})
+
 export const testSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters').max(200),
   description: z.string().max(1000).optional(),
   duration_minutes: z.coerce.number().min(1).max(480),
   instructions: z.string().max(2000).optional(),
-  pass_mark: z.coerce.number().min(0).optional(),
+  pass_mark: z.coerce.number().min(1, 'Pass mark must be at least 1').optional(),
   starts_at: z.string().optional(),
   ends_at: z.string().optional(),
 })
@@ -61,6 +65,7 @@ export const evaluationSchema = z.object({
 
 export type LoginInput = z.infer<typeof loginSchema>
 export type CreateStudentInput = z.infer<typeof createStudentSchema>
+export type UpdateStudentInput = z.infer<typeof updateStudentSchema>
 export type TestInput = z.infer<typeof testSchema>
 export type QuestionInput = z.infer<typeof questionSchema>
 export type JoinTestInput = z.infer<typeof joinTestSchema>

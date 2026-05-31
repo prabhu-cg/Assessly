@@ -3,7 +3,9 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { testSchema, joinTestSchema } from '@/lib/validators/schemas'
+import { v4 as uuidv4 } from 'uuid'
 
 export async function createTest(formData: FormData) {
   const supabase = await createClient()
@@ -24,16 +26,17 @@ export async function createTest(formData: FormData) {
     return { error: parsed.error.issues[0].message }
   }
 
-  const { data, error } = await supabase
+  // Pre-generate the ID so we never need to SELECT back from tests
+  // (avoids triggering the RLS policy recursion on the post-insert read)
+  const testId = uuidv4()
+  const { error } = await supabase
     .from('tests')
-    .insert({ ...parsed.data, teacher_id: user.id })
-    .select()
-    .single()
+    .insert({ id: testId, ...parsed.data, teacher_id: user.id })
 
   if (error) return { error: error.message }
 
   revalidatePath('/teacher/tests')
-  redirect(`/teacher/tests/${data.id}/questions`)
+  redirect(`/teacher/tests/${testId}/questions`)
 }
 
 export async function updateTest(id: string, formData: FormData) {
@@ -100,7 +103,7 @@ export async function deleteTest(id: string) {
   if (error) return { error: error.message }
 
   revalidatePath('/teacher/tests')
-  redirect('/teacher/tests')
+  return { success: true }
 }
 
 export async function joinTest(formData: FormData) {
@@ -116,7 +119,11 @@ export async function joinTest(formData: FormData) {
     return { error: parsed.error.issues[0].message }
   }
 
-  const { data: test, error: testError } = await supabase
+  // Use admin client to look up the test by invite code — the student SELECT policy
+  // only allows viewing tests they already have access to, so a regular client would
+  // return nothing for a first-time join and produce a false "invalid code" error.
+  const admin = createAdminClient()
+  const { data: test, error: testError } = await admin
     .from('tests')
     .select('id, status')
     .eq('invite_code', parsed.data.invite_code.toUpperCase())
@@ -132,7 +139,7 @@ export async function joinTest(formData: FormData) {
 
   const { error } = await supabase
     .from('test_access')
-    .upsert({ test_id: test.id, student_id: user.id })
+    .upsert({ test_id: test.id, student_id: user.id }, { ignoreDuplicates: true })
 
   if (error) return { error: error.message }
 

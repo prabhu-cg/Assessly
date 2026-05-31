@@ -118,7 +118,7 @@ export default function EvaluationPage() {
             <Badge
               variant={
                 submission.status === 'evaluated'
-                  ? 'default'
+                  ? 'success'
                   : 'secondary'
               }
             >

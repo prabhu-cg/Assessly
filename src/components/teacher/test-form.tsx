@@ -9,17 +9,16 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Loader2 } from 'lucide-react'
-import { useState } from 'react'
+import { toast } from 'sonner'
 import type { Test } from '@/types/database'
 
 interface TestFormProps {
   test?: Test
+  onCancel?: () => void
 }
 
-export function TestForm({ test }: TestFormProps) {
-  const [error, setError] = useState<string | null>(null)
+export function TestForm({ test, onCancel }: TestFormProps) {
   const [isPending, startTransition] = useTransition()
 
   const { register, handleSubmit, formState: { errors } } = useForm<TestInput>({
@@ -44,18 +43,12 @@ export function TestForm({ test }: TestFormProps) {
         ? await updateTest(test.id, formData)
         : await createTest(formData)
 
-      if (result?.error) setError(result.error)
+      if (result?.error) toast.error(result.error)
     })
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 max-w-2xl">
-      {error && (
-        <Alert variant="destructive">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       <div className="space-y-2">
         <Label htmlFor="title">Test Title *</Label>
         <Input id="title" {...register('title')} placeholder="e.g. Chapter 5 — Algebra Quiz" />
@@ -125,7 +118,11 @@ export function TestForm({ test }: TestFormProps) {
           {isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
           {test ? 'Save Changes' : 'Create Test'}
         </Button>
-        <Button type="button" variant="outline" onClick={() => history.back()}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onCancel ?? (() => history.back())}
+        >
           Cancel
         </Button>
       </div>
