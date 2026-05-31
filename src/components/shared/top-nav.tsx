@@ -76,18 +76,22 @@ export function TopNav({ profile }: TopNavProps) {
               {/* User info */}
               <div className="px-3 py-2.5 border-b border-border">
                 <p className="text-sm font-semibold">{profile.full_name}</p>
-                <p className="text-xs text-muted-foreground mt-0.5 truncate">{profile.email}</p>
+                {profile.role === 'teacher' && (
+                  <p className="text-xs text-muted-foreground mt-0.5 truncate">{profile.email}</p>
+                )}
                 <span className="inline-block mt-1 text-xs font-medium text-primary capitalize">{profile.role}</span>
               </div>
-              {/* Sign out */}
-              <button
-                type="button"
-                onClick={() => { setMenuOpen(false); logout() }}
-                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-destructive hover:bg-red-50 transition-colors"
-              >
-                <LogOut className="h-4 w-4" />
-                Sign out
-              </button>
+              {/* Sign out — teachers only */}
+              {profile.role === 'teacher' && (
+                <button
+                  type="button"
+                  onClick={() => { setMenuOpen(false); logout() }}
+                  className="w-full flex items-center gap-2 px-3 py-2 text-sm text-destructive hover:bg-red-50 transition-colors"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Sign out
+                </button>
+              )}
             </div>
           )}
         </div>
