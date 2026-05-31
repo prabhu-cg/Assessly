@@ -59,10 +59,7 @@ export default async function StudentsPage({
               <div className="flex-1 min-w-0">
                 <p className="font-medium">{student.full_name}</p>
               </div>
-              <p className="text-xs text-muted-foreground hidden sm:block">
-                Added {new Date(student.created_at).toLocaleDateString()}
-              </p>
-              <StudentActions studentId={student.id} studentName={student.full_name} />
+              <StudentActions studentId={student.id} studentName={student.full_name} addedDate={student.created_at} />
             </CardContent>
           </Card>
         ))}
