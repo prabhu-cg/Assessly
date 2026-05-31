@@ -64,6 +64,7 @@ export function QuestionForm({ testId, question, onSuccess, onCancel }: Question
 
   const { fields, append, remove } = useFieldArray({ control, name: 'options' })
   const correctOptionId = watch('correct_option_id')
+  const watchedOptions = watch('options') as { id: string; text: string }[]
 
   const onSubmit = (data: any) => {
     const payload = {
@@ -140,7 +141,7 @@ export function QuestionForm({ testId, question, onSuccess, onCancel }: Question
           >
             {fields.map((field, index) => (
               <div key={field.id} className="flex items-center gap-2">
-                <RadioGroupItem value={(field as any).id} id={`opt-${index}`} />
+                <RadioGroupItem value={watchedOptions?.[index]?.id ?? ''} id={`opt-${index}`} />
                 <Input
                   {...register(`options.${index}.text`, { required: true })}
                   placeholder={`Option ${String.fromCharCode(65 + index)}`}

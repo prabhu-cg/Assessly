@@ -21,7 +21,7 @@ export default async function TeacherTestsPage({
 
   const { data: tests } = await supabase
     .from('tests')
-    .select(`id, title, description, status, duration_minutes, invite_code, created_at, updated_at, questions(count)`)
+    .select(`id, title, description, status, duration_minutes, invite_code, pass_mark, instructions, starts_at, ends_at, created_at, updated_at, questions(count)`)
     .eq('teacher_id', user.id)
     .order('created_at', { ascending: false })
 
