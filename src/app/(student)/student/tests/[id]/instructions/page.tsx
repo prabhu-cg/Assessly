@@ -5,7 +5,8 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Clock, Hash, AlertCircle, CheckCircle2 } from 'lucide-react'
+import { Clock, Hash, AlertCircle, CheckCircle2, ShieldAlert } from 'lucide-react'
+import { StartTestButton } from '@/components/student/start-test-button'
 
 interface InstructionsPageProps {
   params: Promise<{ id: string }>
@@ -111,10 +112,37 @@ export default async function InstructionsPage({ params }: InstructionsPageProps
         </CardContent>
       </Card>
 
+      <Card className="border-red-200 bg-red-50/50">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2 text-red-700">
+            <ShieldAlert className="h-4 w-4" />
+            Exam Integrity Rules
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ul className="space-y-2 text-sm text-red-700/80">
+            {[
+              'The test opens in fullscreen — do not exit fullscreen during the exam.',
+              'Do not switch tabs, windows, or applications while the test is active.',
+              'Right-clicking and browser shortcut keys are disabled.',
+              'Each violation (tab switch, fullscreen exit) is recorded and visible to your teacher.',
+              'After 3 violations your test will be automatically submitted.',
+              'Opening the test on another device will invalidate your current session.',
+            ].map(rule => (
+              <li key={rule} className="flex items-start gap-2">
+                <ShieldAlert className="h-4 w-4 mt-0.5 shrink-0" />
+                {rule}
+              </li>
+            ))}
+          </ul>
+        </CardContent>
+      </Card>
+
       {!alreadySubmitted && (
-        <Button size="lg" className="w-full sm:w-auto" render={<Link href={`/student/tests/${id}/take`} />}>
-          {existingSub?.status === 'in_progress' ? 'Continue Test' : 'Start Test'}
-        </Button>
+        <StartTestButton
+          href={`/student/tests/${id}/take`}
+          isResume={existingSub?.status === 'in_progress'}
+        />
       )}
     </div>
   )

@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef, useTransition } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { startSubmission, saveAnswer, submitTest, recordViolation } from '@/app/actions/submissions'
+import { startSubmission, saveAnswer, submitTest, recordViolation, verifySession } from '@/app/actions/submissions'
 import { TestTimer } from '@/components/student/test-timer'
 import { QuestionNavigator, type QuestionState } from '@/components/student/question-navigator'
 import { Card, CardContent } from '@/components/ui/card'
@@ -14,7 +14,7 @@ import { Label } from '@/components/ui/label'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
-import { ChevronLeft, ChevronRight, SkipForward, Send, Menu, X, Save, AlertTriangle } from 'lucide-react'
+import { ChevronLeft, ChevronRight, SkipForward, Send, Menu, X, Save, AlertTriangle, Maximize2 } from 'lucide-react'
 import type { Question, Test } from '@/types/database'
 
 export default function TakeTestPage() {
@@ -45,6 +45,9 @@ export default function TakeTestPage() {
   const autoSubmittedRef = useRef(false)
   // Always points to the latest flushAllSaves so the violation handler isn't stale
   const flushAllSavesRef = useRef<() => Promise<void>>(async () => {})
+  const [isFullscreen, setIsFullscreen] = useState(false)
+  const [sessionHijacked, setSessionHijacked] = useState(false)
+  const sessionTokenRef = useRef<string | null>(null)
 
   // Initialize: load test, questions, start/resume submission
   useEffect(() => {
@@ -63,6 +66,7 @@ export default function TakeTestPage() {
       if (result?.error) { router.push('/student/dashboard'); return }
 
       const subId = result.submissionId!
+      sessionTokenRef.current = result.sessionToken ?? null
       setSubmissionId(subId)
 
       // Calculate timer end time
@@ -145,27 +149,53 @@ export default function TakeTestPage() {
     if (violations > 0 && violations < MAX_VIOLATIONS) setShowViolationWarning(true)
   }, [violations])
 
-  // Detect tab switch and window focus loss
+  // Detect tab switch, window focus loss, and fullscreen exit — all share one debounce
   useEffect(() => {
     if (loading || !submissionId) return
 
-    const onFocusLoss = () => {
+    const trigger = () => {
       const now = Date.now()
-      if (now - lastViolationRef.current < 2000) return // debounce dual events
+      if (now - lastViolationRef.current < 2000) return
       lastViolationRef.current = now
       violationsRef.current += 1
       setViolations(violationsRef.current)
       recordViolation(submissionId)
     }
 
-    const onVisibilityChange = () => { if (document.hidden) onFocusLoss() }
+    // Re-enter fullscreen if the student refreshed the page mid-test
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {})
+    }
+
+    const onVisibilityChange = () => { if (document.hidden) trigger() }
+    const onFullscreenChange = () => { if (!document.fullscreenElement) trigger() }
     document.addEventListener('visibilitychange', onVisibilityChange)
-    window.addEventListener('blur', onFocusLoss)
+    document.addEventListener('fullscreenchange', onFullscreenChange)
+    window.addEventListener('blur', trigger)
     return () => {
       document.removeEventListener('visibilitychange', onVisibilityChange)
-      window.removeEventListener('blur', onFocusLoss)
+      document.removeEventListener('fullscreenchange', onFullscreenChange)
+      window.removeEventListener('blur', trigger)
     }
   }, [loading, submissionId])
+
+  // Track fullscreen state to show the re-enter button in the header
+  useEffect(() => {
+    const update = () => setIsFullscreen(!!document.fullscreenElement)
+    document.addEventListener('fullscreenchange', update)
+    update()
+    return () => document.removeEventListener('fullscreenchange', update)
+  }, [])
+
+  // Session heartbeat: detect if another device/tab has taken over this submission
+  useEffect(() => {
+    if (!submissionId || !sessionTokenRef.current) return
+    const interval = setInterval(async () => {
+      const valid = await verifySession(submissionId, sessionTokenRef.current!)
+      if (!valid) setSessionHijacked(true)
+    }, 30000)
+    return () => clearInterval(interval)
+  }, [submissionId])
 
   // Block right-click and keyboard shortcuts that open new tabs / devtools
   useEffect(() => {
@@ -263,10 +293,21 @@ export default function TakeTestPage() {
           </div>
 
           <div className="flex items-center gap-2">
+            {!isFullscreen && (
+              <Button
+                size="sm"
+                variant="outline"
+                className="h-7 px-2 text-xs text-amber-600 border-amber-400 hidden sm:flex gap-1"
+                onClick={() => document.documentElement.requestFullscreen().catch(() => {})}
+              >
+                <Maximize2 className="h-3 w-3" />
+                Fullscreen
+              </Button>
+            )}
             {violations > 0 && (
-              <Badge variant="outline" className="text-xs text-amber-600 border-amber-400 shrink-0 hidden sm:flex">
-                <AlertTriangle className="h-3 w-3 mr-1" />
-                {violations}/{MAX_VIOLATIONS} warnings
+              <Badge variant="outline" className="text-xs text-amber-600 border-amber-400 shrink-0 gap-1">
+                <AlertTriangle className="h-3 w-3" />
+                {violations}/{MAX_VIOLATIONS}
               </Badge>
             )}
             <TestTimer endsAt={endsAt} onTimeUp={handleTimeUp} />
@@ -459,6 +500,29 @@ export default function TakeTestPage() {
         </DialogContent>
       </Dialog>
 
+      {/* Session Hijack Dialog — another device/tab took over */}
+      <Dialog open={sessionHijacked} onOpenChange={() => {}}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-red-600">
+              <AlertTriangle className="h-5 w-5" />
+              Session Conflict
+            </DialogTitle>
+            <DialogDescription>
+              This test was opened on another device or browser tab. Your answers up to this point have been saved.
+            </DialogDescription>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground text-center py-2">
+            Only one active session is allowed per student. Please use a single device to complete your test.
+          </p>
+          <DialogFooter>
+            <Button className="w-full" onClick={() => router.push('/student/dashboard')}>
+              Return to Dashboard
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Violation Warning Dialog */}
       <Dialog open={showViolationWarning} onOpenChange={setShowViolationWarning}>
         <DialogContent className="sm:max-w-sm">
@@ -468,7 +532,7 @@ export default function TakeTestPage() {
               Focus Lost Detected
             </DialogTitle>
             <DialogDescription>
-              You switched away from the test window. This has been recorded and your teacher will be notified.
+              You exited fullscreen or switched away from the test. This has been recorded and your teacher will be notified.
             </DialogDescription>
           </DialogHeader>
           <div className="text-center py-3 space-y-1">

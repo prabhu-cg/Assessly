@@ -10,6 +10,8 @@ export async function startSubmission(testId: string) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
 
+  const sessionToken = crypto.randomUUID()
+
   // Check if already has an in-progress submission
   const { data: existing } = await supabase
     .from('submissions')
@@ -22,17 +24,32 @@ export async function startSubmission(testId: string) {
     if (existing.status === 'submitted' || existing.status === 'evaluated') {
       return { error: 'You have already submitted this test' }
     }
-    return { submissionId: existing.id }
+    // Overwrite token — invalidates any concurrent session
+    await supabase
+      .from('submissions')
+      .update({ session_token: sessionToken })
+      .eq('id', existing.id)
+    return { submissionId: existing.id, sessionToken }
   }
 
   const { data, error } = await supabase
     .from('submissions')
-    .insert({ test_id: testId, student_id: user.id })
+    .insert({ test_id: testId, student_id: user.id, session_token: sessionToken })
     .select()
     .single()
 
   if (error) return { error: error.message }
-  return { submissionId: data.id }
+  return { submissionId: data.id, sessionToken }
+}
+
+export async function verifySession(submissionId: string, sessionToken: string): Promise<boolean> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('submissions')
+    .select('session_token')
+    .eq('id', submissionId)
+    .single()
+  return data?.session_token === sessionToken
 }
 
 export async function saveAnswer(

@@ -101,12 +101,14 @@ create table public.submissions (
   total_marks      integer,
   obtained_marks   integer,
   focus_violations integer not null default 0,
+  session_token    uuid,
   created_at       timestamptz not null default now(),
   unique (test_id, student_id)
 );
 
--- Migration (run if table already exists):
+-- Migrations (run if table already exists):
 -- alter table public.submissions add column if not exists focus_violations integer not null default 0;
+-- alter table public.submissions add column if not exists session_token uuid;
 
 -- ============================================================
 -- ANSWERS
