@@ -68,17 +68,19 @@ export async function createStudent(formData: FormData) {
   const parsed = createStudentSchema.safeParse({
     full_name: formData.get('full_name'),
     email: formData.get('email'),
-    password: formData.get('password'),
   })
 
   if (!parsed.success) {
     return { error: parsed.error.issues[0].message }
   }
 
+  // The access_token acts as both the URL token and the Supabase Auth password
+  const accessToken = crypto.randomUUID()
+
   const admin = createAdminClient()
   const { data, error } = await admin.auth.admin.createUser({
     email: parsed.data.email,
-    password: parsed.data.password,
+    password: accessToken,
     email_confirm: true,
     user_metadata: {
       full_name: parsed.data.full_name,
@@ -93,12 +95,40 @@ export async function createStudent(formData: FormData) {
   if (data.user) {
     await admin
       .from('profiles')
-      .update({ created_by: user.id })
+      .update({ created_by: user.id, access_token: accessToken })
       .eq('id', data.user.id)
   }
 
   revalidatePath('/teacher/students')
-  return { success: true, userId: data.user?.id }
+  return { success: true, accessToken }
+}
+
+export async function getStudentAccessLink(studentId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+
+  const admin = createAdminClient()
+  const { data: student } = await admin
+    .from('profiles')
+    .select('id, email, access_token')
+    .eq('id', studentId)
+    .eq('created_by', user.id)
+    .eq('role', 'student')
+    .single()
+
+  if (!student) return { error: 'Student not found' }
+
+  const accessToken = student.access_token ?? crypto.randomUUID()
+
+  // Sync Auth password = access_token so /s/[token] always works
+  await admin.auth.admin.updateUserById(studentId, { password: accessToken })
+
+  if (!student.access_token) {
+    await admin.from('profiles').update({ access_token: accessToken }).eq('id', studentId)
+  }
+
+  return { success: true, accessToken }
 }
 
 export async function updateStudent(studentId: string, formData: FormData) {

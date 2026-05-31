@@ -10,13 +10,17 @@ create extension if not exists "pgcrypto";
 -- Extends auth.users; created via trigger on signup
 -- ============================================================
 create table public.profiles (
-  id          uuid primary key references auth.users(id) on delete cascade,
-  email       text not null,
-  full_name   text not null,
-  role        text not null check (role in ('teacher', 'student')),
-  created_by  uuid references public.profiles(id) on delete set null,
-  created_at  timestamptz not null default now()
+  id           uuid primary key references auth.users(id) on delete cascade,
+  email        text not null,
+  full_name    text not null,
+  role         text not null check (role in ('teacher', 'student')),
+  created_by   uuid references public.profiles(id) on delete set null,
+  access_token uuid unique default gen_random_uuid(),
+  created_at   timestamptz not null default now()
 );
+
+-- Migration (run if table already exists):
+-- alter table public.profiles add column if not exists access_token uuid unique default gen_random_uuid();
 
 -- Trigger: auto-create profile when a user signs up via Supabase Auth
 create or replace function public.handle_new_user()

@@ -30,6 +30,9 @@ export async function proxy(request: NextRequest) {
 
   // Public paths that don't require auth
   const publicPaths = ['/login', '/']
+  const isStudentLink = pathname.startsWith('/s/')
+  if (isStudentLink) return supabaseResponse
+
   if (publicPaths.includes(pathname)) {
     if (user) {
       // Redirect logged-in users away from login

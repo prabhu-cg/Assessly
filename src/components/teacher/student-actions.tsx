@@ -4,14 +4,14 @@ import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { updateStudentSchema, type UpdateStudentInput } from '@/lib/validators/schemas'
-import { updateStudent, deleteStudent } from '@/app/actions/auth'
+import { updateStudent, deleteStudent, getStudentAccessLink } from '@/app/actions/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { ConfirmDialog } from '@/components/shared/confirm-dialog'
-import { Pencil, Trash2, Loader2 } from 'lucide-react'
+import { Pencil, Trash2, Loader2, Link2 } from 'lucide-react'
 import { toast } from 'sonner'
 
 interface StudentActionsProps {
@@ -25,6 +25,7 @@ export function StudentActions({ studentId, studentName }: StudentActionsProps) 
   const [editError, setEditError] = useState<string | null>(null)
   const [isEditing, startEdit] = useTransition()
   const [isDeleting, startDelete] = useTransition()
+  const [isCopyingLink, startCopyLink] = useTransition()
 
   const { register, handleSubmit, formState: { errors } } = useForm<UpdateStudentInput>({
     resolver: zodResolver(updateStudentSchema),
@@ -58,9 +59,34 @@ export function StudentActions({ studentId, studentName }: StudentActionsProps) 
     })
   }
 
+  const handleCopyLink = () => {
+    startCopyLink(async () => {
+      const result = await getStudentAccessLink(studentId)
+      if (result?.error) {
+        toast.error(result.error)
+      } else if (result?.accessToken) {
+        const link = `${window.location.origin}/s/${result.accessToken}`
+        await navigator.clipboard.writeText(link)
+        toast.success('Student link copied!')
+      }
+    })
+  }
+
   return (
     <>
       <div className="flex items-center gap-1 shrink-0">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 text-muted-foreground hover:text-primary"
+          onClick={handleCopyLink}
+          disabled={isCopyingLink}
+          title="Copy student login link"
+        >
+          {isCopyingLink
+            ? <Loader2 className="h-4 w-4 animate-spin" />
+            : <Link2 className="h-4 w-4" />}
+        </Button>
         <Button
           variant="ghost"
           size="icon"

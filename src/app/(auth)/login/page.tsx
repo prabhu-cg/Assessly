@@ -79,7 +79,7 @@ export default function LoginPage() {
           {/* Form card */}
           <div className="rounded-2xl border border-border bg-white p-7">
             <div className="mb-5">
-              <h2 className="text-lg font-semibold">Sign in</h2>
+              <h2 className="text-lg font-semibold">Teacher Sign In</h2>
               <p className="text-sm text-muted-foreground mt-1">
                 Enter your email and password to access your account
               </p>
@@ -115,12 +115,12 @@ export default function LoginPage() {
               </Button>
             </form>
 
-            <p className="mt-5 text-center text-sm text-muted-foreground">
-              Don&apos;t have an account?{' '}
-              <span className="text-foreground font-semibold">
-                Contact your teacher to get access.
-              </span>
-            </p>
+            <div className="mt-5 rounded-xl bg-muted/60 border border-border p-3 text-center">
+              <p className="text-xs text-muted-foreground">
+                <span className="font-semibold text-foreground">Are you a student?</span>
+                {' '}Use the personal link your teacher shared with you — no password needed.
+              </p>
+            </div>
           </div>
 
         </div>
