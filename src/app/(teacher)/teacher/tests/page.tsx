@@ -25,8 +25,8 @@ export default async function TeacherTestsPage({
     .eq('teacher_id', user.id)
     .order('created_at', { ascending: false })
 
-  const statusVariant: Record<string, 'success' | 'secondary' | 'outline'> = {
-    draft: 'secondary',
+  const statusVariant: Record<string, 'success' | 'secondary' | 'outline' | 'muted'> = {
+    draft: 'muted',
     published: 'success',
     archived: 'outline',
   }

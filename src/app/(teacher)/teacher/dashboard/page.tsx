@@ -35,7 +35,7 @@ export default async function TeacherDashboard() {
   ]
 
   const statusStyles: Record<string, string> = {
-    draft: 'bg-gray-100 text-gray-600',
+    draft: 'bg-gray-100 text-gray-500 border border-gray-200',
     published: 'bg-green-100 text-green-700',
     archived: 'bg-gray-100 text-gray-400',
   }

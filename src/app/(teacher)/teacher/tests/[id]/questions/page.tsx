@@ -26,8 +26,8 @@ import { toast } from 'sonner'
 import { ConfirmDialog } from '@/components/shared/confirm-dialog'
 import type { Question, Test } from '@/types/database'
 
-const statusVariant: Record<string, 'success' | 'secondary' | 'outline'> = {
-  draft: 'secondary', published: 'success', archived: 'outline',
+const statusVariant: Record<string, 'success' | 'secondary' | 'outline' | 'muted'> = {
+  draft: 'muted', published: 'success', archived: 'outline',
 }
 
 const typeLabel: Record<string, string> = {

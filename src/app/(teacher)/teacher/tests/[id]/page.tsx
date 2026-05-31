@@ -43,7 +43,7 @@ export default async function TestDetailPage({ params }: TestDetailPageProps) {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <h1 className="text-2xl font-bold">{test.title}</h1>
-            <Badge variant={test.status === 'published' ? 'success' : test.status === 'archived' ? 'outline' : 'secondary'}>
+            <Badge variant={test.status === 'published' ? 'success' : test.status === 'archived' ? 'outline' : 'muted'}>
               {test.status}
             </Badge>
           </div>
