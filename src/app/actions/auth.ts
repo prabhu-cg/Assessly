@@ -142,9 +142,12 @@ export async function updateStudent(studentId: string, formData: FormData) {
   if (!user) return { error: 'Not authenticated' }
 
   const parsed = updateStudentSchema.safeParse({
-    full_name: formData.get('full_name'),
+    first_name: formData.get('first_name'),
+    last_name: formData.get('last_name'),
   })
   if (!parsed.success) return { error: parsed.error.issues[0].message }
+
+  const fullName = `${parsed.data.first_name.trim()} ${parsed.data.last_name.trim()}`
 
   const admin = createAdminClient()
   const { data: student } = await admin
@@ -159,7 +162,7 @@ export async function updateStudent(studentId: string, formData: FormData) {
 
   const { error } = await admin
     .from('profiles')
-    .update({ full_name: parsed.data.full_name })
+    .update({ full_name: fullName })
     .eq('id', studentId)
 
   if (error) return { error: error.message }

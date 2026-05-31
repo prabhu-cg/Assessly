@@ -70,14 +70,19 @@ export function StudentActions({ studentId, studentName, addedDate }: StudentAct
     setTimeout(() => setCopied(false), 2000)
   }
 
+  const nameParts = studentName.trim().split(/\s+/)
+  const defaultFirstName = nameParts.slice(0, -1).join(' ') || nameParts[0]
+  const defaultLastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : ''
+
   const { register, handleSubmit, formState: { errors } } = useForm<UpdateStudentInput>({
     resolver: zodResolver(updateStudentSchema),
-    defaultValues: { full_name: studentName },
+    defaultValues: { first_name: defaultFirstName, last_name: defaultLastName },
   })
 
   const onEdit = (data: UpdateStudentInput) => {
     const formData = new FormData()
-    formData.append('full_name', data.full_name)
+    formData.append('first_name', data.first_name)
+    formData.append('last_name', data.last_name)
     setEditError(null)
     startEdit(async () => {
       const result = await updateStudent(studentId, formData)
@@ -120,12 +125,13 @@ export function StudentActions({ studentId, studentName, addedDate }: StudentAct
         </Button>
 
         <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 text-muted-foreground hover:text-foreground"
+          variant="outline"
+          size="sm"
           onClick={() => setEditOpen(true)}
+          className="gap-1.5"
         >
-          <Pencil className="h-4 w-4" />
+          <Pencil className="h-3.5 w-3.5" />
+          Edit
         </Button>
         <Button
           variant="ghost"
@@ -236,12 +242,21 @@ export function StudentActions({ studentId, studentName, addedDate }: StudentAct
                 <AlertDescription>{editError}</AlertDescription>
               </Alert>
             )}
-            <div className="space-y-2">
-              <Label htmlFor="full_name">Full Name</Label>
-              <Input id="full_name" {...register('full_name')} />
-              {errors.full_name && (
-                <p className="text-sm text-destructive">{errors.full_name.message}</p>
-              )}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label htmlFor="first_name">First Name</Label>
+                <Input id="first_name" {...register('first_name')} />
+                {errors.first_name && (
+                  <p className="text-sm text-destructive">{errors.first_name.message}</p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="last_name">Last Name</Label>
+                <Input id="last_name" {...register('last_name')} />
+                {errors.last_name && (
+                  <p className="text-sm text-destructive">{errors.last_name.message}</p>
+                )}
+              </div>
             </div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setEditOpen(false)} disabled={isEditing}>
