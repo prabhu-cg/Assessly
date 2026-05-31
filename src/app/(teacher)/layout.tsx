@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { TopNav } from '@/components/shared/top-nav'
+import { Footer } from '@/components/shared/footer'
 import type { Profile } from '@/types/database'
 
 export default async function TeacherLayout({ children }: { children: React.ReactNode }) {
@@ -19,6 +20,7 @@ export default async function TeacherLayout({ children }: { children: React.Reac
       <main className="flex-1 px-6 py-8 max-w-screen-xl mx-auto w-full">
         {children}
       </main>
+      <Footer />
     </div>
   )
 }

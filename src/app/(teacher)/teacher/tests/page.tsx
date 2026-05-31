@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Clock, Hash, Share2, FileText } from 'lucide-react'
 import { DeleteTestButton } from '@/components/teacher/delete-test-button'
 import { CreateTestDrawer } from '@/components/teacher/create-test-drawer'
+import { EditTestDrawer } from '@/components/teacher/edit-test-drawer'
 
 export default async function TeacherTestsPage({
   searchParams,
@@ -90,9 +91,7 @@ export default async function TeacherTestsPage({
                     <Button variant="outline" size="sm" render={<Link href={`/teacher/tests/${test.id}/questions`} />}>
                       Questions
                     </Button>
-                    <Button variant="outline" size="sm" render={<Link href={`/teacher/tests/${test.id}/edit`} />}>
-                      Edit
-                    </Button>
+                    <EditTestDrawer test={test as any} />
                     <DeleteTestButton testId={test.id} testTitle={test.title} />
                   </div>
                 </div>

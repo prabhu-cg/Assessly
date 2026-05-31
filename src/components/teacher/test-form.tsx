@@ -16,9 +16,10 @@ import type { Test } from '@/types/database'
 interface TestFormProps {
   test?: Test
   onCancel?: () => void
+  onSuccess?: () => void
 }
 
-export function TestForm({ test, onCancel }: TestFormProps) {
+export function TestForm({ test, onCancel, onSuccess }: TestFormProps) {
   const [isPending, startTransition] = useTransition()
 
   const { register, handleSubmit, formState: { errors } } = useForm<TestInput>({
@@ -43,7 +44,12 @@ export function TestForm({ test, onCancel }: TestFormProps) {
         ? await updateTest(test.id, formData)
         : await createTest(formData)
 
-      if (result?.error) toast.error(result.error)
+      if (result?.error) {
+        toast.error(result.error)
+      } else if ('success' in result && result.success) {
+        toast.success('Test updated')
+        onSuccess?.()
+      }
     })
   }
 

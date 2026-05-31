@@ -4,7 +4,8 @@ import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Clock, Hash, Users, Share2, Pencil, BookOpen, ClipboardList } from 'lucide-react'
+import { Clock, Hash, Users, Share2, BookOpen, ClipboardList } from 'lucide-react'
+import { EditTestDrawer } from '@/components/teacher/edit-test-drawer'
 
 interface TestDetailPageProps {
   params: Promise<{ id: string }>
@@ -49,9 +50,7 @@ export default async function TestDetailPage({ params }: TestDetailPageProps) {
           {test.description && <p className="text-muted-foreground text-sm">{test.description}</p>}
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" render={<Link href={`/teacher/tests/${id}/edit`} />}>
-            <Pencil className="h-4 w-4 mr-2" />Edit
-          </Button>
+          <EditTestDrawer test={test as any} />
           <Button size="sm" render={<Link href={`/teacher/tests/${id}/questions`} />}>
             <BookOpen className="h-4 w-4 mr-2" />Questions
           </Button>

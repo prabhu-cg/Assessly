@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Loader2 } from 'lucide-react'
 import { LogoMark } from '@/components/shared/logo'
 import { toast } from 'sonner'
+import { Footer } from '@/components/shared/footer'
 
 export default function LoginPage() {
   const [isPending, startTransition] = useTransition()
@@ -22,7 +23,8 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-svh flex">
+    <div className="min-h-svh flex flex-col">
+    <div className="flex-1 flex">
 
       {/* ── Left panel ── */}
       <div
@@ -124,6 +126,8 @@ export default function LoginPage() {
         </div>
       </div>
 
+    </div>
+    <Footer />
     </div>
   )
 }
