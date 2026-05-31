@@ -22,7 +22,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-svh flex">
 
       {/* ── Left panel ── */}
       <div
@@ -62,12 +62,12 @@ export default function LoginPage() {
       </div>
 
       {/* ── Right panel ── */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 py-12" style={{ backgroundColor: '#FFF9EB' }}>
+      <div className="flex-1 flex flex-col items-center justify-center px-6 py-8 sm:py-12" style={{ backgroundColor: '#FFF9EB' }}>
         <div className="w-full max-w-sm">
 
           {/* Logo + tagline */}
-          <div className="flex flex-col items-center mb-8">
-            <LogoMark className="h-14 w-auto mb-3" />
+          <div className="flex flex-col items-center mb-6 sm:mb-8">
+            <LogoMark className="h-10 sm:h-14 w-auto mb-2 sm:mb-3" />
             <h1 className="text-2xl font-bold tracking-tight">Assessly</h1>
             <p className="text-muted-foreground text-sm mt-1.5">
               Assess smarter. Teach better.
