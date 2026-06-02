@@ -84,7 +84,7 @@ export default async function TeacherDashboard() {
               View all <ArrowRight className="h-3.5 w-3.5" />
             </Button>
           </CardHeader>
-          <CardContent className="space-y-2">
+          <CardContent>
             {!recentTests?.length && (
               <div className="flex flex-col items-center justify-center py-10 text-center">
                 <div className="h-12 w-12 rounded-2xl bg-orange-50 flex items-center justify-center mb-3">
@@ -95,24 +95,26 @@ export default async function TeacherDashboard() {
                 <Button size="sm" render={<Link href="/teacher/tests?new=true" />}>Create Test</Button>
               </div>
             )}
-            {recentTests?.map(test => (
-              <Link
-                key={test.id}
-                href={`/teacher/tests/${test.id}`}
-                className="flex items-center gap-4 p-3 rounded-xl hover:bg-secondary transition-colors"
-              >
-                <div className="h-9 w-9 rounded-lg bg-orange-50 flex items-center justify-center shrink-0">
-                  <FileText className="h-4 w-4 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{test.title}</p>
-                  <p className="text-xs text-muted-foreground">{test.duration_minutes} min · {new Date(test.created_at).toLocaleDateString()}</p>
-                </div>
-                <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusStyles[test.status]}`}>
-                  {test.status}
-                </span>
-              </Link>
-            ))}
+            <div className="divide-y divide-border">
+              {recentTests?.map(test => (
+                <Link
+                  key={test.id}
+                  href={`/teacher/tests/${test.id}`}
+                  className="flex items-center gap-4 p-3 hover:bg-secondary transition-colors"
+                >
+                  <div className="h-9 w-9 rounded-lg bg-orange-50 flex items-center justify-center shrink-0">
+                    <FileText className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">{test.title}</p>
+                    <p className="text-xs text-muted-foreground">{test.duration_minutes} min · {new Date(test.created_at).toLocaleDateString()}</p>
+                  </div>
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusStyles[test.status]}`}>
+                    {test.status}
+                  </span>
+                </Link>
+              ))}
+            </div>
           </CardContent>
         </Card>
 
@@ -121,26 +123,28 @@ export default async function TeacherDashboard() {
           <CardHeader className="pb-4">
             <CardTitle className="text-base font-semibold">Quick Actions</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
-            {[
-              { href: '/teacher/tests?new=true', icon: Plus, label: 'Create New Test', desc: 'Draft a test with questions' },
-              { href: '/teacher/students?new=true', icon: Users, label: 'Add Student', desc: 'Create a student account' },
-              { href: '/teacher/submissions', icon: ClipboardList, label: 'Review Submissions', desc: 'Grade pending work' },
-            ].map(({ href, icon: Icon, label, desc }) => (
-              <Link
-                key={href}
-                href={href}
-                className="flex items-center gap-3 p-3 rounded-xl hover:bg-secondary transition-colors"
-              >
-                <div className="h-9 w-9 rounded-lg bg-secondary flex items-center justify-center shrink-0">
-                  <Icon className="h-4 w-4 text-muted-foreground" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-medium">{label}</p>
-                  <p className="text-xs text-muted-foreground">{desc}</p>
-                </div>
-              </Link>
-            ))}
+          <CardContent>
+            <div className="divide-y divide-border">
+              {[
+                { href: '/teacher/tests?new=true', icon: Plus, label: 'Create New Test', desc: 'Draft a test with questions' },
+                { href: '/teacher/students?new=true', icon: Users, label: 'Add Student', desc: 'Create a student account' },
+                { href: '/teacher/submissions', icon: ClipboardList, label: 'Review Submissions', desc: 'Grade pending work' },
+              ].map(({ href, icon: Icon, label, desc }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="flex items-center gap-3 p-3 hover:bg-secondary transition-colors"
+                >
+                  <div className="h-9 w-9 rounded-lg bg-secondary flex items-center justify-center shrink-0">
+                    <Icon className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium">{label}</p>
+                    <p className="text-xs text-muted-foreground">{desc}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </CardContent>
         </Card>
       </div>
