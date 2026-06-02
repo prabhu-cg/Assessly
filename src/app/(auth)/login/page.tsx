@@ -5,10 +5,9 @@ import { login } from '@/app/actions/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Mail, Lock } from 'lucide-react'
 import { LogoMark } from '@/components/shared/logo'
 import { toast } from 'sonner'
-import { Footer } from '@/components/shared/footer'
 
 export default function LoginPage() {
   const [isPending, startTransition] = useTransition()
@@ -88,25 +87,33 @@ export default function LoginPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-1.5">
                 <Label htmlFor="email">Email address</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  autoComplete="email"
-                  required
-                />
+                <div className="relative">
+                  <Mail className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="you@example.com"
+                    autoComplete="email"
+                    required
+                    className="pl-8"
+                  />
+                </div>
               </div>
 
               <div className="space-y-1.5">
                 <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                />
+                <div className="relative">
+                  <Lock className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                  <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    required
+                    className="pl-8"
+                  />
+                </div>
               </div>
 
               <Button type="submit" className="w-full mt-1" disabled={isPending}>
@@ -121,7 +128,6 @@ export default function LoginPage() {
       </div>
 
     </div>
-    <Footer />
     </div>
   )
 }
