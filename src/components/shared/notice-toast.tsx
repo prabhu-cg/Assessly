@@ -4,8 +4,10 @@ import { useEffect } from 'react'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import { toast } from 'sonner'
 
-const messages: Record<string, string> = {
-  unavailable: 'This test is not currently available. Ask your teacher to publish it.',
+const notices: Record<string, { message: string; type: 'error' | 'warning' | 'info' }> = {
+  unavailable: { message: 'This test is not currently available. Ask your teacher to publish it.', type: 'warning' },
+  'invalid-link': { message: 'This student link is invalid or has expired.', type: 'error' },
+  'link-error': { message: 'Could not sign in with this link. Please try again.', type: 'error' },
 }
 
 export function NoticeToast() {
@@ -15,8 +17,9 @@ export function NoticeToast() {
   const notice = params.get('notice')
 
   useEffect(() => {
-    if (notice && messages[notice]) {
-      toast.warning(messages[notice], { id: `notice-${notice}` })
+    const entry = notice ? notices[notice] : null
+    if (entry) {
+      toast[entry.type](entry.message, { id: `notice-${notice}` })
       // Clear the query param so refreshing doesn't re-fire the toast
       router.replace(pathname)
     }
