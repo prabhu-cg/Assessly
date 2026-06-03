@@ -19,7 +19,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { QuestionForm } from '@/components/teacher/question-form'
 import { deleteQuestion, reorderQuestions } from '@/app/actions/questions'
 import { updateTestStatus } from '@/app/actions/tests'
-import { Pencil, Trash2, Plus, Share2, X, Eye, GripVertical } from 'lucide-react'
+import { Pencil, Trash2, Plus, Share2, X, Eye, GripVertical, ChevronLeft } from 'lucide-react'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
@@ -271,7 +272,12 @@ export default function QuestionsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4 flex-wrap">
+      <div className="space-y-2">
+        <Link href="/teacher/tests" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
+          <ChevronLeft className="h-3.5 w-3.5" />
+          Back to tests
+        </Link>
+        <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-2xl font-bold">{test?.title ?? 'Questions'}</h1>
@@ -312,6 +318,7 @@ export default function QuestionsPage() {
             <Plus className="h-4 w-4 mr-2" />
             Add Question
           </Button>
+        </div>
         </div>
       </div>
 

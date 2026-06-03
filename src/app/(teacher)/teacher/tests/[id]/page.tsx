@@ -4,8 +4,9 @@ import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Clock, Hash, Users, Share2, BookOpen, ClipboardList } from 'lucide-react'
+import { Clock, Hash, Users, Share2, BookOpen, ClipboardList, ChevronLeft } from 'lucide-react'
 import { EditTestDrawer } from '@/components/teacher/edit-test-drawer'
+import { TestStudents, type EnrolledStudent } from '@/components/teacher/test-students'
 
 interface TestDetailPageProps {
   params: Promise<{ id: string }>
@@ -26,9 +27,18 @@ export default async function TestDetailPage({ params }: TestDetailPageProps) {
 
   if (!test) notFound()
 
-  const [{ data: questions }, { count: submissionCount }] = await Promise.all([
+  const [
+    { data: questions },
+    { count: submissionCount },
+    { data: testAccess },
+    { data: submissions },
+    { data: allStudents },
+  ] = await Promise.all([
     supabase.from('questions').select('id, type, marks').eq('test_id', id).order('order_index'),
     supabase.from('submissions').select('*', { count: 'exact', head: true }).eq('test_id', id),
+    supabase.from('test_access').select('student_id, profiles!test_access_student_id_fkey(id, full_name)').eq('test_id', id),
+    supabase.from('submissions').select('student_id, id, status, obtained_marks, total_marks').eq('test_id', id),
+    supabase.from('profiles').select('id, full_name').eq('created_by', user.id).eq('role', 'student').order('full_name'),
   ])
 
   const totalMarks = questions?.reduce((sum, q) => sum + q.marks, 0) ?? 0
@@ -37,23 +47,46 @@ export default async function TestDetailPage({ params }: TestDetailPageProps) {
     {} as Record<string, number>
   )
 
+  const submissionByStudentId = Object.fromEntries(
+    (submissions ?? []).map(s => [s.student_id, s])
+  )
+  const enrolledStudents: EnrolledStudent[] = (testAccess ?? []).map(ta => {
+    const raw = ta.profiles as unknown
+    const profile = Array.isArray(raw)
+      ? (raw[0] as { id: string; full_name: string } | undefined) ?? null
+      : (raw as { id: string; full_name: string } | null)
+    return {
+      id: profile?.id ?? ta.student_id,
+      full_name: profile?.full_name ?? 'Unknown',
+      submission: submissionByStudentId[ta.student_id] ?? null,
+    }
+  })
+  const enrolledIds = new Set(enrolledStudents.map(s => s.id))
+  const availableStudents = (allStudents ?? []).filter(s => !enrolledIds.has(s.id))
+
   return (
     <div className="space-y-6 max-w-3xl">
-      <div className="flex items-start justify-between gap-4 flex-wrap">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <h1 className="text-2xl font-bold">{test.title}</h1>
-            <Badge variant={test.status === 'published' ? 'success' : test.status === 'archived' ? 'outline' : 'muted'}>
-              {test.status}
-            </Badge>
+      <div className="space-y-2">
+        <Link href="/teacher/tests" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
+          <ChevronLeft className="h-3.5 w-3.5" />
+          Back to tests
+        </Link>
+        <div className="flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <h1 className="text-2xl font-bold">{test.title}</h1>
+              <Badge variant={test.status === 'published' ? 'success' : test.status === 'archived' ? 'outline' : 'muted'}>
+                {test.status}
+              </Badge>
+            </div>
+            {test.description && <p className="text-muted-foreground text-sm">{test.description}</p>}
           </div>
-          {test.description && <p className="text-muted-foreground text-sm">{test.description}</p>}
-        </div>
-        <div className="flex gap-2">
-          <EditTestDrawer test={test as any} />
-          <Button size="sm" render={<Link href={`/teacher/tests/${id}/questions`} />}>
-            <BookOpen className="h-4 w-4 mr-2" />Questions
-          </Button>
+          <div className="flex gap-2">
+            <EditTestDrawer test={test as any} />
+            <Button size="sm" render={<Link href={`/teacher/tests/${id}/questions`} />}>
+              <BookOpen className="h-4 w-4 mr-2" />Questions
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -113,12 +146,13 @@ export default async function TestDetailPage({ params }: TestDetailPageProps) {
         </Card>
       )}
 
-      {(submissionCount ?? 0) > 0 && (
-        <Button variant="outline" render={<Link href={`/teacher/submissions?test=${id}`} />}>
-          <ClipboardList className="h-4 w-4 mr-2" />
-          View Submissions ({submissionCount})
-        </Button>
-      )}
+      <TestStudents
+        testId={id}
+        testStatus={test.status}
+        enrolled={enrolledStudents}
+        available={availableStudents}
+        totalMarks={totalMarks}
+      />
     </div>
   )
 }

@@ -106,6 +106,57 @@ export async function deleteTest(id: string) {
   return { success: true }
 }
 
+export async function assignStudentsToTest(testId: string, studentIds: string[]) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+
+  const { data: test } = await supabase
+    .from('tests')
+    .select('id')
+    .eq('id', testId)
+    .eq('teacher_id', user.id)
+    .single()
+
+  if (!test) return { error: 'Test not found' }
+
+  const rows = studentIds.map(student_id => ({ test_id: testId, student_id }))
+  const { error } = await supabase
+    .from('test_access')
+    .upsert(rows, { ignoreDuplicates: true })
+
+  if (error) return { error: error.message }
+
+  revalidatePath(`/teacher/tests/${testId}`)
+  return { success: true }
+}
+
+export async function removeStudentFromTest(testId: string, studentId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+
+  const { data: test } = await supabase
+    .from('tests')
+    .select('id')
+    .eq('id', testId)
+    .eq('teacher_id', user.id)
+    .single()
+
+  if (!test) return { error: 'Test not found' }
+
+  const { error } = await supabase
+    .from('test_access')
+    .delete()
+    .eq('test_id', testId)
+    .eq('student_id', studentId)
+
+  if (error) return { error: error.message }
+
+  revalidatePath(`/teacher/tests/${testId}`)
+  return { success: true }
+}
+
 export async function joinTest(formData: FormData) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
