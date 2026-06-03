@@ -31,8 +31,8 @@ export default function LoginPage() {
         style={{ backgroundColor: '#ee661d' }}
       >
         {/* Giant watermark logo */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
-          <LogoMark white className="w-[480px] opacity-[0.08]" />
+        <div className="absolute inset-y-0 right-0 translate-x-1/2 pointer-events-none select-none flex items-center">
+          <LogoMark white className="h-full w-auto opacity-[0.15]" />
         </div>
 
         {/* Top — wordmark */}
@@ -45,7 +45,7 @@ export default function LoginPage() {
         <div className="relative max-w-lg">
           <span
             aria-hidden
-            className="block text-white/15 font-serif leading-none select-none -ml-3 mb-0"
+            className="block text-white/15 leading-none select-none -ml-3 mb-0"
             style={{ fontSize: '10rem', lineHeight: 1 }}
           >
             &ldquo;
