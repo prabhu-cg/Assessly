@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { Clock, CheckCircle2, BookOpen, LogIn, ChevronRight, Star } from 'lucide-react'
+import { Clock, CheckCircle2, BookOpen, ChevronRight, Star } from 'lucide-react'
 import { Suspense } from 'react'
 import { NoticeToast } from '@/components/shared/notice-toast'
 
@@ -53,15 +53,9 @@ export default async function StudentDashboard({ searchParams }: StudentDashboar
       <Suspense><NoticeToast /></Suspense>
 
       {/* Greeting */}
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold">Hello, {firstName}! 👋</h1>
-          <p className="text-muted-foreground text-sm mt-1">Ready for your tests today?</p>
-        </div>
-        <Button variant="outline" size="sm" render={<Link href="/student/join" />} className="shrink-0">
-          <LogIn className="h-4 w-4 mr-2" />
-          Join Test
-        </Button>
+      <div>
+        <h1 className="text-2xl font-bold">Hello, {firstName}! 👋</h1>
+        <p className="text-muted-foreground text-sm mt-1">Ready for your tests today?</p>
       </div>
 
       {/* Tabs */}

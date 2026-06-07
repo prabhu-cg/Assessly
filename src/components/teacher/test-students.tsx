@@ -6,7 +6,7 @@ import { assignStudentsToTest, removeStudentFromTest } from '@/app/actions/tests
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { UserPlus, Loader2, X, ClipboardList, CheckCircle2, Clock, CircleMinus, Check } from 'lucide-react'
+import { UserPlus, Loader2, X, ClipboardList, Clock, CircleMinus, Check } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 
@@ -21,6 +21,7 @@ export type EnrolledStudent = {
   id: string
   full_name: string
   submission: Submission | null
+  attemptCount: number
 }
 
 export type AvailableStudent = {
@@ -28,12 +29,18 @@ export type AvailableStudent = {
   full_name: string
 }
 
+export type BlockedStudent = {
+  id: string
+  full_name: string
+  reason: string
+}
+
 interface TestStudentsProps {
   testId: string
   testStatus: string
   enrolled: EnrolledStudent[]
   available: AvailableStudent[]
-  totalMarks: number
+  blocked: BlockedStudent[]
 }
 
 function useDrawer() {
@@ -57,10 +64,9 @@ function useDrawer() {
 }
 
 function statusConfig(submission: Submission | null) {
-  if (!submission) return { label: 'Not started', variant: 'muted' as const, Icon: CircleMinus }
+  if (!submission || submission.status === 'evaluated') return { label: 'Not started', variant: 'muted' as const, Icon: CircleMinus }
   if (submission.status === 'in_progress') return { label: 'In progress', variant: 'outline' as const, Icon: Clock }
-  if (submission.status === 'submitted') return { label: 'Submitted', variant: 'default' as const, Icon: ClipboardList }
-  return { label: 'Evaluated', variant: 'success' as const, Icon: CheckCircle2 }
+  return { label: 'Submitted', variant: 'default' as const, Icon: ClipboardList }
 }
 
 function initials(name: string) {
@@ -78,7 +84,7 @@ const backdropClass = (open: boolean) => cn(
   open ? 'opacity-100' : 'opacity-0',
 )
 
-export function TestStudents({ testId, testStatus, enrolled, available, totalMarks }: TestStudentsProps) {
+export function TestStudents({ testId, testStatus, enrolled, available, blocked }: TestStudentsProps) {
   const isPublished = testStatus === 'published'
   const drawer = useDrawer()
   const [selected, setSelected] = useState<Set<string>>(new Set())
@@ -154,7 +160,7 @@ export function TestStudents({ testId, testStatus, enrolled, available, totalMar
           </div>
         </CardHeader>
 
-        <CardContent className="pt-0 space-y-1">
+        <CardContent className="pt-0">
           {enrolled.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-6">
               {available.length > 0
@@ -162,9 +168,9 @@ export function TestStudents({ testId, testStatus, enrolled, available, totalMar
                 : 'No students enrolled yet. Students can join using the invite code.'}
             </p>
           ) : (
-            enrolled.map(student => {
+            <div className="divide-y divide-border">
+            {enrolled.map(student => {
               const { label, variant, Icon } = statusConfig(student.submission)
-              const isEvaluated = student.submission?.status === 'evaluated'
               const isSubmitted = student.submission?.status === 'submitted'
               const isRemoving = removingId === student.id
 
@@ -176,13 +182,13 @@ export function TestStudents({ testId, testStatus, enrolled, available, totalMar
 
                   <p className="flex-1 min-w-0 text-sm font-medium truncate">{student.full_name}</p>
 
-                  <div className="flex items-center gap-2 shrink-0">
-                    {isEvaluated && (
-                      <span className="text-sm font-semibold tabular-nums">
-                        {student.submission!.obtained_marks ?? 0}/{totalMarks}
-                      </span>
-                    )}
+                  {student.attemptCount > 1 && (
+                    <span className="text-xs text-muted-foreground font-medium shrink-0 tabular-nums">
+                      {student.attemptCount} attempts
+                    </span>
+                  )}
 
+                  <div className="flex items-center gap-2 shrink-0">
                     <Badge variant={variant} className="gap-1">
                       <Icon className="h-3 w-3" />
                       {label}
@@ -196,16 +202,6 @@ export function TestStudents({ testId, testStatus, enrolled, available, totalMar
                         render={<Link href={`/teacher/tests/${testId}/submissions/${student.submission!.id}`} />}
                       >
                         Evaluate
-                      </Button>
-                    )}
-                    {isEvaluated && (
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="h-7 text-xs"
-                        render={<Link href={`/teacher/tests/${testId}/submissions/${student.submission!.id}`} />}
-                      >
-                        View
                       </Button>
                     )}
 
@@ -222,7 +218,8 @@ export function TestStudents({ testId, testStatus, enrolled, available, totalMar
                   </div>
                 </div>
               )
-            })
+            })}
+            </div>
           )}
         </CardContent>
       </Card>
@@ -237,6 +234,7 @@ export function TestStudents({ testId, testStatus, enrolled, available, totalMar
                 <h2 className="text-base font-semibold">Assign Students</h2>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   {available.length} student{available.length !== 1 ? 's' : ''} available
+                  {blocked.length > 0 && `, ${blocked.length} unavailable`}
                 </p>
               </div>
               <button
@@ -293,6 +291,26 @@ export function TestStudents({ testId, testStatus, enrolled, available, totalMar
                   </button>
                 )
               })}
+
+              {blocked.length > 0 && (
+                <>
+                  <div className="px-6 py-2 bg-muted/30 border-y border-border">
+                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Unavailable</span>
+                  </div>
+                  {blocked.map(student => (
+                    <div key={student.id} className="flex items-center gap-3 px-6 py-3 opacity-50">
+                      <div className="h-4 w-4 rounded border-2 border-border shrink-0" />
+                      <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center shrink-0">
+                        <span className="text-xs font-semibold text-muted-foreground">{initials(student.full_name)}</span>
+                      </div>
+                      <div className="text-left">
+                        <p className="text-sm font-medium">{student.full_name}</p>
+                        <p className="text-xs text-muted-foreground">{student.reason}</p>
+                      </div>
+                    </div>
+                  ))}
+                </>
+              )}
             </div>
 
             <div className="px-6 py-4 border-t border-border shrink-0">

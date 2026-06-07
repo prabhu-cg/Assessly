@@ -118,6 +118,28 @@ The above measures cover browser-based cheating on a single device. They do not 
 
 ---
 
+## Billing & Payments *(planned — not yet built)*
+
+> Full design in [BILLING.md](./BILLING.md)
+
+### For Teachers
+- Set a recurring fee per student (weekly or monthly)
+- Dashboard shows active subscribers, overdue students, and revenue summary
+- Manually mark students as exempt (free access)
+- Send payment invites to students
+- Link to Stripe dashboard for full payment history
+
+### Access Control
+- Students with an active or exempt subscription can take tests normally
+- Students with a lapsed, past-due, or unconfigured subscription are blocked at the test instructions screen with a clear message
+
+### Notifications
+- Stripe sends automated receipts and payment failure emails to students
+- Teacher is notified (email + in-app) when a student goes past due
+- Students receive a reminder 3 days before their subscription renews
+
+---
+
 ## Technical
 
 | Layer | Technology |

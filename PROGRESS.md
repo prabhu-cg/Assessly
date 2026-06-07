@@ -82,7 +82,7 @@ src/
 | `profiles` | Extends auth.users — stores full_name, role, created_by |
 | `tests` | Test metadata — title, duration, invite_code, status |
 | `questions` | Questions per test — MCQ/short_answer/long_answer |
-| `submissions` | One per student per test — tracks status + scores |
+| `submissions` | Multiple attempts per student per test — tracks status + scores |
 | `answers` | One per question per submission — autosaved |
 | `test_access` | Which students can access which tests (invite code gated) |
 
@@ -180,6 +180,27 @@ Since students are created via the app, the first teacher must be set up manuall
 - [ ] Push repo to GitHub
 - [ ] Connect to Vercel (import repo → set 3 env vars → deploy)
 - [ ] Custom domain (optional)
+
+### Phase 6 — Billing & Payments
+> Full design in [BILLING.md](./BILLING.md)
+
+#### Phase 6A — Manual tracking (no Stripe)
+- [ ] `student_billing` table (status: active / past_due / exempt / none)
+- [ ] Payment status badges on Students page
+- [ ] Teacher can toggle billing status per student
+- [ ] Access gate on test instructions page — block non-active students
+
+#### Phase 6B — Stripe integration
+- [ ] `teacher_billing_config` table + Stripe plan creation
+- [ ] Stripe Customer + Subscription per student
+- [ ] Webhook handler to sync status on payment events (`customer.subscription.updated`, `invoice.payment_failed`, etc.)
+- [ ] Billing settings page (`/teacher/billing`)
+- [ ] "Invite to pay" flow — Stripe payment link or hosted Checkout
+
+#### Phase 6C — Billing notifications
+- [ ] Vercel Cron: renewal reminder email to student 3 days before `current_period_end`
+- [ ] Webhook-triggered teacher email when student goes `past_due`
+- [ ] In-app dashboard banner for overdue students
 
 ---
 

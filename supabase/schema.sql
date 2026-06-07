@@ -93,7 +93,7 @@ create index questions_test_id_idx on public.questions(test_id, order_index);
 
 -- ============================================================
 -- SUBMISSIONS
--- One submission per student per test
+-- Multiple submissions (attempts) per student per test are allowed
 -- ============================================================
 create table public.submissions (
   id               uuid primary key default gen_random_uuid(),
@@ -106,13 +106,13 @@ create table public.submissions (
   obtained_marks   integer,
   focus_violations integer not null default 0,
   session_token    uuid,
-  created_at       timestamptz not null default now(),
-  unique (test_id, student_id)
+  created_at       timestamptz not null default now()
 );
 
 -- Migrations (run if table already exists):
 -- alter table public.submissions add column if not exists focus_violations integer not null default 0;
 -- alter table public.submissions add column if not exists session_token uuid;
+-- alter table public.submissions drop constraint if exists submissions_test_id_student_id_key;
 
 -- ============================================================
 -- ANSWERS

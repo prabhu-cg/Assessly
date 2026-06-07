@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { logout } from '@/app/actions/auth'
 import {
-  LayoutDashboard, FileText, Users, ClipboardList, LogIn, LogOut, ChevronDown,
+  LayoutDashboard, FileText, Users, ClipboardList, LogOut, ChevronDown,
 } from 'lucide-react'
 import type { Profile } from '@/types/database'
 import { LogoMark } from '@/components/shared/logo'
@@ -20,7 +20,6 @@ const teacherTabs = [
 
 const studentTabs = [
   { href: '/student/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/student/join',      label: 'Join Test',  icon: LogIn },
 ]
 
 interface TopNavProps {

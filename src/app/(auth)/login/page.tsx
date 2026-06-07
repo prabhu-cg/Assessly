@@ -1,16 +1,17 @@
 'use client'
 
-import { useTransition } from 'react'
+import { useTransition, useState } from 'react'
 import { login } from '@/app/actions/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Loader2, Mail, Lock } from 'lucide-react'
+import { Loader2, Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import { LogoMark } from '@/components/shared/logo'
 import { toast } from 'sonner'
 
 export default function LoginPage() {
   const [isPending, startTransition] = useTransition()
+  const [showPassword, setShowPassword] = useState(false)
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -108,11 +109,25 @@ export default function LoginPage() {
                   <Input
                     id="password"
                     name="password"
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     autoComplete="current-password"
                     required
-                    className="pl-8"
+                    className="pl-8 pr-9"
                   />
+                  <span className="absolute right-2.5 top-1/2 -translate-y-1/2 group">
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(v => !v)}
+                      className="text-muted-foreground hover:text-foreground transition-colors"
+                      tabIndex={-1}
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    >
+                      {showPassword ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                    </button>
+                    <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 rounded px-2 py-1 text-xs font-medium text-white bg-foreground whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+                      {showPassword ? 'Hide password' : 'Show password'}
+                    </span>
+                  </span>
                 </div>
               </div>
 

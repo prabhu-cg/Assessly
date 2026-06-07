@@ -4,9 +4,9 @@ import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Clock, Hash, Users, Share2, BookOpen, ClipboardList, ChevronLeft } from 'lucide-react'
+import { Clock, Hash, Users, BookOpen, ClipboardList, ChevronLeft } from 'lucide-react'
 import { EditTestDrawer } from '@/components/teacher/edit-test-drawer'
-import { TestStudents, type EnrolledStudent } from '@/components/teacher/test-students'
+import { TestStudents, type EnrolledStudent, type BlockedStudent } from '@/components/teacher/test-students'
 
 interface TestDetailPageProps {
   params: Promise<{ id: string }>
@@ -37,32 +37,64 @@ export default async function TestDetailPage({ params }: TestDetailPageProps) {
     supabase.from('questions').select('id, type, marks').eq('test_id', id).order('order_index'),
     supabase.from('submissions').select('*', { count: 'exact', head: true }).eq('test_id', id),
     supabase.from('test_access').select('student_id, profiles!test_access_student_id_fkey(id, full_name)').eq('test_id', id),
-    supabase.from('submissions').select('student_id, id, status, obtained_marks, total_marks').eq('test_id', id),
+    supabase.from('submissions').select('student_id, id, status, obtained_marks, total_marks, created_at').eq('test_id', id).order('created_at', { ascending: false }),
     supabase.from('profiles').select('id, full_name').eq('created_by', user.id).eq('role', 'student').order('full_name'),
   ])
 
   const totalMarks = questions?.reduce((sum, q) => sum + q.marks, 0) ?? 0
-  const typeCounts = questions?.reduce(
-    (acc, q) => ({ ...acc, [q.type]: (acc[q.type] ?? 0) + 1 }),
-    {} as Record<string, number>
+
+  // Group submissions by student, newest first (query is ordered by created_at desc)
+  const submissionsByStudent = (submissions ?? []).reduce(
+    (acc, s) => {
+      acc[s.student_id] = acc[s.student_id] ?? []
+      acc[s.student_id].push(s)
+      return acc
+    },
+    {} as Record<string, NonNullable<typeof submissions>>
   )
 
-  const submissionByStudentId = Object.fromEntries(
-    (submissions ?? []).map(s => [s.student_id, s])
-  )
   const enrolledStudents: EnrolledStudent[] = (testAccess ?? []).map(ta => {
     const raw = ta.profiles as unknown
     const profile = Array.isArray(raw)
       ? (raw[0] as { id: string; full_name: string } | undefined) ?? null
       : (raw as { id: string; full_name: string } | null)
+    const studentId = profile?.id ?? ta.student_id
+    const subs = submissionsByStudent[studentId] ?? []
     return {
-      id: profile?.id ?? ta.student_id,
+      id: studentId,
       full_name: profile?.full_name ?? 'Unknown',
-      submission: submissionByStudentId[ta.student_id] ?? null,
+      submission: subs[0] ?? null,
+      attemptCount: subs.length,
     }
   })
+
   const enrolledIds = new Set(enrolledStudents.map(s => s.id))
-  const availableStudents = (allStudents ?? []).filter(s => !enrolledIds.has(s.id))
+
+  // Students with an active (non-evaluated) submission who aren't currently enrolled
+  // e.g. removed from test_access while a submission was still in progress
+  const activeSubmissionIds = new Set(
+    (submissions ?? [])
+      .filter(s => (s.status === 'in_progress' || s.status === 'submitted') && !enrolledIds.has(s.student_id))
+      .map(s => s.student_id)
+  )
+
+  const studentById = Object.fromEntries((allStudents ?? []).map(s => [s.id, s]))
+
+  const blockedStudents: BlockedStudent[] = [...activeSubmissionIds]
+    .flatMap(sid => {
+      const student = studentById[sid]
+      if (!student) return []
+      const latestSub = submissionsByStudent[sid]?.[0]
+      return [{
+        id: student.id,
+        full_name: student.full_name,
+        reason: latestSub?.status === 'in_progress' ? 'Currently in progress' : 'Awaiting evaluation',
+      }]
+    })
+
+  const availableStudents = (allStudents ?? []).filter(
+    s => !enrolledIds.has(s.id) && !activeSubmissionIds.has(s.id)
+  )
 
   return (
     <div className="space-y-6 max-w-3xl">
@@ -73,11 +105,16 @@ export default async function TestDetailPage({ params }: TestDetailPageProps) {
         </Link>
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div>
-            <div className="flex items-center gap-2 mb-1">
+            <div className="flex items-center gap-2 mb-1 flex-wrap">
               <h1 className="text-2xl font-bold">{test.title}</h1>
               <Badge variant={test.status === 'published' ? 'success' : test.status === 'archived' ? 'outline' : 'muted'}>
                 {test.status}
               </Badge>
+              {test.status === 'published' && (
+                <span className="font-mono text-xs font-semibold text-muted-foreground bg-muted border border-border px-2 py-0.5 rounded tracking-widest">
+                  {test.invite_code}
+                </span>
+              )}
             </div>
             {test.description && <p className="text-muted-foreground text-sm">{test.description}</p>}
           </div>
@@ -109,19 +146,6 @@ export default async function TestDetailPage({ params }: TestDetailPageProps) {
         ))}
       </div>
 
-      {test.status === 'published' && (
-        <Card className="border-primary/30 bg-primary/5">
-          <CardContent className="p-4 flex items-center gap-3">
-            <Share2 className="h-5 w-5 text-primary shrink-0" />
-            <div className="flex-1">
-              <p className="text-sm font-medium">Invite Code</p>
-              <p className="text-xs text-muted-foreground">Share with students to access this test</p>
-            </div>
-            <code className="text-2xl font-bold font-mono tracking-widest text-primary">{test.invite_code}</code>
-          </CardContent>
-        </Card>
-      )}
-
       {test.instructions && (
         <Card>
           <CardHeader className="pb-3">
@@ -133,25 +157,12 @@ export default async function TestDetailPage({ params }: TestDetailPageProps) {
         </Card>
       )}
 
-      {typeCounts && Object.keys(typeCounts).length > 0 && (
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Question Breakdown</CardTitle>
-          </CardHeader>
-          <CardContent className="flex gap-4">
-            {typeCounts.mcq && <div className="text-sm"><span className="font-semibold">{typeCounts.mcq}</span><span className="text-muted-foreground ml-1">MCQ</span></div>}
-            {typeCounts.short_answer && <div className="text-sm"><span className="font-semibold">{typeCounts.short_answer}</span><span className="text-muted-foreground ml-1">Short answer</span></div>}
-            {typeCounts.long_answer && <div className="text-sm"><span className="font-semibold">{typeCounts.long_answer}</span><span className="text-muted-foreground ml-1">Essay</span></div>}
-          </CardContent>
-        </Card>
-      )}
-
       <TestStudents
         testId={id}
         testStatus={test.status}
         enrolled={enrolledStudents}
         available={availableStudents}
-        totalMarks={totalMarks}
+        blocked={blockedStudents}
       />
     </div>
   )

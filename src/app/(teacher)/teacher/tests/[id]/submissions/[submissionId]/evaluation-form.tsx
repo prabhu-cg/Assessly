@@ -12,7 +12,8 @@ import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Progress } from '@/components/ui/progress'
 import { Separator } from '@/components/ui/separator'
-import { AlertTriangle, CheckCircle2, Loader2, Save } from 'lucide-react'
+import { AlertTriangle, CheckCircle2, ChevronLeft, Loader2, Save } from 'lucide-react'
+import Link from 'next/link'
 
 interface Props {
   testId: string
@@ -99,7 +100,11 @@ export function EvaluationForm({ testId, submissionId, initialSubmission, initia
 
   return (
     <div className="space-y-6 max-w-3xl">
-      <div>
+      <div className="space-y-2">
+        <Link href="/teacher/submissions" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
+          <ChevronLeft className="h-3.5 w-3.5" />
+          Back to submissions
+        </Link>
         <h1 className="text-xl font-bold">Evaluate Submission</h1>
         <p className="text-muted-foreground text-sm mt-1">
           {submission.student?.full_name} — {submission.test?.title}
