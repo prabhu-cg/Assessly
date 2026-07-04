@@ -222,7 +222,7 @@ export default function LandingPage() {
               <div className="rounded-xl bg-background p-4 sm:p-6 space-y-6 pointer-events-none select-none">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-xl font-bold">Good day, Priya 👋</h3>
+                    <h3 className="text-xl font-bold">Good day, Paula 👋</h3>
                     <p className="text-muted-foreground text-sm mt-1">Here&apos;s what&apos;s happening with your tests.</p>
                   </div>
                   <Button size="sm" className="gap-2">
