@@ -12,10 +12,10 @@ export default function StudentLoginPage() {
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-10">
 
         {/* Logo */}
-        <div className="flex items-center gap-3 mb-10">
+        <Link href="/" className="flex items-center gap-3 mb-10">
           <LogoMark className="h-10 w-auto" />
           <span className="text-xl font-bold tracking-tight">Assessly</span>
-        </div>
+        </Link>
 
         {/* Card */}
         <div className="w-full max-w-sm rounded-2xl border border-border bg-white p-8 text-center shadow-sm">

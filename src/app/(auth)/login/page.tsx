@@ -1,6 +1,7 @@
 'use client'
 
 import { useTransition, useState } from 'react'
+import Link from 'next/link'
 import { login } from '@/app/actions/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -72,10 +73,10 @@ export default function LoginPage() {
         </div>
 
         {/* Top — wordmark */}
-        <div className="relative flex items-center gap-3">
+        <Link href="/" className="relative flex items-center gap-3">
           <LogoMark white className="h-8 w-auto" />
           <span className="text-white text-xl font-bold tracking-tight">Assessly</span>
-        </div>
+        </Link>
 
         {/* Centre — quote */}
         <div className="relative max-w-lg">
@@ -103,13 +104,13 @@ export default function LoginPage() {
         <div className="w-full max-w-sm">
 
           {/* Logo + tagline */}
-          <div className="flex flex-col items-center mb-6 sm:mb-8">
+          <Link href="/" className="flex flex-col items-center mb-6 sm:mb-8">
             <LogoMark className="h-10 sm:h-14 w-auto mb-2 sm:mb-3" />
             <h1 className="text-2xl font-bold tracking-tight">Assessly</h1>
             <p className="text-muted-foreground text-sm mt-1.5">
               Assess smarter. Teach better.
             </p>
-          </div>
+          </Link>
 
           {/* Form card */}
           <div className="rounded-2xl border border-border bg-white p-7">
