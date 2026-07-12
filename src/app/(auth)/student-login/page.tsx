@@ -24,7 +24,7 @@ export default function StudentLoginPage() {
             className="h-16 w-16 rounded-2xl flex items-center justify-center mx-auto mb-5"
             style={{ backgroundColor: '#fff0e6' }}
           >
-            <Link2 className="h-8 w-8" style={{ color: '#ee661d' }} />
+            <Link2 className="h-8 w-8" style={{ color: '#C74504' }} />
           </div>
 
           <h1 className="text-2xl font-bold mb-2">Use your link!</h1>
@@ -44,7 +44,7 @@ export default function StudentLoginPage() {
               <div key={num} className="flex items-center gap-3">
                 <span
                   className="h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0"
-                  style={{ backgroundColor: '#ee661d' }}
+                  style={{ backgroundColor: '#C74504' }}
                 >
                   {num}
                 </span>

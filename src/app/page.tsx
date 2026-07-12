@@ -168,7 +168,7 @@ export default function LandingPage() {
           <div className="relative max-w-3xl mx-auto">
             <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight">
               Create, share, and grade exams —{' '}
-              <span style={{ color: '#ee661d' }}>without the busywork.</span>
+              <span style={{ color: '#C74504' }}>without the busywork.</span>
             </h1>
             <p className="mt-5 text-lg text-muted-foreground max-w-xl mx-auto">
               Assessly is a modern examination platform for teachers and students. Build a test,
@@ -192,7 +192,7 @@ export default function LandingPage() {
           <div className="relative max-w-3xl mx-auto mt-16 grid grid-cols-2 sm:grid-cols-4 gap-6">
             {STATS.map(stat => (
               <div key={stat.label}>
-                <div className="text-2xl sm:text-3xl font-extrabold" style={{ color: '#ee661d' }}>
+                <div className="text-2xl sm:text-3xl font-extrabold" style={{ color: '#C74504' }}>
                   {stat.value}
                 </div>
                 <div className="text-sm text-muted-foreground mt-1">{stat.label}</div>
@@ -314,7 +314,7 @@ export default function LandingPage() {
                     className="h-11 w-11 rounded-xl flex items-center justify-center mb-4"
                     style={{ backgroundColor: '#fff0e6' }}
                   >
-                    <feature.icon className="h-5.5 w-5.5" style={{ color: '#ee661d' }} />
+                    <feature.icon className="h-5.5 w-5.5" style={{ color: '#C74504' }} />
                   </div>
                   <h3 className="font-semibold">{feature.title}</h3>
                   <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">
@@ -341,7 +341,7 @@ export default function LandingPage() {
                   <div className="flex items-center gap-3 mb-4">
                     <span
                       className="h-8 w-8 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0"
-                      style={{ backgroundColor: '#ee661d' }}
+                      style={{ backgroundColor: '#C74504' }}
                     >
                       {step.num}
                     </span>

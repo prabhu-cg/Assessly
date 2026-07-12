@@ -60,11 +60,11 @@
   --popover-foreground: #1c1917;
 
   /* Primary — orange brand color */
-  --primary: #ee661d;
+  --primary: #C74504;
   --primary-foreground: #ffffff;
 
   /* Secondary — warm cream */
-  --secondary: #fff7e3;
+  --secondary: #FFFAEF;
   --secondary-foreground: #1c1917;
 
   /* Muted — warm cream for subtle backgrounds */
@@ -72,7 +72,7 @@
   --muted-foreground: #78716c;
 
   /* Accent — orange */
-  --accent: #ee661d;
+  --accent: #C74504;
   --accent-foreground: #ffffff;
 
   /* Destructive */
@@ -81,10 +81,10 @@
   /* Borders & inputs — warm light */
   --border: #e8ddc8;
   --input: #e8ddc8;
-  --ring: #ee661d;
+  --ring: #C74504;
 
   /* Charts */
-  --chart-1: #ee661d;
+  --chart-1: #C74504;
   --chart-2: #f59e0b;
   --chart-3: #84cc16;
   --chart-4: #06b6d4;
@@ -95,12 +95,12 @@
   /* Sidebar — cream */
   --sidebar: #fff9eb;
   --sidebar-foreground: #1c1917;
-  --sidebar-primary: #ee661d;
+  --sidebar-primary: #C74504;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #fef3c7;
   --sidebar-accent-foreground: #1c1917;
   --sidebar-border: #e8ddc8;
-  --sidebar-ring: #ee661d;
+  --sidebar-ring: #C74504;
 }
 
 .dark {

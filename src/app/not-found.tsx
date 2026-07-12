@@ -42,7 +42,7 @@ export default function NotFound() {
                 <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Mark obtained</p>
                 <p
                   className="text-7xl font-black leading-none tracking-tight"
-                  style={{ color: '#ee661d' }}
+                  style={{ color: '#C74504' }}
                 >
                   404
                 </p>
@@ -52,9 +52,9 @@ export default function NotFound() {
               {/* Grade circle */}
               <div
                 className="h-20 w-20 rounded-full border-4 flex flex-col items-center justify-center shrink-0"
-                style={{ borderColor: '#ee661d' }}
+                style={{ borderColor: '#C74504' }}
               >
-                <span className="text-2xl font-black" style={{ color: '#ee661d' }}>F</span>
+                <span className="text-2xl font-black" style={{ color: '#C74504' }}>F</span>
                 <span className="text-[10px] text-muted-foreground font-medium">Not Found</span>
               </div>
             </div>
@@ -88,7 +88,7 @@ export default function NotFound() {
           <Link
             href="/login"
             className="inline-flex items-center justify-center px-6 py-2.5 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
-            style={{ backgroundColor: '#ee661d' }}
+            style={{ backgroundColor: '#C74504' }}
           >
             Take me home
           </Link>

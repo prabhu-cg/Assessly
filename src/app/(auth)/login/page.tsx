@@ -65,7 +65,7 @@ export default function LoginPage() {
       {/* ── Left panel ── */}
       <div
         className="hidden lg:flex lg:w-[58%] relative flex-col justify-between p-12 overflow-hidden"
-        style={{ backgroundColor: '#ee661d' }}
+        style={{ backgroundColor: '#C74504' }}
       >
         {/* Giant watermark logo */}
         <div className="absolute inset-y-0 right-0 translate-x-1/2 pointer-events-none select-none flex items-center">
