@@ -97,7 +97,7 @@ export default async function TestDetailPage({ params }: TestDetailPageProps) {
   )
 
   return (
-    <div className="space-y-6 max-w-3xl">
+    <div className="space-y-6">
       <div className="space-y-2">
         <Link href="/teacher/tests" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
           <ChevronLeft className="h-3.5 w-3.5" />
