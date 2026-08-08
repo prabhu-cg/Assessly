@@ -5,34 +5,96 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
 } from '@/components/ui/dialog'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { Wordmark } from '@/components/shared/logo'
 
 type FooterModal = 'about' | 'terms' | 'privacy' | null
 
+const TECH_STACK = [
+  { label: 'Frontend', value: 'Next.js (App Router)' },
+  { label: 'Styling', value: 'Tailwind CSS' },
+  { label: 'Language', value: 'TypeScript' },
+  { label: 'Backend', value: 'Supabase (Postgres, Auth)' },
+  { label: 'Forms & validation', value: 'React Hook Form + Zod' },
+  { label: 'Hosting', value: 'Vercel' },
+]
+
+const WHAT_IT_TRACKS = [
+  { label: 'Invite-code access', body: 'an 8-character code is all a student needs to join a test — no self-signup.' },
+  { label: 'Instant MCQ grading', body: 'multiple-choice answers are scored the moment a student submits.' },
+  { label: 'Written-answer review', body: 'short and long answers are graded by the teacher in a dedicated screen.' },
+  { label: 'Role-based access', body: 'row-level security keeps every teacher and student scoped to their own data.' },
+]
+
+const AboutBody = () => (
+  <div className="space-y-4 text-sm leading-relaxed text-muted-foreground">
+    <div>
+      <h3 className="mb-1.5 text-sm font-bold text-foreground">Why Assessly Exists</h3>
+      <p>
+        Running a test with spreadsheets, paper, and a shared drive folder means
+        answer keys go stale, submissions get lost, and grading takes evenings.
+        Assessly puts test creation, invite-based access, and grading in one place,
+        so a teacher can go from a blank test to a graded submission in minutes.
+      </p>
+    </div>
+
+    <div>
+      <h3 className="mb-1.5 text-sm font-bold text-foreground">What It Tracks</h3>
+      <ul className="list-disc space-y-1 pl-5">
+        {WHAT_IT_TRACKS.map(item => (
+          <li key={item.label}>
+            <span className="font-medium text-foreground">{item.label}</span> — {item.body}
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div>
+      <h3 className="mb-1.5 text-sm font-bold text-foreground">Tech Stack</h3>
+      <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+        {TECH_STACK.map(item => (
+          <div key={item.label}>
+            <p className="text-xs uppercase tracking-wide text-muted-foreground/70">{item.label}</p>
+            <p className="text-foreground">{item.value}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div>
+      <h3 className="mb-1.5 text-sm font-bold text-foreground">Who Built This</h3>
+      <p>
+        Assessly is an independent side project by{' '}
+        <a href="mailto:prabhu_cg@proton.me" className="text-primary hover:underline">
+          Prabhu Raja
+        </a>
+        , a product designer with 15+ years across enterprise and B2B software — currently
+        VP of User Experience at BNY, previously at Thomson Reuters HighQ, Sweepr, and
+        Marston Holdings. Day to day, that work centres on design systems, accessibility,
+        and turning ambiguous, high-stakes workflows into clear, systemised outcomes.
+      </p>
+      <p className="mt-3">
+        Assessly applies that same discipline to the classroom: a small, focused tool for
+        creating tests, granting access, and grading work — without spreadsheets or paper
+        trails.
+      </p>
+      <p className="mt-3">
+        Feedback, feature requests, or just want to say hello —{' '}
+        <a href="mailto:prabhu_cg@proton.me" className="text-primary hover:underline">
+          prabhu_cg@proton.me
+        </a>
+        .
+      </p>
+    </div>
+  </div>
+)
+
 const MODAL_CONTENT: Record<
   Exclude<FooterModal, null>,
-  { title: string; description: string; body: React.ReactNode }
+  { title: string; description?: string; body: React.ReactNode }
 > = {
   about: {
     title: 'About Assessly',
-    description: 'A modern examination platform for teachers and students.',
-    body: (
-      <>
-        <p>
-          Assessly helps teachers build tests, share them with a simple invite code,
-          and grade student work without spreadsheets or paper. Multiple-choice
-          questions are graded the moment a student submits, and short and long
-          answers get a purpose-built review screen.
-        </p>
-        <p>
-          Students don&apos;t need to create an account up front — a teacher creates
-          it, and an invite code is all it takes to join a test.
-        </p>
-        <p>
-          Assessly is under active development. Questions or feedback? Reach out to
-          your administrator or the team that set up your instance.
-        </p>
-      </>
-    ),
+    body: <AboutBody />,
   },
   terms: {
     title: 'Terms of Service',
@@ -110,32 +172,35 @@ export function Footer() {
   const active = modal ? MODAL_CONTENT[modal] : null
 
   return (
-    <footer className="shrink-0 border-t border-border/50 py-2 px-6">
-      <div className="max-w-screen-xl mx-auto flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-        <span>© {new Date().getFullYear()} Assessly. All rights reserved.</span>
-        <span className="text-border">·</span>
-        <button onClick={() => setModal('about')} className="hover:text-foreground hover:underline underline-offset-2">
-          About
-        </button>
-        <span className="text-border">·</span>
-        <button onClick={() => setModal('terms')} className="hover:text-foreground hover:underline underline-offset-2">
-          Terms
-        </button>
-        <span className="text-border">·</span>
-        <button onClick={() => setModal('privacy')} className="hover:text-foreground hover:underline underline-offset-2">
-          Privacy
-        </button>
-        <span className="text-border">·</span>
-        <span className="font-mono">v0.1.0</span>
+    <footer className="shrink-0 border-t border-border/50 bg-background">
+      <div className="max-w-screen-xl mx-auto flex flex-col items-center gap-4 px-6 py-8 sm:flex-row sm:justify-between">
+        <Wordmark />
+
+        <p className="text-sm text-muted-foreground">
+          © {new Date().getFullYear()} Assessly. Assess smarter. Teach better.
+        </p>
+
+        <div className="flex items-center gap-5">
+          <button onClick={() => setModal('about')} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+            About
+          </button>
+          <button onClick={() => setModal('terms')} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+            Terms
+          </button>
+          <button onClick={() => setModal('privacy')} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+            Privacy
+          </button>
+          <span className="font-mono text-xs text-muted-foreground/70">v0.1.0</span>
+        </div>
       </div>
 
       <Dialog open={modal !== null} onOpenChange={open => !open && setModal(null)}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent className={modal === 'about' ? 'sm:max-w-2xl' : 'sm:max-w-lg'}>
           {active && (
             <>
               <DialogHeader>
                 <DialogTitle>{active.title}</DialogTitle>
-                <DialogDescription>{active.description}</DialogDescription>
+                {active.description && <DialogDescription>{active.description}</DialogDescription>}
               </DialogHeader>
               <ScrollArea className="max-h-[80vh] pr-3">
                 <div className="space-y-3 text-sm text-muted-foreground leading-relaxed">

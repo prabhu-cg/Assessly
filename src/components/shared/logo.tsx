@@ -1,3 +1,19 @@
+import { cn } from '@/lib/utils'
+
+export function Wordmark({ className }: { className?: string }) {
+  return (
+    <div className={cn('flex items-center gap-2.5', className)}>
+      <LogoMark className="h-7 w-auto" />
+      <div className="flex flex-col">
+        <span className="text-lg font-bold tracking-tight leading-none">Assessly</span>
+        <span className="mt-0.5 text-[11px] font-semibold text-muted-foreground">
+          Assess smarter. Teach better.
+        </span>
+      </div>
+    </div>
+  )
+}
+
 export function LogoMark({
   white = false,
   className,

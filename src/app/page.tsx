@@ -15,7 +15,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { LogoMark } from '@/components/shared/logo'
+import { LogoMark, Wordmark } from '@/components/shared/logo'
 import { Footer } from '@/components/shared/footer'
 import { FaqAccordion } from '@/components/shared/faq-accordion'
 
@@ -140,12 +140,9 @@ export default function LandingPage() {
   return (
     <div className="min-h-svh flex flex-col">
       {/* ── Nav ── */}
-      <header className="border-b border-border/60">
+      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="max-w-screen-xl mx-auto flex items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-2.5">
-            <LogoMark className="h-7 w-auto" />
-            <span className="text-lg font-bold tracking-tight">Assessly</span>
-          </div>
+          <Wordmark />
           <nav className="flex items-center gap-2">
             <Button variant="ghost" render={<Link href="/student-login" />}>
               Student portal
@@ -158,52 +155,54 @@ export default function LandingPage() {
       <main className="flex-1">
         {/* ── Hero ── */}
         <section
-          className="relative overflow-hidden px-6 py-20 sm:py-28 text-center"
+          className="relative overflow-hidden py-20 sm:py-28 text-center"
           style={{ backgroundColor: '#FFF9EB' }}
         >
           <div className="absolute inset-x-0 top-0 flex justify-center pointer-events-none select-none">
             <LogoMark className="h-[28rem] w-auto opacity-[0.06] -translate-y-1/3" />
           </div>
 
-          <div className="relative max-w-3xl mx-auto">
-            <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight">
-              Create, share, and grade exams —{' '}
-              <span style={{ color: '#C74504' }}>without the busywork.</span>
-            </h1>
-            <p className="mt-5 text-lg text-muted-foreground max-w-xl mx-auto">
-              Assessly is a modern examination platform for teachers and students. Build a test,
-              share an invite code, and let auto-grading handle the rest.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Button size="lg" render={<Link href="/login" />}>
-                Teacher sign in
-                <ArrowRight />
-              </Button>
-              <Button size="lg" variant="outline" render={<Link href="/student-login" />}>
-                I'm a student
-              </Button>
-            </div>
-            <p className="mt-4 text-sm text-muted-foreground">
-              No self-signup needed — teachers create accounts, students join by invite code.
-            </p>
-          </div>
-
-          {/* Stats */}
-          <div className="relative max-w-3xl mx-auto mt-16 grid grid-cols-2 sm:grid-cols-4 gap-6">
-            {STATS.map(stat => (
-              <div key={stat.label}>
-                <div className="text-2xl sm:text-3xl font-extrabold" style={{ color: '#C74504' }}>
-                  {stat.value}
-                </div>
-                <div className="text-sm text-muted-foreground mt-1">{stat.label}</div>
+          <div className="relative max-w-screen-xl mx-auto px-6">
+            <div className="max-w-3xl mx-auto">
+              <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight">
+                Create, share, and grade exams —{' '}
+                <span style={{ color: '#C74504' }}>without the busywork.</span>
+              </h1>
+              <p className="mt-5 text-lg text-muted-foreground max-w-xl mx-auto">
+                Assessly is a modern examination platform for teachers and students. Build a test,
+                share an invite code, and let auto-grading handle the rest.
+              </p>
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+                <Button size="lg" render={<Link href="/login" />}>
+                  Teacher sign in
+                  <ArrowRight />
+                </Button>
+                <Button size="lg" variant="outline" render={<Link href="/student-login" />}>
+                  I'm a student
+                </Button>
               </div>
-            ))}
+              <p className="mt-4 text-sm text-muted-foreground">
+                No self-signup needed — teachers create accounts, students join by invite code.
+              </p>
+            </div>
+
+            {/* Stats */}
+            <div className="max-w-3xl mx-auto mt-16 grid grid-cols-2 sm:grid-cols-4 gap-6">
+              {STATS.map(stat => (
+                <div key={stat.label}>
+                  <div className="text-2xl sm:text-3xl font-extrabold" style={{ color: '#C74504' }}>
+                    {stat.value}
+                  </div>
+                  <div className="text-sm text-muted-foreground mt-1">{stat.label}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
         {/* ── Product preview ── */}
-        <section className="px-6 py-20">
-          <div className="max-w-screen-xl mx-auto">
+        <section className="py-20">
+          <div className="max-w-screen-xl mx-auto px-6">
             <div className="text-center max-w-xl mx-auto mb-14">
               <h2 className="text-3xl font-bold tracking-tight">A peek at your dashboard</h2>
               <p className="mt-3 text-muted-foreground">
@@ -299,8 +298,8 @@ export default function LandingPage() {
         </section>
 
         {/* ── Features ── */}
-        <section className="px-6 py-20">
-          <div className="max-w-screen-xl mx-auto">
+        <section className="py-20">
+          <div className="max-w-screen-xl mx-auto px-6">
             <div className="text-center max-w-xl mx-auto mb-14">
               <h2 className="text-3xl font-bold tracking-tight">What Assessly does</h2>
               <p className="mt-3 text-muted-foreground">
@@ -327,8 +326,8 @@ export default function LandingPage() {
         </section>
 
         {/* ── How it works ── */}
-        <section className="px-6 py-20" style={{ backgroundColor: '#FFF9EB' }}>
-          <div className="max-w-screen-xl mx-auto">
+        <section className="py-20" style={{ backgroundColor: '#FFF9EB' }}>
+          <div className="max-w-screen-xl mx-auto px-6">
             <div className="text-center max-w-xl mx-auto mb-14">
               <h2 className="text-3xl font-bold tracking-tight">How it works</h2>
               <p className="mt-3 text-muted-foreground">
@@ -358,33 +357,44 @@ export default function LandingPage() {
         </section>
 
         {/* ── FAQ ── */}
-        <section className="px-6 py-20" style={{ backgroundColor: '#FFF9EB' }}>
-          <div className="max-w-2xl mx-auto">
-            <div className="text-center mb-14">
-              <h2 className="text-3xl font-bold tracking-tight">Frequently asked questions</h2>
-              <p className="mt-3 text-muted-foreground">
-                Everything else you might be wondering about.
-              </p>
+        <section className="py-20" style={{ backgroundColor: '#FFF9EB' }}>
+          <div className="max-w-screen-xl mx-auto px-6">
+            <div className="max-w-2xl mx-auto">
+              <div className="text-center mb-14">
+                <h2 className="text-3xl font-bold tracking-tight">Frequently asked questions</h2>
+                <p className="mt-3 text-muted-foreground">
+                  Everything else you might be wondering about.
+                </p>
+              </div>
+              <FaqAccordion items={FAQS} />
             </div>
-            <FaqAccordion items={FAQS} />
           </div>
         </section>
 
         {/* ── Final CTA ── */}
-        <section className="px-6 py-20 text-center">
-          <div className="max-w-xl mx-auto">
-            <h2 className="text-3xl font-bold tracking-tight">Ready to run your next test?</h2>
-            <p className="mt-3 text-muted-foreground">
-              Sign in to your teacher dashboard, or ask your teacher for an invite code.
-            </p>
-            <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-              <Button size="lg" render={<Link href="/login" />}>
-                Teacher sign in
-                <ArrowRight />
-              </Button>
-              <Button size="lg" variant="outline" render={<Link href="/student-login" />}>
-                I'm a student
-              </Button>
+        <section className="bg-primary py-20">
+          <div className="max-w-screen-xl mx-auto px-6">
+            <div className="max-w-3xl mx-auto text-center">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-primary-foreground">
+                Ready to run your next test?
+              </h2>
+              <p className="mt-4 text-lg text-primary-foreground/80">
+                Sign in to your teacher dashboard, or ask your teacher for an invite code.
+              </p>
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+                <Button size="lg" variant="secondary" render={<Link href="/login" />}>
+                  Teacher sign in
+                  <ArrowRight />
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
+                  render={<Link href="/student-login" />}
+                >
+                  I'm a student
+                </Button>
+              </div>
             </div>
           </div>
         </section>
