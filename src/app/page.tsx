@@ -7,9 +7,6 @@ import {
   BarChart3,
   ShieldCheck,
   ArrowRight,
-  PenLine,
-  Share2,
-  GraduationCap,
   Users,
   Plus,
 } from 'lucide-react'
@@ -62,25 +59,21 @@ const FEATURES = [
 const STEPS = [
   {
     num: '1',
-    icon: PenLine,
     title: 'Create a test',
     description: 'Add questions, set correct answers, and organize everything from your teacher dashboard.',
   },
   {
     num: '2',
-    icon: Share2,
     title: 'Share the invite code',
     description: 'Hand students an 8-character code — that\'s all they need to find and open the test.',
   },
   {
     num: '3',
-    icon: GraduationCap,
     title: 'Students take it',
     description: 'Students join with the code, work through the test, and submit when they\'re done.',
   },
   {
     num: '4',
-    icon: CheckCircle2,
     title: 'Review & grade',
     description: 'MCQs are graded instantly. Grade written answers yourself, then release results.',
   },
@@ -344,7 +337,6 @@ export default function LandingPage() {
                     >
                       {step.num}
                     </span>
-                    <step.icon className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <h3 className="font-semibold">{step.title}</h3>
                   <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">

@@ -5,9 +5,11 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
 } from '@/components/ui/dialog'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Wordmark } from '@/components/shared/logo'
+import { Wordmark, LogoMark } from '@/components/shared/logo'
 
 type FooterModal = 'about' | 'terms' | 'privacy' | null
+
+const APP_VERSION = 'v0.1.0 — Phase 1 MVP'
 
 const TECH_STACK = [
   { label: 'Frontend', value: 'Next.js (App Router)' },
@@ -190,20 +192,42 @@ export function Footer() {
           <button onClick={() => setModal('privacy')} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             Privacy
           </button>
-          <span className="font-mono text-xs text-muted-foreground/70">v0.1.0</span>
         </div>
       </div>
 
-      <Dialog open={modal !== null} onOpenChange={open => !open && setModal(null)}>
-        <DialogContent className={modal === 'about' ? 'sm:max-w-2xl' : 'sm:max-w-lg'}>
+      <Dialog modal="trap-focus" open={modal !== null} onOpenChange={open => !open && setModal(null)}>
+        <DialogContent className={modal === 'about' ? 'gap-0 overflow-hidden rounded-4xl p-0 sm:max-w-2xl' : 'sm:max-w-lg'}>
           {active && (
             <>
-              <DialogHeader>
-                <DialogTitle>{active.title}</DialogTitle>
-                {active.description && <DialogDescription>{active.description}</DialogDescription>}
-              </DialogHeader>
-              <ScrollArea className="max-h-[80vh] pr-3">
-                <div className="space-y-3 text-sm text-muted-foreground leading-relaxed">
+              {modal === 'about' ? (
+                <div className="flex items-start gap-4 border-b border-border p-6 pb-6 sm:p-8 sm:pb-6">
+                  <LogoMark className="h-12 w-auto shrink-0" />
+                  <div className="min-w-0 flex-1">
+                    <DialogTitle className="font-heading text-xl font-bold leading-none">
+                      {active.title}
+                    </DialogTitle>
+                    <DialogDescription className="mt-1.5 text-xs text-muted-foreground">
+                      Assess smarter. Teach better.
+                    </DialogDescription>
+                    <span className="mt-1.5 inline-block rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
+                      {APP_VERSION}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <DialogHeader>
+                  <DialogTitle>{active.title}</DialogTitle>
+                  {active.description && <DialogDescription>{active.description}</DialogDescription>}
+                </DialogHeader>
+              )}
+              <ScrollArea className={modal === 'about' ? 'max-h-[70vh]' : 'max-h-[80vh] pr-3'}>
+                <div
+                  className={
+                    modal === 'about'
+                      ? 'space-y-4 p-6 text-sm text-muted-foreground leading-relaxed sm:p-8'
+                      : 'space-y-3 text-sm text-muted-foreground leading-relaxed'
+                  }
+                >
                   {active.body}
                 </div>
               </ScrollArea>
