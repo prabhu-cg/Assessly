@@ -186,11 +186,11 @@ export function Footer() {
           <button onClick={() => setModal('about')} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             About
           </button>
-          <button onClick={() => setModal('terms')} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-            Terms
-          </button>
           <button onClick={() => setModal('privacy')} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             Privacy
+          </button>
+          <button onClick={() => setModal('terms')} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+            Terms
           </button>
         </div>
       </div>
