@@ -1,0 +1,226 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-18T17:07:56.448691+00:00",
+  "title": "Design System: Assessly",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Assessly Terracotta",
+        "canonical": "#c74504",
+        "tonalRamp": [
+          "#3a1301",
+          "#5e1f02",
+          "#822c03",
+          "#a93a03",
+          "#c74504",
+          "#e2680f",
+          "#f2a06b",
+          "#fdefe7"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Oat Cream",
+        "canonical": "#f4f2ea",
+        "tonalRamp": [
+          "#2a2823",
+          "#4a473f",
+          "#6f6963",
+          "#9a9487",
+          "#c9c3b4",
+          "#e4dfd0",
+          "#f4f2ea",
+          "#fbfaf6"
+        ]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Parchment Hairline",
+        "canonical": "#e8ddc8",
+        "tonalRamp": [
+          "#5a4d33",
+          "#7d6c47",
+          "#a38f62",
+          "#c4b184",
+          "#d6c7ab",
+          "#e8ddc8",
+          "#f2ebdb",
+          "#faf6ec"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Landing hero headline only."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Landing section and app page titles."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card, drawer and form headings."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "App copy and controls."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Badges, meta, hints."
+      }
+    },
+    "shadows": [
+      {
+        "name": "card-hover",
+        "value": "0 2px 16px rgba(0,0,0,0.07)",
+        "purpose": "Faint lift on card hover."
+      },
+      {
+        "name": "dropdown",
+        "value": "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)",
+        "purpose": "Profile dropdown (shadow-lg)."
+      },
+      {
+        "name": "drawer",
+        "value": "0 25px 50px -12px rgba(0,0,0,0.25)",
+        "purpose": "Right-hand drawers (shadow-2xl)."
+      }
+    ],
+    "motion": [
+      {
+        "name": "drawer-slide",
+        "value": "300ms ease-in-out",
+        "purpose": "Drawer translate and overlay fade."
+      },
+      {
+        "name": "state",
+        "value": "150ms ease",
+        "purpose": "Hover and colour transitions."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one terracotta action per view.",
+      "html": "<button class=\"ds-btn-primary\">New Test</button>",
+      "css": ".ds-btn-primary{background:var(--primary);color:#fff;height:42px;padding:0 16px;border:1px solid transparent;border-radius:6px;font:500 14px Manrope,system-ui,sans-serif;cursor:pointer;transition:background .15s}.ds-btn-primary:hover{background:var(--primary-hover)}.ds-btn-primary:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in oklab,var(--ring) 50%,transparent)}"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Secondary action on white or cream.",
+      "html": "<button class=\"ds-btn-outline\">Cancel</button>",
+      "css": ".ds-btn-outline{background:var(--background);color:var(--foreground);height:42px;padding:0 16px;border:1px solid var(--border);border-radius:6px;font:500 14px Manrope,system-ui,sans-serif;cursor:pointer;transition:background .15s}.ds-btn-outline:hover{background:var(--muted)}.ds-btn-outline:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in oklab,var(--ring) 50%,transparent)}"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input-control",
+      "description": "White field with hairline border and terracotta focus.",
+      "html": "<input class=\"ds-input\" placeholder=\"you@example.com\"/>",
+      "css": ".ds-input{height:40px;width:220px;padding:4px 10px;background:var(--card);color:var(--foreground);border:1px solid var(--input);border-radius:8px;font:400 16px Manrope,system-ui,sans-serif;outline:none;transition:border-color .15s,box-shadow .15s}.ds-input::placeholder{color:var(--muted-foreground)}.ds-input:focus-visible{border-color:var(--ring);box-shadow:0 0 0 3px color-mix(in oklab,var(--ring) 50%,transparent)}"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "White working surface on the cream page.",
+      "html": "<div class=\"ds-card\"><p class=\"ds-card-title\">Recent Tests</p><p class=\"ds-card-meta\">Algebra Midterm \u00b7 45 min</p></div>",
+      "css": ".ds-card{background:var(--card);color:var(--card-foreground);border-radius:12px;padding:16px;box-shadow:0 0 0 1px color-mix(in oklab,var(--foreground) 10%,transparent);transition:box-shadow .2s;font-family:Manrope,system-ui,sans-serif}.ds-card:hover{box-shadow:0 0 0 1px color-mix(in oklab,var(--primary) 50%,transparent),0 2px 16px rgba(0,0,0,.07)}.ds-card-title{margin:0;font-weight:600;font-size:16px}.ds-card-meta{margin:4px 0 0;font-size:12px;color:var(--muted-foreground)}"
+    },
+    {
+      "name": "Status Badge",
+      "kind": "chip",
+      "refersTo": "badge-soft",
+      "description": "Pill badge for test status.",
+      "html": "<span class=\"ds-badge\">published</span>",
+      "css": ".ds-badge{display:inline-flex;align-items:center;height:20px;padding:2px 8px;border-radius:9999px;background:var(--success-soft);color:var(--success);font:500 12px Manrope,system-ui,sans-serif}"
+    },
+    {
+      "name": "Top Bar",
+      "kind": "nav",
+      "refersTo": "nav-bar",
+      "description": "Sticky white bar with mark, wordmark and user avatar.",
+      "html": "<div class=\"ds-nav\"><span class=\"ds-nav-brand\">Assessly</span><span class=\"ds-nav-avatar\">PC</span></div>",
+      "css": ".ds-nav{display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 24px;background:var(--background);border-bottom:1px solid var(--border);font-family:Manrope,system-ui,sans-serif}.ds-nav-brand{font-weight:700;font-size:16px;letter-spacing:-.025em;color:var(--foreground)}.ds-nav-avatar{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:9999px;background:var(--primary);color:#fff;font-size:12px;font-weight:700}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Working Ledger",
+    "overview": "Assessly's world is warm paper and one burnt-orange voice. Pages sit on a cream ground; the things people work with are white and held by parchment hairlines. A single terracotta accent means act here or this is yours. Manrope carries every word, and tokens are shared with Doxa.",
+    "keyCharacteristics": [
+      "One accent, terracotta.",
+      "Cream ground, white working surfaces, hairline rules.",
+      "Manrope only, small fixed type scale.",
+      "Shared teacher and student shell.",
+      "Sign-in pairs a tinted photograph panel with the form; student sign-in stays a centred card.",
+      "Dark mode is a warm brown-black ramp."
+    ],
+    "rules": [
+      {
+        "name": "The One Voice Rule",
+        "body": "Terracotta is the only accent. It marks the primary action, the focus state and the brand mark.",
+        "section": "colors"
+      },
+      {
+        "name": "The Cream Ground Rule",
+        "body": "Page grounds are surface; working surfaces are card. Never hardcode a cream hex.",
+        "section": "colors"
+      },
+      {
+        "name": "The Token Only Rule",
+        "body": "No literal brand hex or bg-white in components; use tokens.",
+        "section": "colors"
+      },
+      {
+        "name": "The Weight Not Size Rule",
+        "body": "Emphasis comes from weight and ink vs ink-muted; no fluid type.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat At Rest Rule",
+        "body": "Cards, rows, badges and inputs have no resting shadow.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do use bg-surface for page grounds and bg-card for cards, forms and popovers.",
+      "Do keep terracotta to the primary action, focus, the mark and one emphasis phrase per view.",
+      "Do separate surfaces with 1px hairlines and tone, and keep resting surfaces shadowless.",
+      "Do open create, edit and preview flows in a right-hand drawer.",
+      "Do use tabular-nums for scores, marks, counts and timers."
+    ],
+    "donts": [
+      "Don't write a literal brand hex, bg-white, or a hardcoded cream in components.",
+      "Don't put a second accent colour next to terracotta for decoration.",
+      "Don't add a shadow to cards, rows, badges or inputs at rest.",
+      "Don't split student sign-in into the photograph layout.",
+      "Don't use neutral grey for dark mode."
+    ]
+  }
+}
