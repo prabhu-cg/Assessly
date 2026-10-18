@@ -47,7 +47,7 @@ export function TopNav({ profile }: TopNavProps) {
   }, [])
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white border-b border-border">
+    <header className="sticky top-0 z-50 w-full bg-background border-b border-border">
       {/* Top bar */}
       <div className="flex h-14 items-center justify-between px-6 max-w-screen-xl mx-auto">
         {/* Logo */}
@@ -71,7 +71,7 @@ export function TopNav({ profile }: TopNavProps) {
           </button>
 
           {menuOpen && (
-            <div className="absolute right-0 top-full mt-2 w-52 bg-white border border-border rounded-lg shadow-lg py-1 z-50">
+            <div className="absolute right-0 top-full mt-2 w-52 bg-popover border border-border rounded-lg shadow-lg py-1 z-50">
               {/* User info */}
               <div className="px-3 py-2.5 border-b border-border">
                 <p className="text-sm font-semibold">{profile.full_name}</p>

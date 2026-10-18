@@ -15,7 +15,6 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { QuestionForm } from '@/components/teacher/question-form'
 import { deleteQuestion, reorderQuestions } from '@/app/actions/questions'
 import { updateTestStatus } from '@/app/actions/tests'
@@ -116,25 +115,68 @@ function SortableQuestion({ question: q, index, onEdit, onDelete }: SortableQues
   )
 }
 
-// ── Preview modal ──────────────────────────────────────────────────────────
+// ── Preview drawer ─────────────────────────────────────────────────────────
 
-function PreviewModal({ open, onClose, test, questions }: {
+function PreviewDrawer({ open, onClose, test, questions }: {
   open: boolean
   onClose: () => void
   test: Test | null
   questions: Question[]
 }) {
-  return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Eye className="h-4 w-4" />
-            Preview — {test?.title}
-          </DialogTitle>
-        </DialogHeader>
+  const [mounted, setMounted] = useState(false)
+  const [entered, setEntered] = useState(false)
+  if (open && !mounted) setMounted(true)
+  const visible = open && entered
 
-        <div className="space-y-4 pt-2">
+  useEffect(() => {
+    if (open) {
+      const id = requestAnimationFrame(() => setEntered(true))
+      return () => cancelAnimationFrame(id)
+    }
+    const t = setTimeout(() => { setEntered(false); setMounted(false) }, 300)
+    return () => clearTimeout(t)
+  }, [open])
+
+  if (!mounted) return null
+
+  return (
+    <>
+      <div
+        className={cn(
+          'fixed inset-0 bg-black/40 z-[60] transition-opacity duration-300',
+          visible ? 'opacity-100' : 'opacity-0',
+        )}
+        onClick={onClose}
+      />
+      <div
+        className={cn(
+          'fixed top-0 right-0 h-full w-full max-w-[560px] bg-background z-[61]',
+          'flex flex-col border-l border-border shadow-2xl',
+          'transition-transform duration-300 ease-in-out',
+          visible ? 'translate-x-0' : 'translate-x-full',
+        )}
+      >
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
+          <div className="min-w-0">
+            <h2 className="text-base font-semibold flex items-center gap-2">
+              <Eye className="h-4 w-4 shrink-0" />
+              <span className="truncate">Preview — {test?.title}</span>
+            </h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              This is how students will see the test
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close preview"
+            className="h-8 w-8 flex items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-6 space-y-4">
           {test?.instructions && (
             <div className="rounded-lg bg-muted/50 border p-3 text-sm text-muted-foreground">
               {test.instructions}
@@ -175,8 +217,8 @@ function PreviewModal({ open, onClose, test, questions }: {
             </div>
           ))}
         </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </>
   )
 }
 
@@ -353,8 +395,8 @@ export default function QuestionsPage() {
         </SortableContext>
       </DndContext>
 
-      {/* Preview modal */}
-      <PreviewModal
+      {/* Preview drawer */}
+      <PreviewDrawer
         open={showPreview}
         onClose={() => setShowPreview(false)}
         test={test}
@@ -386,7 +428,7 @@ export default function QuestionsPage() {
           />
           <div
             className={cn(
-              'fixed top-0 right-0 h-full w-full max-w-[520px] bg-white z-[61]',
+              'fixed top-0 right-0 h-full w-full max-w-[520px] bg-card z-[61]',
               'flex flex-col border-l border-border shadow-2xl',
               'transition-transform duration-300 ease-in-out',
               open ? 'translate-x-0' : 'translate-x-full',

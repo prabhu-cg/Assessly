@@ -8,7 +8,7 @@ import { logout } from '@/app/actions/auth'
 
 export default function StudentLoginPage() {
   return (
-    <div className="min-h-svh flex flex-col" style={{ backgroundColor: '#FFF9EB' }}>
+    <div className="min-h-svh flex flex-col" style={{ backgroundColor: 'var(--surface)' }}>
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-10">
 
         {/* Logo */}
@@ -18,13 +18,13 @@ export default function StudentLoginPage() {
         </Link>
 
         {/* Card */}
-        <div className="w-full max-w-sm rounded-2xl border border-border bg-white p-8 text-center shadow-sm">
+        <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-8 text-center shadow-sm">
           {/* Icon */}
           <div
             className="h-16 w-16 rounded-2xl flex items-center justify-center mx-auto mb-5"
-            style={{ backgroundColor: '#fff0e6' }}
+            style={{ backgroundColor: 'var(--primary-soft)' }}
           >
-            <Link2 className="h-8 w-8" style={{ color: '#C74504' }} />
+            <Link2 className="h-8 w-8" style={{ color: 'var(--primary)' }} />
           </div>
 
           <h1 className="text-2xl font-bold mb-2">Use your link!</h1>
@@ -44,7 +44,7 @@ export default function StudentLoginPage() {
               <div key={num} className="flex items-center gap-3">
                 <span
                   className="h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0"
-                  style={{ backgroundColor: '#C74504' }}
+                  style={{ backgroundColor: 'var(--primary)' }}
                 >
                   {num}
                 </span>

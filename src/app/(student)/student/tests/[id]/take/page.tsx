@@ -281,7 +281,7 @@ export default function TakeTestPage() {
   const currentAnswer = answers[currentQuestion?.id] ?? {}
 
   return (
-    <div className="min-h-svh flex flex-col bg-muted/20">
+    <div className="min-h-svh flex flex-col bg-surface">
       {/* Test Header */}
       <div className="sticky top-14 z-40 bg-background border-b shadow-sm">
         <div className="flex items-center justify-between px-4 py-2 max-w-7xl mx-auto gap-4">

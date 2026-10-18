@@ -71,7 +71,7 @@ export default async function ResultsPage({ params, searchParams }: ResultsPageP
     <div className="max-w-2xl mx-auto space-y-5 pb-8">
 
       {/* ── Score Hero ── */}
-      <div className="rounded-2xl border border-border bg-white overflow-hidden">
+      <div className="rounded-2xl border border-border bg-card overflow-hidden">
         {/* Top section */}
         <div className="px-6 pt-7 pb-6 text-center border-b border-border">
           <div className={cn(
@@ -136,7 +136,7 @@ export default async function ResultsPage({ params, searchParams }: ResultsPageP
 
       {/* ── Performance Grid ── */}
       {isEvaluated && (questions?.length ?? 0) > 0 && (
-        <div className="rounded-2xl border border-border bg-white p-5 space-y-3">
+        <div className="rounded-2xl border border-border bg-card p-5 space-y-3">
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
             Performance at a glance
           </p>
@@ -181,7 +181,7 @@ export default async function ResultsPage({ params, searchParams }: ResultsPageP
             const options = q.options as MCQOption[] | null
 
             return (
-              <div key={q.id} className="rounded-xl border border-border bg-white overflow-hidden flex">
+              <div key={q.id} className="rounded-xl border border-border bg-card overflow-hidden flex">
                 {/* Left colour strip */}
                 <div className={cn('w-1 shrink-0', isEvaluated ? perfStyle[p].bar : 'bg-border')} />
 

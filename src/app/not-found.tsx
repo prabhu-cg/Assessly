@@ -6,7 +6,7 @@ import { Footer } from '@/components/shared/footer'
 
 export default function NotFound() {
   return (
-    <div className="min-h-svh flex flex-col" style={{ backgroundColor: '#FFF9EB' }}>
+    <div className="min-h-svh flex flex-col" style={{ backgroundColor: 'var(--surface)' }}>
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-16 text-center">
 
         {/* Logo */}
@@ -27,7 +27,7 @@ export default function NotFound() {
           />
 
           {/* Card */}
-          <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
+          <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
             {/* Card header */}
             <div className="px-6 pt-6 pb-4 border-b border-dashed border-border">
               <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">
@@ -42,7 +42,7 @@ export default function NotFound() {
                 <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Mark obtained</p>
                 <p
                   className="text-7xl font-black leading-none tracking-tight"
-                  style={{ color: '#C74504' }}
+                  style={{ color: 'var(--primary)' }}
                 >
                   404
                 </p>
@@ -52,9 +52,9 @@ export default function NotFound() {
               {/* Grade circle */}
               <div
                 className="h-20 w-20 rounded-full border-4 flex flex-col items-center justify-center shrink-0"
-                style={{ borderColor: '#C74504' }}
+                style={{ borderColor: 'var(--primary)' }}
               >
-                <span className="text-2xl font-black" style={{ color: '#C74504' }}>F</span>
+                <span className="text-2xl font-black" style={{ color: 'var(--primary)' }}>F</span>
                 <span className="text-[10px] text-muted-foreground font-medium">Not Found</span>
               </div>
             </div>
@@ -88,13 +88,13 @@ export default function NotFound() {
           <Link
             href="/login"
             className="inline-flex items-center justify-center px-6 py-2.5 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
-            style={{ backgroundColor: '#C74504' }}
+            style={{ backgroundColor: 'var(--primary)' }}
           >
             Take me home
           </Link>
           <button
             onClick={() => history.back()}
-            className="inline-flex items-center justify-center px-6 py-2.5 rounded-xl text-sm font-semibold border border-border bg-white text-foreground hover:bg-muted transition-colors"
+            className="inline-flex items-center justify-center px-6 py-2.5 rounded-xl text-sm font-semibold border border-border bg-card text-foreground hover:bg-muted transition-colors"
           >
             Go back
           </button>

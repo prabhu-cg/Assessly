@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Loader2, Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import { LogoMark } from '@/components/shared/logo'
+import { AuthPanel } from '@/components/shared/auth-panel'
 import { toast } from 'sonner'
 
 const QUOTES = [
@@ -62,45 +63,22 @@ export default function LoginPage() {
     <div className="min-h-svh flex flex-col">
     <div className="flex-1 flex">
 
-      {/* ── Left panel ── */}
-      <div
-        className="hidden lg:flex lg:w-[58%] relative flex-col justify-between p-12 overflow-hidden"
-        style={{ backgroundColor: '#C74504' }}
-      >
-        {/* Giant watermark logo */}
-        <div className="absolute inset-y-0 right-0 translate-x-1/2 pointer-events-none select-none flex items-center">
-          <LogoMark white className="h-full w-auto opacity-[0.15]" />
-        </div>
-
-        {/* Top — wordmark */}
-        <Link href="/" className="relative flex items-center gap-3">
-          <LogoMark white className="h-8 w-auto" />
-          <span className="text-white text-xl font-bold tracking-tight">Assessly</span>
-        </Link>
-
-        {/* Centre — quote */}
-        <div className="relative max-w-lg">
-          <span
-            aria-hidden
-            className="block text-white/15 leading-none select-none -ml-3 mb-0"
-            style={{ fontSize: '10rem', lineHeight: 1 }}
-          >
-            &ldquo;
-          </span>
-          <blockquote className="text-white text-[1.6rem] font-semibold leading-snug -mt-6">
-            {quote.text}
-          </blockquote>
-          <p className="text-white/60 text-sm mt-5 font-medium tracking-wide">— {quote.author}</p>
-        </div>
-
-        {/* Bottom — copyright */}
-        <p className="relative text-white/40 text-xs">
-          © {new Date().getFullYear()} Assessly. All rights reserved.
-        </p>
-      </div>
+      <AuthPanel>
+        <span
+          aria-hidden
+          className="block text-white/20 leading-none select-none -ml-3"
+          style={{ fontSize: '10rem', lineHeight: 1 }}
+        >
+          &ldquo;
+        </span>
+        <blockquote className="text-white text-[1.6rem] font-semibold leading-snug -mt-6 [text-shadow:0_1px_12px_rgb(0_0_0/0.25)]">
+          {quote.text}
+        </blockquote>
+        <p className="text-white/75 text-sm mt-5 font-medium tracking-wide">— {quote.author}</p>
+      </AuthPanel>
 
       {/* ── Right panel ── */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 py-8 sm:py-12" style={{ backgroundColor: '#FFF9EB' }}>
+      <div className="flex-1 flex flex-col items-center justify-center px-6 py-8 sm:py-12" style={{ backgroundColor: 'var(--surface)' }}>
         <div className="w-full max-w-sm">
 
           {/* Logo + tagline */}
@@ -113,7 +91,7 @@ export default function LoginPage() {
           </Link>
 
           {/* Form card */}
-          <div className="rounded-2xl border border-border bg-white p-7">
+          <div className="rounded-2xl border border-border bg-card p-7">
             <div className="mb-5">
               <h2 className="text-lg font-semibold">Teacher Sign In</h2>
               <p className="text-sm text-muted-foreground mt-1">

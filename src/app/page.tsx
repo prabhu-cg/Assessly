@@ -7,12 +7,10 @@ import {
   BarChart3,
   ShieldCheck,
   ArrowRight,
-  Users,
-  Plus,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { LogoMark, Wordmark } from '@/components/shared/logo'
+import { MacbookFrame } from '@/components/shared/macbook-frame'
 import { Footer } from '@/components/shared/footer'
 import { FaqAccordion } from '@/components/shared/faq-accordion'
 
@@ -79,29 +77,6 @@ const STEPS = [
   },
 ]
 
-const PREVIEW_STATS = [
-  { label: 'Total Tests', value: 12, icon: FileText, bg: 'bg-orange-50', iconColor: 'text-primary' },
-  { label: 'Students', value: 84, icon: Users, bg: 'bg-blue-50', iconColor: 'text-blue-600' },
-  { label: 'Pending Review', value: 6, icon: ClipboardList, bg: 'bg-amber-50', iconColor: 'text-amber-600' },
-]
-
-const PREVIEW_TESTS = [
-  { title: 'Algebra Midterm', meta: '45 min · Oct 12, 2026', status: 'published' },
-  { title: 'Cell Biology Quiz', meta: '20 min · Oct 9, 2026', status: 'published' },
-  { title: 'Poetry Analysis Essay', meta: '60 min · Oct 5, 2026', status: 'draft' },
-]
-
-const PREVIEW_STATUS_STYLES: Record<string, string> = {
-  draft: 'bg-gray-100 text-gray-500 border border-gray-200',
-  published: 'bg-green-100 text-green-700',
-}
-
-const PREVIEW_ACTIONS = [
-  { icon: Plus, label: 'Create New Test', desc: 'Draft a test with questions' },
-  { icon: Users, label: 'Add Student', desc: 'Create a student account' },
-  { icon: ClipboardList, label: 'Review Submissions', desc: 'Grade pending work' },
-]
-
 const FAQS = [
   {
     question: 'Do students need to create their own account?',
@@ -149,7 +124,7 @@ export default function LandingPage() {
         {/* ── Hero ── */}
         <section
           className="relative overflow-hidden py-20 sm:py-28 text-center"
-          style={{ backgroundColor: '#FFF9EB' }}
+          style={{ backgroundColor: 'var(--surface)' }}
         >
           <div className="absolute inset-x-0 top-0 flex justify-center pointer-events-none select-none">
             <LogoMark className="h-[28rem] w-auto opacity-[0.06] -translate-y-1/3" />
@@ -159,7 +134,7 @@ export default function LandingPage() {
             <div className="max-w-3xl mx-auto">
               <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight">
                 Create, share, and grade exams —{' '}
-                <span style={{ color: '#C74504' }}>without the busywork.</span>
+                <span style={{ color: 'var(--primary)' }}>without the busywork.</span>
               </h1>
               <p className="mt-5 text-lg text-muted-foreground max-w-xl mx-auto">
                 Assessly is a modern examination platform for teachers and students. Build a test,
@@ -183,7 +158,7 @@ export default function LandingPage() {
             <div className="max-w-3xl mx-auto mt-16 grid grid-cols-2 sm:grid-cols-4 gap-6">
               {STATS.map(stat => (
                 <div key={stat.label}>
-                  <div className="text-2xl sm:text-3xl font-extrabold" style={{ color: '#C74504' }}>
+                  <div className="text-2xl sm:text-3xl font-extrabold" style={{ color: 'var(--primary)' }}>
                     {stat.value}
                   </div>
                   <div className="text-sm text-muted-foreground mt-1">{stat.label}</div>
@@ -203,90 +178,7 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-border bg-muted/40 p-3 sm:p-6 shadow-sm">
-              {/* Window chrome */}
-              <div className="flex items-center gap-1.5 mb-4 px-1">
-                <span className="h-2.5 w-2.5 rounded-full bg-red-300" />
-                <span className="h-2.5 w-2.5 rounded-full bg-amber-300" />
-                <span className="h-2.5 w-2.5 rounded-full bg-green-300" />
-              </div>
-
-              <div className="rounded-xl bg-background p-4 sm:p-6 space-y-6 pointer-events-none select-none">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-xl font-bold">Good day, Paula 👋</h3>
-                    <p className="text-muted-foreground text-sm mt-1">Here&apos;s what&apos;s happening with your tests.</p>
-                  </div>
-                  <Button size="sm" className="gap-2">
-                    <Plus className="h-4 w-4" />
-                    New Test
-                  </Button>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  {PREVIEW_STATS.map(({ label, value, icon: Icon, bg, iconColor }) => (
-                    <Card key={label}>
-                      <CardContent className="flex items-center gap-4 p-5">
-                        <div className={`h-11 w-11 rounded-xl ${bg} flex items-center justify-center shrink-0`}>
-                          <Icon className={`h-5 w-5 ${iconColor}`} />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-2xl font-bold">{value}</p>
-                          <p className="text-sm text-muted-foreground">{label}</p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  <Card className="lg:col-span-2">
-                    <CardHeader className="flex flex-row items-center justify-between pb-4">
-                      <CardTitle className="text-base font-semibold">Recent Tests</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="divide-y divide-border">
-                        {PREVIEW_TESTS.map(test => (
-                          <div key={test.title} className="flex items-center gap-4 p-3">
-                            <div className="h-9 w-9 rounded-lg bg-orange-50 flex items-center justify-center shrink-0">
-                              <FileText className="h-4 w-4 text-primary" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium truncate">{test.title}</p>
-                              <p className="text-xs text-muted-foreground">{test.meta}</p>
-                            </div>
-                            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${PREVIEW_STATUS_STYLES[test.status]}`}>
-                              {test.status}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader className="pb-4">
-                      <CardTitle className="text-base font-semibold">Quick Actions</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="divide-y divide-border">
-                        {PREVIEW_ACTIONS.map(({ icon: Icon, label, desc }) => (
-                          <div key={label} className="flex items-center gap-3 p-3">
-                            <div className="h-9 w-9 rounded-lg bg-secondary flex items-center justify-center shrink-0">
-                              <Icon className="h-4 w-4 text-muted-foreground" />
-                            </div>
-                            <div className="min-w-0">
-                              <p className="text-sm font-medium">{label}</p>
-                              <p className="text-xs text-muted-foreground">{desc}</p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
-            </div>
+            <MacbookFrame src="/mockups/dashboard.png" alt="Assessly teacher dashboard showing recent tests, stats and quick actions" />
           </div>
         </section>
 
@@ -304,9 +196,9 @@ export default function LandingPage() {
                 <div key={feature.title}>
                   <div
                     className="h-11 w-11 rounded-xl flex items-center justify-center mb-4"
-                    style={{ backgroundColor: '#fff0e6' }}
+                    style={{ backgroundColor: 'var(--primary-soft)' }}
                   >
-                    <feature.icon className="h-5.5 w-5.5" style={{ color: '#C74504' }} />
+                    <feature.icon className="h-5.5 w-5.5" style={{ color: 'var(--primary)' }} />
                   </div>
                   <h3 className="font-semibold">{feature.title}</h3>
                   <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">
@@ -319,7 +211,7 @@ export default function LandingPage() {
         </section>
 
         {/* ── How it works ── */}
-        <section className="py-20" style={{ backgroundColor: '#FFF9EB' }}>
+        <section className="py-20" style={{ backgroundColor: 'var(--surface)' }}>
           <div className="max-w-screen-xl mx-auto px-6">
             <div className="text-center max-w-xl mx-auto mb-14">
               <h2 className="text-3xl font-bold tracking-tight">How it works</h2>
@@ -329,11 +221,11 @@ export default function LandingPage() {
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {STEPS.map(step => (
-                <div key={step.num} className="rounded-2xl border border-border bg-white p-6">
+                <div key={step.num} className="rounded-2xl border border-border bg-card p-6">
                   <div className="flex items-center gap-3 mb-4">
                     <span
                       className="h-8 w-8 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0"
-                      style={{ backgroundColor: '#C74504' }}
+                      style={{ backgroundColor: 'var(--primary)' }}
                     >
                       {step.num}
                     </span>
@@ -349,7 +241,7 @@ export default function LandingPage() {
         </section>
 
         {/* ── FAQ ── */}
-        <section className="py-20" style={{ backgroundColor: '#FFF9EB' }}>
+        <section className="py-20" style={{ backgroundColor: 'var(--surface)' }}>
           <div className="max-w-screen-xl mx-auto px-6">
             <div className="max-w-2xl mx-auto">
               <div className="text-center mb-14">

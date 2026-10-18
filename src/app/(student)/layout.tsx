@@ -15,7 +15,7 @@ export default async function StudentLayout({ children }: { children: React.Reac
   if (!profile || profile.role !== 'student') redirect('/teacher/dashboard')
 
   return (
-    <div className="min-h-screen flex flex-col bg-secondary/30">
+    <div className="min-h-screen flex flex-col bg-surface">
       <TopNav profile={profile as Profile} />
       <main className="flex-1 px-6 py-8 max-w-screen-xl mx-auto w-full">
         {children}

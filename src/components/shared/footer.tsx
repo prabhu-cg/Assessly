@@ -174,7 +174,7 @@ export function Footer() {
   const active = modal ? MODAL_CONTENT[modal] : null
 
   return (
-    <footer className="shrink-0 border-t border-border/50 bg-background">
+    <footer className="shrink-0 border-t border-border/50 bg-surface">
       <div className="max-w-screen-xl mx-auto flex flex-col items-center gap-4 px-6 py-8 sm:flex-row sm:justify-between">
         <Wordmark />
 

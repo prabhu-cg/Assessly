@@ -33,7 +33,7 @@ export function Sidebar({ role }: SidebarProps) {
   const links = role === 'teacher' ? teacherLinks : studentLinks
 
   return (
-    <aside className="hidden md:flex flex-col w-56 shrink-0 border-r bg-muted/30 min-h-[calc(100vh-3.5rem)]">
+    <aside className="hidden md:flex flex-col w-56 shrink-0 border-r border-border bg-background min-h-[calc(100vh-3.5rem)]">
       <nav className="flex flex-col gap-1 p-3 pt-4">
         {links.map(({ href, label, icon: Icon }) => {
           const isActive = pathname === href || pathname.startsWith(href + '/')
