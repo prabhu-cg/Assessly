@@ -49,7 +49,7 @@ export function TestTimer({ endsAt, onTimeUp }: TestTimerProps) {
         isCritical
           ? 'bg-destructive/15 text-destructive animate-pulse'
           : isWarning
-          ? 'bg-orange-100 text-orange-700'
+          ? 'bg-primary-soft text-primary-text'
           : 'bg-muted text-foreground'
       )}
     >

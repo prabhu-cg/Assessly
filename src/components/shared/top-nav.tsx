@@ -85,7 +85,7 @@ export function TopNav({ profile }: TopNavProps) {
                 <button
                   type="button"
                   onClick={() => { setMenuOpen(false); logout() }}
-                  className="w-full flex items-center gap-2 px-3 py-2 text-sm text-destructive hover:bg-red-50 transition-colors"
+                  className="w-full flex items-center gap-2 px-3 py-2 text-sm text-destructive hover:bg-destructive-soft transition-colors"
                 >
                   <LogOut className="h-4 w-4" />
                   Sign out

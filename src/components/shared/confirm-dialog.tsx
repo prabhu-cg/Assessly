@@ -30,8 +30,8 @@ export function ConfirmDialog({
       <DialogContent showCloseButton={false} className="max-w-sm">
         <DialogHeader>
           <div className="flex items-start gap-3">
-            <div className="h-9 w-9 rounded-full bg-red-100 flex items-center justify-center shrink-0 mt-0.5">
-              <TriangleAlert className="h-4 w-4 text-red-600" />
+            <div className="h-9 w-9 rounded-full bg-destructive-soft flex items-center justify-center shrink-0 mt-0.5">
+              <TriangleAlert className="h-4 w-4 text-destructive" />
             </div>
             <div className="space-y-1 pt-1">
               <DialogTitle>{title}</DialogTitle>

@@ -25,7 +25,7 @@ export function StartTestButton({ href, isResume }: StartTestButtonProps) {
   }
 
   return (
-    <Button size="lg" className="w-full sm:w-auto gap-2" onClick={handleStart} disabled={loading}>
+    <Button size="lg" className="mx-auto flex h-12 w-full gap-2 text-base sm:w-72" onClick={handleStart} disabled={loading}>
       <Maximize2 className="h-4 w-4" />
       {isResume ? 'Continue Test' : 'Start Test'}
     </Button>

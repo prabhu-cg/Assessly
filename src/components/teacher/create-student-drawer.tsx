@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Plus, X, Loader2, Copy, Check, Link2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { YearOptions } from '@/components/teacher/year-options'
 import { toast } from 'sonner'
 
 interface CreateStudentDrawerProps {
@@ -66,7 +67,7 @@ export function CreateStudentDrawer({ label = 'Add Student', defaultOpen = false
 
   const onSubmit = (data: CreateStudentInput) => {
     const formData = new FormData()
-    Object.entries(data).forEach(([k, v]) => formData.append(k, v))
+    Object.entries(data).forEach(([k, v]) => formData.append(k, v ?? ''))
     setError(null)
 
     startTransition(async () => {
@@ -76,6 +77,7 @@ export function CreateStudentDrawer({ label = 'Add Student', defaultOpen = false
       } else if (result?.accessToken) {
         const link = `${window.location.origin}/s/${result.accessToken}`
         setGeneratedLink(link)
+        if (result.warning) toast.warning(result.warning)
         router.refresh()
       }
     })
@@ -129,13 +131,13 @@ export function CreateStudentDrawer({ label = 'Add Student', defaultOpen = false
               {generatedLink ? (
                 <div className="space-y-5">
                   {/* Success */}
-                  <div className="rounded-xl bg-green-50 border border-green-200 p-4 flex items-start gap-3">
-                    <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center shrink-0 mt-0.5">
-                      <Check className="h-4 w-4 text-green-600" />
+                  <div className="rounded-xl bg-success-soft border border-success/30 p-4 flex items-start gap-3">
+                    <div className="h-8 w-8 rounded-full bg-success-soft flex items-center justify-center shrink-0 mt-0.5">
+                      <Check className="h-4 w-4 text-success" />
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-green-800">Account created successfully</p>
-                      <p className="text-xs text-green-700 mt-0.5">
+                      <p className="text-sm font-semibold text-success">Account created successfully</p>
+                      <p className="text-xs text-success mt-0.5">
                         The student can use this personal link to access their dashboard — no password needed.
                       </p>
                     </div>
@@ -160,9 +162,9 @@ export function CreateStudentDrawer({ label = 'Add Student', defaultOpen = false
                     )}
                   </Button>
 
-                  <div className="rounded-lg bg-amber-50 border border-amber-200 p-3">
-                    <p className="text-xs text-amber-800 font-medium mb-1">Share this link via:</p>
-                    <ul className="text-xs text-amber-700 space-y-1 list-disc list-inside">
+                  <div className="rounded-lg bg-warning-soft border border-warning/30 p-3">
+                    <p className="text-xs text-warning font-medium mb-1">Share this link via:</p>
+                    <ul className="text-xs text-warning space-y-1 list-disc list-inside">
                       <li>Email to the student's parent</li>
                       <li>Paste into a QR code generator (e.g. qr-code-generator.com)</li>
                       <li>Print and hand to the student directly</li>
@@ -203,8 +205,15 @@ export function CreateStudentDrawer({ label = 'Add Student', defaultOpen = false
                     </div>
                   </div>
 
-                  <div className="rounded-lg bg-blue-50 border border-blue-200 p-3">
-                    <p className="text-xs text-blue-800">
+                  <div className="space-y-2">
+                    <Label htmlFor="year_level">Year <span className="font-normal text-muted-foreground">(optional)</span></Label>
+                    <Input id="year_level" list="year-options" autoComplete="off" {...register('year_level')} placeholder="e.g. Year 4" />
+                    <YearOptions />
+                    {errors.year_level && <p className="text-sm text-destructive">{errors.year_level.message}</p>}
+                  </div>
+
+                  <div className="rounded-lg bg-info-soft border border-info/30 p-3">
+                    <p className="text-xs text-info">
                       A unique personal link will be generated for this student. No password is needed — they simply click their link to access their tests.
                     </p>
                   </div>

@@ -5,44 +5,58 @@ import { Button } from '@/components/ui/button'
 import { TestForm } from '@/components/teacher/test-form'
 import { Pencil, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Portal } from '@/components/shared/portal'
 import type { Test } from '@/types/database'
 
 interface EditTestDrawerProps {
   test: Test
   variant?: 'default' | 'outline'
   size?: 'default' | 'sm'
+  /** Controlled mode: the parent owns open state (e.g. a card menu) and no trigger button is rendered. */
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
-export function EditTestDrawer({ test, variant = 'outline', size = 'sm' }: EditTestDrawerProps) {
+export function EditTestDrawer({ test, variant = 'outline', size = 'sm', open: controlledOpen, onOpenChange }: EditTestDrawerProps) {
+  const controlled = controlledOpen !== undefined
+  const [internalOpen, setInternalOpen] = useState(false)
+  const want = controlled ? controlledOpen : internalOpen
+
   const [mounted, setMounted] = useState(false)
-  const [open, setOpen] = useState(false)
+  const [entered, setEntered] = useState(false)
+  if (want && !mounted) setMounted(true)
+  const visible = want && entered
 
   useEffect(() => {
-    if (mounted) {
-      const id = requestAnimationFrame(() => setOpen(true))
+    if (want) {
+      const id = requestAnimationFrame(() => setEntered(true))
       return () => cancelAnimationFrame(id)
     }
-  }, [mounted])
+    const t = setTimeout(() => { setEntered(false); setMounted(false) }, 300)
+    return () => clearTimeout(t)
+  }, [want])
 
-  function openDrawer() { setMounted(true) }
-  function closeDrawer() {
-    setOpen(false)
-    setTimeout(() => setMounted(false), 300)
+  function setOpen(next: boolean) {
+    if (!controlled) setInternalOpen(next)
+    onOpenChange?.(next)
   }
+  const closeDrawer = () => setOpen(false)
 
   return (
     <>
-      <Button variant={variant} size={size} onClick={openDrawer}>
-        <Pencil className="h-4 w-4 mr-1.5" />
-        Edit
-      </Button>
+      {!controlled && (
+        <Button variant={variant} size={size} onClick={() => setOpen(true)}>
+          <Pencil className="h-4 w-4 mr-1.5" />
+          Edit
+        </Button>
+      )}
 
       {mounted && (
-        <>
+        <Portal>
           <div
             className={cn(
               'fixed inset-0 bg-black/40 z-[60] transition-opacity duration-300',
-              open ? 'opacity-100' : 'opacity-0',
+              visible ? 'opacity-100' : 'opacity-0',
             )}
             onClick={closeDrawer}
           />
@@ -51,7 +65,7 @@ export function EditTestDrawer({ test, variant = 'outline', size = 'sm' }: EditT
               'fixed top-0 right-0 h-full w-full max-w-[560px] bg-background z-[61]',
               'flex flex-col border-l border-border shadow-2xl',
               'transition-transform duration-300 ease-in-out',
-              open ? 'translate-x-0' : 'translate-x-full',
+              visible ? 'translate-x-0' : 'translate-x-full',
             )}
           >
             <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
@@ -62,6 +76,7 @@ export function EditTestDrawer({ test, variant = 'outline', size = 'sm' }: EditT
               <button
                 type="button"
                 onClick={closeDrawer}
+                aria-label="Close"
                 className="h-8 w-8 flex items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
               >
                 <X className="h-4 w-4" />
@@ -71,7 +86,7 @@ export function EditTestDrawer({ test, variant = 'outline', size = 'sm' }: EditT
               <TestForm test={test} onCancel={closeDrawer} onSuccess={closeDrawer} />
             </div>
           </div>
-        </>
+        </Portal>
       )}
     </>
   )

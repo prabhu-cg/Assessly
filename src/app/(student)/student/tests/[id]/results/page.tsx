@@ -23,9 +23,9 @@ function getPerf(answer: Answer | undefined, question: Question): Perf {
 }
 
 const perfStyle: Record<Perf, { bar: string; chip: string; dot: string; label: string }> = {
-  full:    { bar: 'bg-green-500', chip: 'bg-green-100 text-green-700',         dot: 'bg-green-500',          label: 'Full marks' },
-  partial: { bar: 'bg-amber-400', chip: 'bg-amber-100 text-amber-700',         dot: 'bg-amber-400',          label: 'Partial'    },
-  none:    { bar: 'bg-red-400',   chip: 'bg-red-100 text-red-600',             dot: 'bg-red-400',            label: 'No marks'   },
+  full:    { bar: 'bg-success', chip: 'bg-success-soft text-success',         dot: 'bg-success',          label: 'Full marks' },
+  partial: { bar: 'bg-warning', chip: 'bg-warning-soft text-warning',         dot: 'bg-warning',          label: 'Partial'    },
+  none:    { bar: 'bg-destructive',   chip: 'bg-destructive-soft text-destructive',             dot: 'bg-destructive',            label: 'No marks'   },
   pending: { bar: 'bg-border',    chip: 'bg-muted text-muted-foreground',      dot: 'bg-muted-foreground/40', label: 'Pending'   },
   skipped: { bar: 'bg-border',    chip: 'bg-muted text-muted-foreground',      dot: 'bg-muted-foreground/30', label: 'Skipped'   },
 }
@@ -65,7 +65,7 @@ export default async function ResultsPage({ params, searchParams }: ResultsPageP
   const hasPassMark = test?.pass_mark != null && test.pass_mark > 0
   const hasPassed = hasPassMark && isEvaluated && obtained >= (test?.pass_mark ?? 0)
 
-  const scoreBarColor = pct >= 80 ? 'bg-green-500' : pct >= 50 ? 'bg-amber-400' : 'bg-red-400'
+  const scoreBarColor = pct >= 80 ? 'bg-success' : pct >= 50 ? 'bg-warning' : 'bg-destructive'
 
   return (
     <div className="max-w-2xl mx-auto space-y-5 pb-8">
@@ -76,11 +76,11 @@ export default async function ResultsPage({ params, searchParams }: ResultsPageP
         <div className="px-6 pt-7 pb-6 text-center border-b border-border">
           <div className={cn(
             'h-14 w-14 rounded-full mx-auto mb-4 flex items-center justify-center',
-            isEvaluated ? 'bg-green-100' : 'bg-orange-100',
+            isEvaluated ? 'bg-success-soft' : 'bg-primary-soft',
           )}>
             {isEvaluated
-              ? <CheckCircle2 className="h-7 w-7 text-green-600" />
-              : <Clock className="h-7 w-7 text-orange-500" />
+              ? <CheckCircle2 className="h-7 w-7 text-success" />
+              : <Clock className="h-7 w-7 text-primary" />
             }
           </div>
           <h1 className="text-xl font-bold">
@@ -117,7 +117,7 @@ export default async function ResultsPage({ params, searchParams }: ResultsPageP
               <div className="flex items-center justify-between text-sm pt-0.5">
                 <span className="text-muted-foreground">{pct}% score</span>
                 {hasPassMark && (
-                  <span className={cn('font-semibold', hasPassed ? 'text-green-600' : 'text-red-500')}>
+                  <span className={cn('font-semibold', hasPassed ? 'text-success' : 'text-destructive')}>
                     {hasPassed ? '✓ Passed' : '✗ Failed'}
                   </span>
                 )}
@@ -226,9 +226,9 @@ export default async function ResultsPage({ params, searchParams }: ResultsPageP
                             className={cn(
                               'text-sm px-3 py-2 rounded-lg border',
                               isEvaluated ? [
-                                isCorrect && isSelected  && 'bg-green-50 border-green-300 text-green-800',
-                                isCorrect && !isSelected && 'bg-green-50 border-green-200 text-green-700',
-                                !isCorrect && isSelected && 'bg-red-50 border-red-300 text-red-700',
+                                isCorrect && isSelected  && 'bg-success-soft border-success/40 text-success',
+                                isCorrect && !isSelected && 'bg-success-soft border-success/30 text-success',
+                                !isCorrect && isSelected && 'bg-destructive-soft border-destructive/40 text-destructive',
                                 !isCorrect && !isSelected && 'border-transparent text-muted-foreground',
                               ] : [
                                 isSelected && 'bg-primary/10 border-primary/40 text-foreground font-medium',
@@ -238,8 +238,8 @@ export default async function ResultsPage({ params, searchParams }: ResultsPageP
                           >
                             <span className="font-semibold mr-2">{String.fromCharCode(65 + i)}.</span>
                             {opt.text}
-                            {isEvaluated && isCorrect && <span className="ml-2 text-green-600 font-medium">✓</span>}
-                            {isEvaluated && !isCorrect && isSelected && <span className="ml-2 text-red-500 font-medium">✗</span>}
+                            {isEvaluated && isCorrect && <span className="ml-2 text-success font-medium">✓</span>}
+                            {isEvaluated && !isCorrect && isSelected && <span className="ml-2 text-destructive font-medium">✗</span>}
                             {!isEvaluated && isSelected && <span className="ml-2 text-primary text-xs font-medium">Your answer</span>}
                           </div>
                         )
@@ -267,11 +267,11 @@ export default async function ResultsPage({ params, searchParams }: ResultsPageP
 
                   {/* Teacher comment */}
                   {ans?.teacher_comment && (
-                    <div className="flex gap-3 p-3.5 bg-amber-50 border border-amber-200 rounded-lg">
-                      <MessageSquare className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+                    <div className="flex gap-3 p-3.5 bg-warning-soft border border-warning/30 rounded-lg">
+                      <MessageSquare className="h-4 w-4 text-warning shrink-0 mt-0.5" />
                       <div className="min-w-0">
-                        <p className="text-xs font-semibold text-amber-800 mb-1">Teacher&apos;s note</p>
-                        <p className="text-sm text-amber-700 leading-relaxed">{ans.teacher_comment}</p>
+                        <p className="text-xs font-semibold text-warning mb-1">Teacher&apos;s note</p>
+                        <p className="text-sm text-warning leading-relaxed">{ans.teacher_comment}</p>
                       </div>
                     </div>
                   )}

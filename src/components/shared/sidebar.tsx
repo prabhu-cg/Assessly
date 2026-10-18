@@ -12,7 +12,7 @@ import {
   LogIn,
 } from 'lucide-react'
 
-const teacherLinks = [
+export const teacherLinks = [
   { href: '/teacher/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/teacher/tests', label: 'Tests', icon: FileText },
   { href: '/teacher/students', label: 'Students', icon: Users },

@@ -15,10 +15,11 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Breadcrumbs } from '@/components/shared/breadcrumbs'
 import { QuestionForm } from '@/components/teacher/question-form'
 import { deleteQuestion, reorderQuestions } from '@/app/actions/questions'
 import { updateTestStatus } from '@/app/actions/tests'
-import { Pencil, Trash2, Plus, Share2, X, Eye, GripVertical, ChevronLeft } from 'lucide-react'
+import { Pencil, Trash2, Plus, Share2, X, Eye, GripVertical } from 'lucide-react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
@@ -80,7 +81,7 @@ function SortableQuestion({ question: q, index, onEdit, onDelete }: SortableQues
                       key={opt.id}
                       className={`text-xs px-2 py-1 rounded ${
                         opt.id === q.correct_option_id
-                          ? 'bg-green-50 text-green-700 border border-green-200'
+                          ? 'bg-success-soft text-success border border-success/30'
                           : 'text-muted-foreground'
                       }`}
                     >
@@ -315,10 +316,13 @@ export default function QuestionsPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="space-y-2">
-        <Link href={`/teacher/tests/${testId}`} className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
-          <ChevronLeft className="h-3.5 w-3.5" />
-          Back to details
-        </Link>
+        <Breadcrumbs
+          items={[
+            { label: 'Tests', href: '/teacher/tests' },
+            { label: test?.title ?? 'Test', href: `/teacher/tests/${testId}` },
+            { label: 'Questions' },
+          ]}
+        />
         <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <div className="flex items-center gap-2 flex-wrap">

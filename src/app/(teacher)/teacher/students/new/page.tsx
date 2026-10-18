@@ -11,6 +11,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { YearOptions } from '@/components/teacher/year-options'
+import { PageHeader } from '@/components/shared/page-header'
 import { Loader2, Copy, Check, Link2 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -35,7 +37,7 @@ export default function NewStudentPage() {
 
   const onSubmit = (data: CreateStudentInput) => {
     const formData = new FormData()
-    Object.entries(data).forEach(([k, v]) => formData.append(k, v))
+    Object.entries(data).forEach(([k, v]) => formData.append(k, v ?? ''))
 
     startTransition(async () => {
       const result = await createStudent(formData)
@@ -50,20 +52,21 @@ export default function NewStudentPage() {
 
   return (
     <div className="space-y-6 max-w-lg mx-auto">
-      <div>
-        <h1 className="text-2xl font-bold">Add Student</h1>
-        <p className="text-muted-foreground text-sm mt-1">Create a personal login link for a new student</p>
-      </div>
+      <PageHeader
+        title="Add Student"
+        description="Create a personal login link for a new student"
+        breadcrumbs={[{ label: 'Students', href: '/teacher/students' }, { label: 'Add student' }]}
+      />
 
       <Card>
         <CardContent className="pt-6">
           {generatedLink ? (
             <div className="space-y-4">
-              <div className="flex items-start gap-3 p-4 bg-green-50 border border-green-200 rounded-xl">
-                <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
+              <div className="flex items-start gap-3 p-4 bg-success-soft border border-success/30 rounded-xl">
+                <Check className="h-5 w-5 text-success shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm font-semibold text-green-800">Student account created!</p>
-                  <p className="text-xs text-green-700 mt-0.5">Share the link below with the student or their parent.</p>
+                  <p className="text-sm font-semibold text-success">Student account created!</p>
+                  <p className="text-xs text-success mt-0.5">Share the link below with the student or their parent.</p>
                 </div>
               </div>
               <div className="space-y-2">
@@ -104,8 +107,15 @@ export default function NewStudentPage() {
                 </div>
               </div>
 
-              <div className="rounded-lg bg-blue-50 border border-blue-200 p-3">
-                <p className="text-xs text-blue-800">
+              <div className="space-y-2">
+                <Label htmlFor="year_level">Year <span className="font-normal text-muted-foreground">(optional)</span></Label>
+                <Input id="year_level" list="year-options" autoComplete="off" {...register('year_level')} placeholder="e.g. Year 4" />
+                <YearOptions />
+                {errors.year_level && <p className="text-sm text-destructive">{errors.year_level.message}</p>}
+              </div>
+
+              <div className="rounded-lg bg-info-soft border border-info/30 p-3">
+                <p className="text-xs text-info">
                   A unique personal link will be generated. The student simply clicks their link — no password needed.
                 </p>
               </div>

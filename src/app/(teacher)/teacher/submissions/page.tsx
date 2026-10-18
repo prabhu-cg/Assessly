@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { PageHeader } from '@/components/shared/page-header'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -88,10 +89,11 @@ export default async function SubmissionsPage({ searchParams }: SubmissionsPageP
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Submissions</h1>
-        <p className="text-muted-foreground text-sm mt-1">{subtitle}</p>
-      </div>
+      <PageHeader
+        title="Submissions"
+        description={subtitle}
+        breadcrumbs={params.test ? [{ label: 'Submissions', href: '/teacher/submissions' }, { label: tests?.find(t => t.id === params.test)?.title ?? 'Test' }] : undefined}
+      />
 
       <form className="flex gap-3 flex-wrap">
         <Select name="test" defaultValue={params.test ?? ''}>
@@ -163,7 +165,7 @@ export default async function SubmissionsPage({ searchParams }: SubmissionsPageP
                           </span>
                         )}
                         {sub.focus_violations > 0 && (
-                          <Badge variant="outline" className="text-amber-600 border-amber-300 gap-1">
+                          <Badge variant="outline" className="text-warning border-warning/40 gap-1">
                             <AlertTriangle className="h-3 w-3" />
                             {sub.focus_violations}
                           </Badge>

@@ -12,7 +12,8 @@ import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Progress } from '@/components/ui/progress'
 import { Separator } from '@/components/ui/separator'
-import { AlertTriangle, CheckCircle2, ChevronLeft, Loader2, Save } from 'lucide-react'
+import { Breadcrumbs } from '@/components/shared/breadcrumbs'
+import { AlertTriangle, CheckCircle2, Loader2, Save } from 'lucide-react'
 import Link from 'next/link'
 
 interface Props {
@@ -99,12 +100,15 @@ export function EvaluationForm({ testId, submissionId, initialSubmission, initia
   }
 
   return (
-    <div className="space-y-6 max-w-3xl">
+    <div className="space-y-6">
       <div className="space-y-2">
-        <Link href="/teacher/submissions" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
-          <ChevronLeft className="h-3.5 w-3.5" />
-          Back to submissions
-        </Link>
+        <Breadcrumbs
+          items={[
+            { label: 'Submissions', href: '/teacher/submissions' },
+            { label: submission.test?.title ?? 'Test', href: `/teacher/submissions?test=${submission.test_id}` },
+            { label: submission.student?.full_name ?? 'Student' },
+          ]}
+        />
         <h1 className="text-xl font-bold">Evaluate Submission</h1>
         <p className="text-muted-foreground text-sm mt-1">
           {submission.student?.full_name} — {submission.test?.title}
@@ -117,46 +121,91 @@ export function EvaluationForm({ testId, submissionId, initialSubmission, initia
         </Alert>
       )}
 
-      <Card>
-        <CardContent className="p-4 space-y-2">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">
-              Evaluated: {evaluatedCount}/{answers.length} answers
-            </span>
-            <span className="font-semibold">
-              Score so far: {currentScore}/{totalMarks}
-            </span>
-          </div>
-          <Progress value={progressPct} />
-          <div className="flex items-center gap-2 flex-wrap">
-            <Badge variant={submission.status === 'evaluated' ? 'success' : 'secondary'}>
-              {submission.status}
-            </Badge>
-            {submission.focus_violations > 0 && (
-              <Badge variant="outline" className="text-amber-600 border-amber-300 gap-1">
-                <AlertTriangle className="h-3 w-3" />
-                {submission.focus_violations} focus violation{submission.focus_violations !== 1 ? 's' : ''}
-              </Badge>
-            )}
-            {submission.status === 'evaluated' && (
-              <span className="text-sm text-muted-foreground">
-                Final score: {submission.obtained_marks}/{submission.total_marks}
-                {submission.test?.pass_mark && (
-                  <> · {submission.obtained_marks >= submission.test.pass_mark ? '✓ Passed' : '✗ Failed'}</>
-                )}
-              </span>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
+        <aside className="lg:sticky lg:top-20 lg:order-2" aria-label="Submission summary">
+          <Card>
+            <CardContent className="space-y-4 p-5">
+              <div>
+                <p className="font-semibold leading-snug">{submission.student?.full_name}</p>
+                <p className="mt-0.5 truncate text-sm text-muted-foreground">{submission.test?.title}</p>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <Badge variant={submission.status === 'evaluated' ? 'success' : 'secondary'}>
+                    {submission.status.replace('_', ' ')}
+                  </Badge>
+                  {submission.focus_violations > 0 && (
+                    <Badge variant="outline" className="gap-1 border-warning/40 text-warning">
+                      <AlertTriangle className="h-3 w-3" />
+                      {submission.focus_violations} violation{submission.focus_violations !== 1 ? 's' : ''}
+                    </Badge>
+                  )}
+                </div>
+              </div>
 
+              <div className="space-y-2">
+                <div className="flex items-baseline justify-between text-sm">
+                  <span className="text-muted-foreground">Score so far</span>
+                  <span className="font-semibold tabular-nums">{currentScore} / {totalMarks}</span>
+                </div>
+                <Progress value={progressPct} />
+                <p className="text-xs tabular-nums text-muted-foreground">
+                  {evaluatedCount} of {answers.length} answers marked
+                  {submission.status === 'evaluated' && submission.test?.pass_mark != null && (
+                    <> · {submission.obtained_marks >= submission.test.pass_mark ? 'Passed' : 'Did not pass'} (pass mark {submission.test.pass_mark})</>
+                  )}
+                </p>
+              </div>
+
+              <nav aria-label="Jump to question">
+                <p className="mb-2 text-xs font-semibold text-muted-foreground">Questions</p>
+                <ul className="flex flex-wrap gap-1.5">
+                  {questions.map((q: any, i: number) => {
+                    const a = getAnswerForQuestion(q.id)
+                    const needsMarks = !!a && q.type !== 'mcq' && a.marks_obtained === null
+                    return (
+                      <li key={q.id}>
+                        <a
+                          href={`#q-${q.id}`}
+                          aria-label={`Question ${i + 1}${needsMarks ? ', needs marks' : ''}`}
+                          className={
+                            'flex size-8 items-center justify-center rounded-md text-xs font-bold tabular-nums outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/50 ' +
+                            (needsMarks
+                              ? 'border border-primary bg-card text-primary-text hover:bg-primary-soft'
+                              : 'bg-success-soft text-success hover:bg-success/20')
+                          }
+                        >
+                          {i + 1}
+                        </a>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </nav>
+
+              {submission.status === 'submitted' ? (
+                <div className="space-y-2 border-t pt-4">
+                  <Button className="w-full" onClick={handleFinalize} disabled={isPending}>
+                    {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle2 className="mr-2 h-4 w-4" />}
+                    Finalize evaluation
+                  </Button>
+                  <p className="text-xs text-muted-foreground">Marks the submission as evaluated and releases the final score.</p>
+                </div>
+              ) : submission.status === 'evaluated' ? (
+                <p className="border-t pt-4 text-sm font-semibold tabular-nums">
+                  Final score: {submission.obtained_marks} / {submission.total_marks}
+                </p>
+              ) : null}
+            </CardContent>
+          </Card>
+        </aside>
+
+        <div className="space-y-6 lg:order-1">
       {questions.map((question: any, index: number) => {
         const answer = getAnswerForQuestion(question.id)
         const isAutoGraded = question.type === 'mcq'
         const isCorrect = question.type === 'mcq' && answer?.selected_option_id === question.correct_option_id
 
         return (
-          <Card key={question.id}>
+          <Card key={question.id} id={`q-${question.id}`} className="scroll-mt-20">
             <CardHeader className="pb-3">
               <div className="flex items-start gap-3">
                 <span className="shrink-0 h-7 w-7 rounded-full bg-muted flex items-center justify-center text-sm font-medium">
@@ -180,9 +229,9 @@ export function EvaluationForm({ testId, submissionId, initialSubmission, initia
                       key={opt.id}
                       className={`text-sm px-3 py-2 rounded border ${
                         opt.id === question.correct_option_id
-                          ? 'border-green-300 bg-green-50 text-green-800'
+                          ? 'border-success/40 bg-success-soft text-success'
                           : opt.id === answer?.selected_option_id
-                          ? 'border-red-300 bg-red-50 text-red-800'
+                          ? 'border-destructive/40 bg-destructive-soft text-destructive'
                           : 'border-transparent bg-muted/50 text-muted-foreground'
                       }`}
                     >
@@ -261,24 +310,8 @@ export function EvaluationForm({ testId, submissionId, initialSubmission, initia
         )
       })}
 
-      {submission.status === 'submitted' && (
-        <div className="flex items-center gap-4 p-4 bg-muted/50 rounded-lg">
-          <div className="flex-1">
-            <p className="font-medium text-sm">Ready to finalize?</p>
-            <p className="text-xs text-muted-foreground">
-              This will mark the submission as evaluated and calculate the final score.
-            </p>
-          </div>
-          <Button onClick={handleFinalize} disabled={isPending}>
-            {isPending ? (
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-            ) : (
-              <CheckCircle2 className="h-4 w-4 mr-2" />
-            )}
-            Finalize Evaluation
-          </Button>
         </div>
-      )}
+      </div>
     </div>
   )
 }

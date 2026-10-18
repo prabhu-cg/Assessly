@@ -48,19 +48,19 @@ export default async function InstructionsPage({ params }: InstructionsPageProps
     existingSub?.status === 'submitted' || existingSub?.status === 'evaluated'
 
   return (
-    <div className="space-y-6 max-w-2xl">
-      <div>
-        <h1 className="text-2xl font-bold">{test.title}</h1>
+    <div className="mx-auto w-full max-w-2xl space-y-6">
+      <div className="text-center">
+        <h1 className="text-2xl font-bold tracking-tight">{test.title}</h1>
         {teacher?.full_name && (
           <p className="text-muted-foreground text-sm mt-1">by {teacher.full_name}</p>
         )}
       </div>
 
       {alreadySubmitted && (
-        <Card className="border-green-200 bg-green-50">
+        <Card className="border-success/30 bg-success-soft">
           <CardContent className="p-4 flex items-center gap-3">
-            <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0" />
-            <p className="text-sm text-green-800">You have already submitted this test.</p>
+            <CheckCircle2 className="h-5 w-5 text-success shrink-0" />
+            <p className="text-sm text-success">You have already submitted this test.</p>
           </CardContent>
         </Card>
       )}
@@ -104,7 +104,7 @@ export default async function InstructionsPage({ params }: InstructionsPageProps
               'You can navigate between questions and review before submitting.',
             ].map(rule => (
               <li key={rule} className="flex items-start gap-2">
-                <AlertCircle className="h-4 w-4 mt-0.5 text-orange-500 shrink-0" />
+                <AlertCircle className="h-4 w-4 mt-0.5 text-primary shrink-0" />
                 {rule}
               </li>
             ))}
@@ -112,15 +112,15 @@ export default async function InstructionsPage({ params }: InstructionsPageProps
         </CardContent>
       </Card>
 
-      <Card className="border-red-200 bg-red-50/50">
+      <Card className="border-destructive/30 bg-destructive-soft">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base flex items-center gap-2 text-red-700">
+          <CardTitle className="text-base flex items-center gap-2 text-destructive">
             <ShieldAlert className="h-4 w-4" />
             Exam Integrity Rules
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <ul className="space-y-2 text-sm text-red-700/80">
+          <ul className="space-y-2 text-sm text-destructive/90">
             {[
               'The test opens in fullscreen — do not exit fullscreen during the exam.',
               'Do not switch tabs, windows, or applications while the test is active.',

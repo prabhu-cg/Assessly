@@ -4,7 +4,8 @@ import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Clock, Hash, Users, BookOpen, ClipboardList, ChevronLeft } from 'lucide-react'
+import { Breadcrumbs } from '@/components/shared/breadcrumbs'
+import { Clock, Hash, Users, BookOpen, ClipboardList } from 'lucide-react'
 import { EditTestDrawer } from '@/components/teacher/edit-test-drawer'
 import { TestStudents, type EnrolledStudent, type BlockedStudent } from '@/components/teacher/test-students'
 
@@ -99,10 +100,7 @@ export default async function TestDetailPage({ params }: TestDetailPageProps) {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <Link href="/teacher/tests" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
-          <ChevronLeft className="h-3.5 w-3.5" />
-          Back to tests
-        </Link>
+        <Breadcrumbs items={[{ label: 'Tests', href: '/teacher/tests' }, { label: test.title }]} />
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div>
             <div className="flex items-center gap-2 mb-1 flex-wrap">

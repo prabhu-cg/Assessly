@@ -297,7 +297,7 @@ export default function TakeTestPage() {
               <Button
                 size="sm"
                 variant="outline"
-                className="h-7 px-2 text-xs text-amber-600 border-amber-400 hidden sm:flex gap-1"
+                className="h-7 px-2 text-xs text-warning border-warning/50 hidden sm:flex gap-1"
                 onClick={() => document.documentElement.requestFullscreen().catch(() => {})}
               >
                 <Maximize2 className="h-3 w-3" />
@@ -305,7 +305,7 @@ export default function TakeTestPage() {
               </Button>
             )}
             {violations > 0 && (
-              <Badge variant="outline" className="text-xs text-amber-600 border-amber-400 shrink-0 gap-1">
+              <Badge variant="outline" className="text-xs text-warning border-warning/50 shrink-0 gap-1">
                 <AlertTriangle className="h-3 w-3" />
                 {violations}/{MAX_VIOLATIONS}
               </Badge>
@@ -349,7 +349,7 @@ export default function TakeTestPage() {
                       {currentQuestion.marks} mark{currentQuestion.marks !== 1 ? 's' : ''}
                     </span>
                     {savedState[currentQuestion.id] && (
-                      <span className="text-xs text-green-600 flex items-center gap-1">
+                      <span className="text-xs text-success flex items-center gap-1">
                         <Save className="h-3 w-3" /> Saved
                       </span>
                     )}
@@ -415,7 +415,7 @@ export default function TakeTestPage() {
                 variant="ghost"
                 size="sm"
                 onClick={handleSkip}
-                className="text-muted-foreground hover:text-orange-600"
+                className="text-muted-foreground hover:text-primary-text"
               >
                 <SkipForward className="h-4 w-4 mr-1" />
                 Skip
@@ -440,8 +440,8 @@ export default function TakeTestPage() {
         <div className="hidden md:flex flex-col w-56 shrink-0 border-l bg-background p-4 space-y-4 sticky top-[7rem] h-fit">
           <div className="space-y-1">
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Progress</p>
-            <p className="text-xs text-green-700">{answeredCount} answered</p>
-            <p className="text-xs text-orange-700">{skippedCount} skipped</p>
+            <p className="text-xs text-success">{answeredCount} answered</p>
+            <p className="text-xs text-primary-text">{skippedCount} skipped</p>
             <p className="text-xs text-muted-foreground">{remainingCount} remaining</p>
           </div>
           <QuestionNavigator
@@ -469,13 +469,13 @@ export default function TakeTestPage() {
           </DialogHeader>
           <div className="space-y-4">
             <div className="grid grid-cols-3 gap-2 text-xs">
-              <div className="text-center p-2 bg-green-50 rounded">
-                <p className="text-lg font-bold text-green-700">{answeredCount}</p>
-                <p className="text-green-600">Answered</p>
+              <div className="text-center p-2 bg-success-soft rounded">
+                <p className="text-lg font-bold text-success">{answeredCount}</p>
+                <p className="text-success">Answered</p>
               </div>
-              <div className="text-center p-2 bg-orange-50 rounded">
-                <p className="text-lg font-bold text-orange-700">{skippedCount}</p>
-                <p className="text-orange-600">Skipped</p>
+              <div className="text-center p-2 bg-primary-soft rounded">
+                <p className="text-lg font-bold text-primary-text">{skippedCount}</p>
+                <p className="text-primary-text">Skipped</p>
               </div>
               <div className="text-center p-2 bg-muted rounded">
                 <p className="text-lg font-bold">{remainingCount}</p>
@@ -504,7 +504,7 @@ export default function TakeTestPage() {
       <Dialog open={sessionHijacked} onOpenChange={() => {}}>
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-red-600">
+            <DialogTitle className="flex items-center gap-2 text-destructive">
               <AlertTriangle className="h-5 w-5" />
               Session Conflict
             </DialogTitle>
@@ -527,7 +527,7 @@ export default function TakeTestPage() {
       <Dialog open={showViolationWarning} onOpenChange={setShowViolationWarning}>
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-amber-600">
+            <DialogTitle className="flex items-center gap-2 text-warning">
               <AlertTriangle className="h-5 w-5" />
               Focus Lost Detected
             </DialogTitle>
@@ -536,12 +536,12 @@ export default function TakeTestPage() {
             </DialogDescription>
           </DialogHeader>
           <div className="text-center py-3 space-y-1">
-            <p className="text-4xl font-bold text-amber-600">{violations}</p>
+            <p className="text-4xl font-bold text-warning">{violations}</p>
             <p className="text-sm text-muted-foreground">violation{violations !== 1 ? 's' : ''} recorded</p>
             <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
-              Your test will be <span className="font-semibold text-red-500">automatically submitted</span> after{' '}
+              Your test will be <span className="font-semibold text-destructive">automatically submitted</span> after{' '}
               {MAX_VIOLATIONS} violations. You have{' '}
-              <span className="font-semibold text-red-500">{MAX_VIOLATIONS - violations}</span> remaining.
+              <span className="font-semibold text-destructive">{MAX_VIOLATIONS - violations}</span> remaining.
             </p>
           </div>
           <DialogFooter>
@@ -564,13 +564,13 @@ export default function TakeTestPage() {
 
           <div className="space-y-4">
             <div className="grid grid-cols-3 gap-3">
-              <div className="text-center p-3 bg-green-50 rounded-lg">
-                <p className="text-2xl font-bold text-green-700">{answeredCount}</p>
-                <p className="text-xs text-green-600">Answered</p>
+              <div className="text-center p-3 bg-success-soft rounded-lg">
+                <p className="text-2xl font-bold text-success">{answeredCount}</p>
+                <p className="text-xs text-success">Answered</p>
               </div>
-              <div className="text-center p-3 bg-orange-50 rounded-lg">
-                <p className="text-2xl font-bold text-orange-700">{skippedCount}</p>
-                <p className="text-xs text-orange-600">Skipped</p>
+              <div className="text-center p-3 bg-primary-soft rounded-lg">
+                <p className="text-2xl font-bold text-primary-text">{skippedCount}</p>
+                <p className="text-xs text-primary-text">Skipped</p>
               </div>
               <div className="text-center p-3 bg-muted rounded-lg">
                 <p className="text-2xl font-bold">{remainingCount}</p>

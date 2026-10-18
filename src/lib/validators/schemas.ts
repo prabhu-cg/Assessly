@@ -8,11 +8,13 @@ export const loginSchema = z.object({
 export const createStudentSchema = z.object({
   first_name: z.string().min(1, 'First name is required').max(50),
   last_name: z.string().min(1, 'Last name is required').max(50),
+  year_level: z.string().trim().max(30, 'Keep the year under 30 characters').optional(),
 })
 
 export const updateStudentSchema = z.object({
   first_name: z.string().min(1, 'First name is required').max(50),
   last_name: z.string().min(1, 'Last name is required').max(50),
+  year_level: z.string().trim().max(30, 'Keep the year under 30 characters').optional(),
 })
 
 export const testSchema = z.object({

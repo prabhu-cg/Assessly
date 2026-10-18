@@ -1,8 +1,10 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent } from '@/components/ui/card'
+import { PageHeader } from '@/components/shared/page-header'
+import type { StudentRow, StudentTestEntry } from '@/components/teacher/student-types'
+import { StudentsBrowser } from '@/components/teacher/students-browser'
 import { Users } from 'lucide-react'
-import { StudentActions } from '@/components/teacher/student-actions'
 import { CreateStudentDrawer } from '@/components/teacher/create-student-drawer'
 
 export default async function StudentsPage({
@@ -15,26 +17,66 @@ export default async function StudentsPage({
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: students } = await supabase
+  type Base = { id: string; full_name: string; created_at: string; year_level?: string | null }
+  const first = await supabase
     .from('profiles')
-    .select('id, full_name, created_at')
+    .select('id, full_name, created_at, year_level')
     .eq('created_by', user.id)
     .eq('role', 'student')
     .order('full_name')
+  let students = first.data
+  if (first.error) {
+    // year_level migration not applied yet: fall back so the page still works.
+    const fallback = await supabase
+      .from('profiles')
+      .select('id, full_name, created_at')
+      .eq('created_by', user.id)
+      .eq('role', 'student')
+      .order('full_name')
+    students = fallback.data as typeof students
+  }
+  const list = (students ?? []) as Base[]
+  const ids = list.map(s => s.id)
+
+  const [{ data: access }, { data: subs }] = ids.length
+    ? await Promise.all([
+        supabase.from('test_access').select('student_id, test:tests(id, title, teacher_id)').in('student_id', ids),
+        supabase.from('submissions')
+          .select('id, test_id, student_id, status, obtained_marks, total_marks, submitted_at')
+          .in('student_id', ids),
+      ])
+    : [{ data: [] }, { data: [] }]
+
+  const subMap = new Map((subs ?? []).map(x => [`${x.student_id}:${x.test_id}`, x]))
+  const rows: StudentRow[] = list.map(st => ({
+    id: st.id,
+    full_name: st.full_name,
+    created_at: st.created_at,
+    year_level: st.year_level ?? null,
+    tests: (access ?? [])
+      .filter(a => a.student_id === st.id)
+      .flatMap(a => {
+        const t = Array.isArray(a.test) ? a.test[0] : a.test
+        if (!t || t.teacher_id !== user.id) return []
+        const sub = subMap.get(`${st.id}:${t.id}`)
+        const state: StudentTestEntry['state'] =
+          sub?.status === 'evaluated' ? 'marked' : sub?.status === 'submitted' ? 'to_grade' : sub?.status === 'in_progress' ? 'in_progress' : 'not_started'
+        return [{
+          testId: t.id, submissionId: sub?.id ?? null, title: t.title, state,
+          obtained: sub?.obtained_marks ?? null, total: sub?.total_marks ?? null, submittedAt: sub?.submitted_at ?? null,
+        }]
+      }),
+  }))
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Students</h1>
-          <p className="text-muted-foreground text-sm mt-1">
-            {students?.length ?? 0} student{students?.length !== 1 ? 's' : ''} registered
-          </p>
-        </div>
-        <CreateStudentDrawer defaultOpen={params.new === 'true'} />
-      </div>
+      <PageHeader
+        title="Students"
+        description={`${list.length} student${list.length !== 1 ? 's' : ''} registered`}
+        actions={<CreateStudentDrawer defaultOpen={params.new === 'true'} />}
+      />
 
-      {students?.length === 0 && (
+      {list.length === 0 && (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-16 text-center">
             <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center mb-4">
@@ -47,23 +89,7 @@ export default async function StudentsPage({
         </Card>
       )}
 
-      <div className="grid gap-3">
-        {students?.map(student => (
-          <Card key={student.id}>
-            <CardContent className="p-4 flex items-center gap-4">
-              <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center shrink-0">
-                <span className="text-sm font-semibold text-muted-foreground">
-                  {student.full_name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
-                </span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-medium">{student.full_name}</p>
-              </div>
-              <StudentActions studentId={student.id} studentName={student.full_name} addedDate={student.created_at} />
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      {(list.length) > 0 && <StudentsBrowser students={rows} />}
     </div>
   )
 }

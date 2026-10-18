@@ -7,8 +7,22 @@ import { Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { ConfirmDialog } from '@/components/shared/confirm-dialog'
 
-export function DeleteTestButton({ testId, testTitle }: { testId: string; testTitle: string }) {
-  const [open, setOpen] = useState(false)
+interface DeleteTestButtonProps {
+  testId: string
+  testTitle: string
+  /** Controlled mode: the parent owns open state (e.g. a card menu) and no trigger button is rendered. */
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+}
+
+export function DeleteTestButton({ testId, testTitle, open: controlledOpen, onOpenChange }: DeleteTestButtonProps) {
+  const controlled = controlledOpen !== undefined
+  const [internalOpen, setInternalOpen] = useState(false)
+  const open = controlled ? controlledOpen : internalOpen
+  const setOpen = (next: boolean) => {
+    if (!controlled) setInternalOpen(next)
+    onOpenChange?.(next)
+  }
   const [isPending, startTransition] = useTransition()
 
   const handleConfirm = () => {
@@ -24,14 +38,17 @@ export function DeleteTestButton({ testId, testTitle }: { testId: string; testTi
 
   return (
     <>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-red-50"
-        onClick={() => setOpen(true)}
-      >
-        <Trash2 className="h-4 w-4" />
-      </Button>
+      {!controlled && (
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Delete test"
+          className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive-soft"
+          onClick={() => setOpen(true)}
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      )}
 
       <ConfirmDialog
         open={open}

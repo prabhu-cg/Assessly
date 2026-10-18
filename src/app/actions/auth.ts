@@ -68,6 +68,7 @@ export async function createStudent(formData: FormData) {
   const parsed = createStudentSchema.safeParse({
     first_name: formData.get('first_name'),
     last_name: formData.get('last_name'),
+    year_level: formData.get('year_level') || undefined,
   })
 
   if (!parsed.success) {
@@ -82,6 +83,7 @@ export async function createStudent(formData: FormData) {
   const shortId = accessToken.replace(/-/g, '').slice(0, 8)
   const email = `${sanitize(parsed.data.first_name)}.${sanitize(parsed.data.last_name)}.${shortId}@assessly.internal`
 
+  let warning: string | undefined
   const admin = createAdminClient()
   const { data, error } = await admin.auth.admin.createUser({
     email,
@@ -102,10 +104,18 @@ export async function createStudent(formData: FormData) {
       .from('profiles')
       .update({ created_by: user.id, access_token: accessToken })
       .eq('id', data.user.id)
+
+    if (parsed.data.year_level) {
+      const { error: yearError } = await admin
+        .from('profiles')
+        .update({ year_level: parsed.data.year_level })
+        .eq('id', data.user.id)
+      if (yearError) warning = 'Student added, but the year was not saved. Run the year_level migration in Supabase.'
+    }
   }
 
   revalidatePath('/teacher/students')
-  return { success: true, accessToken }
+  return { success: true, accessToken, warning }
 }
 
 export async function getStudentAccessLink(studentId: string) {
@@ -144,6 +154,7 @@ export async function updateStudent(studentId: string, formData: FormData) {
   const parsed = updateStudentSchema.safeParse({
     first_name: formData.get('first_name'),
     last_name: formData.get('last_name'),
+    year_level: formData.get('year_level') ?? undefined,
   })
   if (!parsed.success) return { error: parsed.error.issues[0].message }
 
@@ -167,8 +178,17 @@ export async function updateStudent(studentId: string, formData: FormData) {
 
   if (error) return { error: error.message }
 
+  let warning: string | undefined
+  if (parsed.data.year_level !== undefined) {
+    const { error: yearError } = await admin
+      .from('profiles')
+      .update({ year_level: parsed.data.year_level || null })
+      .eq('id', studentId)
+    if (yearError) warning = 'Name saved, but the year was not. Run the year_level migration in Supabase.'
+  }
+
   revalidatePath('/teacher/students')
-  return { success: true }
+  return { success: true, warning }
 }
 
 export async function deleteStudent(studentId: string) {

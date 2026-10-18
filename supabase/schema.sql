@@ -16,11 +16,14 @@ create table public.profiles (
   role         text not null check (role in ('teacher', 'student')),
   created_by   uuid references public.profiles(id) on delete set null,
   access_token uuid unique default gen_random_uuid(),
+  year_level   text,
   created_at   timestamptz not null default now()
 );
 
 -- Migration (run if table already exists):
 -- alter table public.profiles add column if not exists access_token uuid unique default gen_random_uuid();
+-- Student year / class label shown on the Students page (e.g. 'Year 4'). Run this once in the Supabase SQL editor:
+-- alter table public.profiles add column if not exists year_level text;
 
 -- Trigger: auto-create profile when a user signs up via Supabase Auth
 create or replace function public.handle_new_user()

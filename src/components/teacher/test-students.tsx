@@ -209,7 +209,7 @@ export function TestStudents({ testId, testStatus, enrolled, available, blocked 
                       onClick={() => handleRemove(student.id, student.full_name)}
                       disabled={isRemoving}
                       title="Remove from test"
-                      className="h-7 w-7 flex items-center justify-center rounded-md text-muted-foreground hover:text-destructive hover:bg-red-50 transition-colors disabled:opacity-40"
+                      className="h-7 w-7 flex items-center justify-center rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive-soft transition-colors disabled:opacity-40"
                     >
                       {isRemoving
                         ? <Loader2 className="h-3.5 w-3.5 animate-spin" />

@@ -1,7 +1,8 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { TopNav } from '@/components/shared/top-nav'
-import { Footer } from '@/components/shared/footer'
+import { AppSidebar, AppTopbar } from '@/components/shared/app-sidebar'
+import { PageTransition } from '@/components/shared/page-transition'
+import { MobileNav } from '@/components/shared/sidebar'
 import type { Profile } from '@/types/database'
 
 export default async function TeacherLayout({ children }: { children: React.ReactNode }) {
@@ -15,12 +16,15 @@ export default async function TeacherLayout({ children }: { children: React.Reac
   if (!profile || profile.role !== 'teacher') redirect('/student/dashboard')
 
   return (
-    <div className="min-h-screen flex flex-col bg-surface">
-      <TopNav profile={profile as Profile} />
-      <main className="flex-1 px-6 py-8 max-w-screen-xl mx-auto w-full">
-        {children}
-      </main>
-      <Footer />
+    <div className="min-h-screen flex bg-background">
+      <AppSidebar />
+      <div className="flex-1 min-w-0 flex flex-col">
+        <AppTopbar profile={profile as Profile} />
+        <main className="flex-1 px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8 max-w-6xl mx-auto w-full">
+          <PageTransition>{children}</PageTransition>
+        </main>
+      </div>
+      <MobileNav role="teacher" />
     </div>
   )
 }

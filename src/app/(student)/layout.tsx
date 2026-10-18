@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { TopNav } from '@/components/shared/top-nav'
+import { StudentTopbar } from '@/components/shared/student-topbar'
 import { Footer } from '@/components/shared/footer'
 import type { Profile } from '@/types/database'
 
@@ -16,8 +16,8 @@ export default async function StudentLayout({ children }: { children: React.Reac
 
   return (
     <div className="min-h-screen flex flex-col bg-surface">
-      <TopNav profile={profile as Profile} />
-      <main className="flex-1 px-6 py-8 max-w-screen-xl mx-auto w-full">
+      <StudentTopbar fullName={(profile as Profile).full_name} />
+      <main className="flex-1 px-6 py-8 max-w-5xl mx-auto w-full">
         {children}
       </main>
       <Footer />
