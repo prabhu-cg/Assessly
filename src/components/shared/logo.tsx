@@ -6,7 +6,7 @@ export function Wordmark({ className }: { className?: string }) {
       <LogoMark className="h-7 w-auto" />
       <div className="flex flex-col">
         <span className="text-lg font-bold tracking-tight leading-none">Assessly</span>
-        <span className="mt-0.5 text-[11px] font-semibold text-muted-foreground">
+        <span className="mt-0.5 hidden text-[11px] font-semibold text-muted-foreground sm:block">
           Assess smarter. Teach better.
         </span>
       </div>

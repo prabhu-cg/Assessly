@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-18T17:07:56.448691+00:00",
+  "generatedAt": "2026-10-18T20:27:13.860148+00:00",
   "title": "Design System: Assessly",
   "extensions": {
     "colorMeta": {
@@ -74,14 +74,19 @@
     },
     "shadows": [
       {
-        "name": "card-hover",
-        "value": "0 2px 16px rgba(0,0,0,0.07)",
-        "purpose": "Faint lift on card hover."
+        "name": "card",
+        "value": "0 1px 2px 0 #1010140a, 0 1px 3px 0 #1010140f",
+        "purpose": "Faint resting shadow on entity cards and student rows (shadow-card)."
+      },
+      {
+        "name": "raised",
+        "value": "0 2px 4px -1px #1010140f, 0 8px 24px -6px #1010141f",
+        "purpose": "Hover state of cards (shadow-raised)."
       },
       {
         "name": "dropdown",
         "value": "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)",
-        "purpose": "Profile dropdown (shadow-lg)."
+        "purpose": "Account and row menus (shadow-lg)."
       },
       {
         "name": "drawer",
@@ -91,14 +96,34 @@
     ],
     "motion": [
       {
+        "name": "page-fade",
+        "value": "180ms ease-out, opacity only",
+        "purpose": "Route-change fade. No transform: it would trap fixed drawers."
+      },
+      {
+        "name": "rise-in",
+        "value": "240ms cubic-bezier(0.16, 1, 0.3, 1), 6px rise, 35ms stagger capped at 8 steps",
+        "purpose": "Cards and rows entering as a list."
+      },
+      {
+        "name": "card-hover",
+        "value": "200ms: border to primary, shadow-raised, translateY(-2px)",
+        "purpose": "Hover lift on cards and student rows; off under reduced motion."
+      },
+      {
         "name": "drawer-slide",
         "value": "300ms ease-in-out",
         "purpose": "Drawer translate and overlay fade."
       },
       {
-        "name": "state",
-        "value": "150ms ease",
-        "purpose": "Hover and colour transitions."
+        "name": "switch-thumb",
+        "value": "200ms ease-out",
+        "purpose": "Switch thumb slide."
+      },
+      {
+        "name": "pulse-dot",
+        "value": "1.8s ease-in-out infinite, opacity to 0.35",
+        "purpose": "In-progress test marker; stops under reduced motion."
       }
     ],
     "breakpoints": [
@@ -126,32 +151,32 @@
       "kind": "button",
       "refersTo": "button-primary",
       "description": "The one terracotta action per view.",
-      "html": "<button class=\"ds-btn-primary\">New Test</button>",
-      "css": ".ds-btn-primary{background:var(--primary);color:#fff;height:42px;padding:0 16px;border:1px solid transparent;border-radius:6px;font:500 14px Manrope,system-ui,sans-serif;cursor:pointer;transition:background .15s}.ds-btn-primary:hover{background:var(--primary-hover)}.ds-btn-primary:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in oklab,var(--ring) 50%,transparent)}"
+      "html": "<button class=\"ds-btn-primary\">New test</button>",
+      "css": ".ds-btn-primary{background:var(--primary);color:#fff;height:42px;padding:0 16px;border:1px solid transparent;border-radius:6px;font:500 14px Manrope,system-ui,sans-serif;cursor:pointer;transition:background .15s}.ds-btn-primary:hover{background:var(--primary-hover)}.ds-btn-primary:active{transform:translateY(1px)}.ds-btn-primary:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in oklab,var(--ring) 50%,transparent)}"
     },
     {
       "name": "Outline Button",
       "kind": "button",
       "refersTo": "button-outline",
       "description": "Secondary action on white or cream.",
-      "html": "<button class=\"ds-btn-outline\">Cancel</button>",
-      "css": ".ds-btn-outline{background:var(--background);color:var(--foreground);height:42px;padding:0 16px;border:1px solid var(--border);border-radius:6px;font:500 14px Manrope,system-ui,sans-serif;cursor:pointer;transition:background .15s}.ds-btn-outline:hover{background:var(--muted)}.ds-btn-outline:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in oklab,var(--ring) 50%,transparent)}"
+      "html": "<button class=\"ds-btn-outline\">Add student</button>",
+      "css": ".ds-btn-outline{background:var(--card);color:var(--foreground);height:42px;padding:0 16px;border:1px solid var(--border);border-radius:6px;font:500 14px Manrope,system-ui,sans-serif;cursor:pointer;transition:background .15s}.ds-btn-outline:hover{background:var(--muted)}.ds-btn-outline:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in oklab,var(--ring) 50%,transparent)}"
     },
     {
       "name": "Text Input",
       "kind": "input",
       "refersTo": "input-control",
-      "description": "White field with hairline border and terracotta focus.",
-      "html": "<input class=\"ds-input\" placeholder=\"you@example.com\"/>",
-      "css": ".ds-input{height:40px;width:220px;padding:4px 10px;background:var(--card);color:var(--foreground);border:1px solid var(--input);border-radius:8px;font:400 16px Manrope,system-ui,sans-serif;outline:none;transition:border-color .15s,box-shadow .15s}.ds-input::placeholder{color:var(--muted-foreground)}.ds-input:focus-visible{border-color:var(--ring);box-shadow:0 0 0 3px color-mix(in oklab,var(--ring) 50%,transparent)}"
+      "description": "White field, hairline border, terracotta focus. Selects and textareas share it.",
+      "html": "<input class=\"ds-input\" placeholder=\"Search students\"/>",
+      "css": ".ds-input{height:40px;width:240px;padding:4px 10px;background:var(--card);color:var(--foreground);border:1px solid var(--input);border-radius:8px;font:400 16px Manrope,system-ui,sans-serif;outline:none;transition:border-color .15s,box-shadow .15s}.ds-input::placeholder{color:var(--muted-foreground)}.ds-input:focus-visible{border-color:var(--ring);box-shadow:0 0 0 3px color-mix(in oklab,var(--ring) 50%,transparent)}"
     },
     {
-      "name": "Card",
+      "name": "Entity Card",
       "kind": "card",
       "refersTo": "card",
-      "description": "White working surface on the cream page.",
-      "html": "<div class=\"ds-card\"><p class=\"ds-card-title\">Recent Tests</p><p class=\"ds-card-meta\">Algebra Midterm \u00b7 45 min</p></div>",
-      "css": ".ds-card{background:var(--card);color:var(--card-foreground);border-radius:12px;padding:16px;box-shadow:0 0 0 1px color-mix(in oklab,var(--foreground) 10%,transparent);transition:box-shadow .2s;font-family:Manrope,system-ui,sans-serif}.ds-card:hover{box-shadow:0 0 0 1px color-mix(in oklab,var(--primary) 50%,transparent),0 2px 16px rgba(0,0,0,.07)}.ds-card-title{margin:0;font-weight:600;font-size:16px}.ds-card-meta{margin:4px 0 0;font-size:12px;color:var(--muted-foreground)}"
+      "description": "Doxa-style card for tests and students: faint resting shadow, terracotta border and 2px lift on hover, pinned footer.",
+      "html": "<div class=\"ds-ec\"><div class=\"ds-ec-top\"><div><span class=\"ds-ec-badge\">published</span><h3 class=\"ds-ec-title\">Year 4 Maths</h3><p class=\"ds-ec-sub\">Year 4</p></div><span class=\"ds-ec-menu\" aria-hidden=\"true\">&#8942;</span></div><p class=\"ds-ec-meta\">10 min &middot; 4 questions &middot; AB12CD34</p><p class=\"ds-ec-foot\">Created 3 days ago</p></div>",
+      "css": ".ds-ec{width:300px;background:var(--surface-raised);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:0 1px 2px 0 #1010140a,0 1px 3px 0 #1010140f;transition:border-color .2s,box-shadow .2s,transform .2s;font-family:Manrope,system-ui,sans-serif}.ds-ec:hover{border-color:var(--primary);box-shadow:0 2px 4px -1px #1010140f,0 8px 24px -6px #1010141f;transform:translateY(-2px)}.ds-ec-top{display:flex;justify-content:space-between;align-items:flex-start}.ds-ec-badge{display:inline-block;height:20px;padding:0 8px;border-radius:9999px;background:var(--success-soft);color:var(--success);font-size:12px;font-weight:500;line-height:20px}.ds-ec-title{margin:8px 0 0;font-size:16px;font-weight:600;line-height:1.35}.ds-ec-sub{margin:2px 0 0;font-size:14px;color:var(--muted-foreground)}.ds-ec-menu{color:var(--muted-foreground);font-size:18px;line-height:1}.ds-ec-meta{margin:16px 0 0;font-size:12px;color:var(--muted-foreground)}.ds-ec-foot{margin:16px 0 0;padding-top:12px;border-top:1px solid var(--border);font-size:12px;color:var(--muted-foreground)}"
     },
     {
       "name": "Status Badge",
@@ -162,65 +187,92 @@
       "css": ".ds-badge{display:inline-flex;align-items:center;height:20px;padding:2px 8px;border-radius:9999px;background:var(--success-soft);color:var(--success);font:500 12px Manrope,system-ui,sans-serif}"
     },
     {
-      "name": "Top Bar",
+      "name": "Teacher Sidebar",
       "kind": "nav",
       "refersTo": "nav-bar",
-      "description": "Sticky white bar with mark, wordmark and user avatar.",
-      "html": "<div class=\"ds-nav\"><span class=\"ds-nav-brand\">Assessly</span><span class=\"ds-nav-avatar\">PC</span></div>",
-      "css": ".ds-nav{display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 24px;background:var(--background);border-bottom:1px solid var(--border);font-family:Manrope,system-ui,sans-serif}.ds-nav-brand{font-weight:700;font-size:16px;letter-spacing:-.025em;color:var(--foreground)}.ds-nav-avatar{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:9999px;background:var(--primary);color:#fff;font-size:12px;font-weight:700}"
+      "description": "Cream sidebar: logo row aligned with the top bar, quiet foreground-wash active item.",
+      "html": "<nav class=\"ds-side\"><div class=\"ds-side-logo\">Assessly</div><a class=\"ds-side-a ds-on\">Dashboard</a><a class=\"ds-side-a\">Tests</a><a class=\"ds-side-a\">Students</a><a class=\"ds-side-a\">Submissions</a></nav>",
+      "css": ".ds-side{width:240px;background:var(--surface);border-right:1px solid var(--border);padding-bottom:12px;font-family:Manrope,system-ui,sans-serif}.ds-side-logo{height:56px;display:flex;align-items:center;padding:0 16px;border-bottom:1px solid var(--border);font-weight:700;font-size:16px;letter-spacing:-.025em}.ds-side-a{display:block;margin:4px 12px 0;padding:8px 12px;border-radius:6px;font-size:14px;font-weight:500;color:var(--muted-foreground);transition:background .15s,color .15s}.ds-side-a:first-of-type{margin-top:12px}.ds-side-a:hover{background:color-mix(in oklab,var(--foreground) 5%,transparent);color:var(--foreground)}.ds-side-a.ds-on{background:color-mix(in oklab,var(--foreground) 5%,transparent);color:var(--foreground);font-weight:600}"
+    },
+    {
+      "name": "Student Test Row",
+      "kind": "custom",
+      "refersTo": "card",
+      "description": "72px compact row with one 44px action; scales to long lists.",
+      "html": "<div class=\"ds-row\"><div class=\"ds-row-text\"><p class=\"ds-row-title\">Year 3 test</p><p class=\"ds-row-meta\">60 min &middot; In progress</p></div><span class=\"ds-row-act\">Continue</span></div>",
+      "css": ".ds-row{display:flex;align-items:center;gap:16px;min-height:72px;width:420px;padding:12px 16px;background:var(--surface-raised);border:1px solid var(--border);border-radius:16px;box-shadow:0 1px 2px 0 #1010140a,0 1px 3px 0 #1010140f;font-family:Manrope,system-ui,sans-serif;transition:border-color .2s,transform .2s}.ds-row:hover{border-color:var(--primary);transform:translateY(-2px)}.ds-row-text{flex:1;min-width:0}.ds-row-title{margin:0;font-size:16px;font-weight:600}.ds-row-meta{margin:2px 0 0;font-size:14px;color:var(--muted-foreground)}.ds-row-act{display:inline-flex;align-items:center;height:44px;padding:0 16px;border-radius:8px;background:var(--primary);color:#fff;font-size:14px;font-weight:700}"
+    },
+    {
+      "name": "Switch",
+      "kind": "custom",
+      "refersTo": "button-primary",
+      "description": "Accessible on/off switch (newest-first sort), terracotta when on.",
+      "html": "<span class=\"ds-switch\"><span class=\"ds-switch-thumb\"></span></span>",
+      "css": ".ds-switch{position:relative;display:inline-flex;align-items:center;width:36px;height:20px;border-radius:9999px;background:var(--primary);cursor:pointer}.ds-switch-thumb{position:absolute;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transform:translateX(16px);transition:transform .2s ease-out}"
     }
   ],
   "narrative": {
     "northStar": "The Working Ledger",
-    "overview": "Assessly's world is warm paper and one burnt-orange voice. Pages sit on a cream ground; the things people work with are white and held by parchment hairlines. A single terracotta accent means act here or this is yours. Manrope carries every word, and tokens are shared with Doxa.",
+    "overview": "**Creative North Star: \"The Working Ledger\"**\n\nAssessly's world is warm paper and one burnt-orange voice. Cream (`surface`, #f4f2ea) is the chrome: the teacher sidebar, the student page ground, footers and landing bands. The things people actually work with (the teacher's content area, cards, forms, question sheets) are white and held by hairline borders the colour of old parchment. A single terracotta accent (`primary`, #c74504) means \"act here\" or \"this is yours\". Manrope carries every word. The tokens are shared with the Doxa system so both products read as one family.\n\nThe system covers two modes. The landing page persuades: cream bands alternate with white, the headline carries one terracotta phrase, and a MacBook-framed dashboard shows the product. The teacher app operates from a cream sidebar beside a white content area with entity cards; the student app from a white top bar over a cream page with compact test rows. Both stay scannable at any list length: search, grouping and \"show more\" instead of ever-longer pages. Brand lives in the details (the shield-check mark, the accent on the primary action, the focus ring), not in decoration. Sign-in is the one place that leaves the page plane for imagery: a terracotta-tinted photograph beside the form.",
     "keyCharacteristics": [
-      "One accent, terracotta.",
-      "Cream ground, white working surfaces, hairline rules.",
-      "Manrope only, small fixed type scale.",
-      "Shared teacher and student shell.",
-      "Sign-in pairs a tinted photograph panel with the form; student sign-in stays a centred card.",
-      "Dark mode is a warm brown-black ramp."
+      "One accent, terracotta, used for the primary action, focus, the logo mark and key numbers.",
+      "Cream chrome, white working surfaces, hairline rules; depth is mostly tonal, with one faint resting shadow on cards.",
+      "Manrope only, a small fixed type scale, weight (not size) for hierarchy.",
+      "Teacher shell: a cream 240px sidebar (logo, four nav items), a white 56px top bar with the account menu at top right, a white content area, max 1152px (6xl) content, no footer. Student shell: a white 64px top bar (logo, My tests, Join a test, name and avatar) over the cream page, 1024px (5xl) content.",
+      "Motion confirms state and keeps continuity: a 180ms page fade, a capped card/row stagger, hover lifts, drawer slides. Nothing blocks the user, and reduced motion keeps meaning without travel.",
+      "Sign-in pairs a tinted photograph panel (teacher only) with the form on cream; student sign-in stays a single centred card.",
+      "Light and dark: dark is a warm brown-black ramp (`#12100e` ground, `#1c1916` cards), never neutral grey."
     ],
     "rules": [
       {
         "name": "The One Voice Rule",
-        "body": "Terracotta is the only accent. It marks the primary action, the focus state and the brand mark.",
+        "body": "Terracotta is the only accent. It marks the primary action, the focus state and the brand mark; it is never a second decorative colour next to blues or greens.",
         "section": "colors"
       },
       {
-        "name": "The Cream Ground Rule",
-        "body": "Page grounds are surface; working surfaces are card. Never hardcode a cream hex.",
+        "name": "The Cream Chrome Rule",
+        "body": "Chrome is `surface` (teacher sidebar, student page ground, footers); working surfaces are white. A card on a white teacher page is separated by its hairline border and faint shadow, so cards always carry both. Never hardcode a cream hex: use `bg-surface` / `var(--surface)`.",
         "section": "colors"
       },
       {
         "name": "The Token Only Rule",
-        "body": "No literal brand hex or bg-white in components; use tokens.",
+        "body": "No literal `#C74504`, `#FFF9EB` or `bg-white` in components. Use `primary`, `surface`, `card`, `popover` so dark mode and future re-theming hold.",
         "section": "colors"
       },
       {
         "name": "The Weight Not Size Rule",
-        "body": "Emphasis comes from weight and ink vs ink-muted; no fluid type.",
+        "body": "Emphasis comes from weight and `ink` vs `ink-muted`; there is no fluid type and no tier above Display.",
         "section": "typography"
       },
       {
-        "name": "The Flat At Rest Rule",
-        "body": "Cards, rows, badges and inputs have no resting shadow.",
+        "name": "The Tabular Numbers Rule",
+        "body": "Scores, marks, counts and timers are numbers people compare; give them `tabular-nums`.",
+        "section": "typography"
+      },
+      {
+        "name": "The Quiet Elevation Rule",
+        "body": "Rows, badges and inputs have no resting shadow; cards carry only the faint `shadow-card`. Real lift belongs to hover, the dropdown, the drawer and the device mockup.",
         "section": "elevation"
       }
     ],
     "dos": [
-      "Do use bg-surface for page grounds and bg-card for cards, forms and popovers.",
-      "Do keep terracotta to the primary action, focus, the mark and one emphasis phrase per view.",
-      "Do separate surfaces with 1px hairlines and tone, and keep resting surfaces shadowless.",
-      "Do open create, edit and preview flows in a right-hand drawer.",
-      "Do use tabular-nums for scores, marks, counts and timers."
+      "**Do** use `bg-surface` for chrome (sidebar, student page, footers) and `bg-card` for cards, forms, selects and popovers.",
+      "**Do** keep terracotta to the primary action, focus, the mark and one emphasis phrase per view.",
+      "**Do** separate surfaces with 1px hairlines (#e8ddc8) and tone, and keep resting surfaces shadowless.",
+      "**Do** open create, edit, preview and details flows in a right-hand drawer with the shared overlay, 300ms slide and header pattern, mounted through `Portal` so a transformed card or page can never trap it.",
+      "**Do** keep lists scalable: search, grouping, and a capped first page with \"show more\" or \"+N more\" instead of an ever-longer list.",
+      "**Do** put a breadcrumb trail above the title on every drilled-down teacher page.",
+      "**Do** use `tabular-nums` for scores, marks, counts and timers.",
+      "**Do** keep white text on any tinted photo behind a scrim that guarantees 4.5:1."
     ],
     "donts": [
-      "Don't write a literal brand hex, bg-white, or a hardcoded cream in components.",
-      "Don't put a second accent colour next to terracotta for decoration.",
-      "Don't add a shadow to cards, rows, badges or inputs at rest.",
-      "Don't split student sign-in into the photograph layout.",
-      "Don't use neutral grey for dark mode."
+      "**Don't** write a literal brand hex, `bg-white`, or a hardcoded cream in components; use tokens.",
+      "**Don't** put a second accent colour next to terracotta for decoration.",
+      "**Don't** add a shadow to rows, badges or inputs at rest, or put a transform on a page-level wrapper (it traps `position: fixed` drawers); page transitions are opacity only.",
+      "**Don't** build a view whose size is students times tests; show queues and per-entity details instead.",
+      "**Don't** split student sign-in into the photograph layout; it stays a single centred card.",
+      "**Don't** use neutral grey for dark mode; use the warm brown-black ramp.",
+      "**Don't** invent copy or statistics in the dashboard mockup beyond clearly labelled sample data."
     ]
   }
 }

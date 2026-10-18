@@ -10,7 +10,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { LogoMark, Wordmark } from '@/components/shared/logo'
-import { MacbookFrame } from '@/components/shared/macbook-frame'
+import { ProductTour } from '@/components/shared/product-tour'
 import { Footer } from '@/components/shared/footer'
 import { FaqAccordion } from '@/components/shared/faq-accordion'
 
@@ -109,11 +109,12 @@ export default function LandingPage() {
     <div className="min-h-svh flex flex-col">
       {/* ── Nav ── */}
       <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="max-w-screen-xl mx-auto flex items-center justify-between px-6 py-4">
+        <div className="max-w-screen-xl mx-auto flex items-center justify-between px-4 py-4 sm:px-6">
           <Wordmark />
           <nav className="flex items-center gap-2">
             <Button variant="ghost" render={<Link href="/student-login" />}>
-              Student portal
+              <span className="sm:hidden">Students</span>
+              <span className="hidden sm:inline">Student portal</span>
             </Button>
             <Button render={<Link href="/login" />}>Teacher sign in</Button>
           </nav>
@@ -172,13 +173,13 @@ export default function LandingPage() {
         <section className="py-20">
           <div className="max-w-screen-xl mx-auto px-6">
             <div className="text-center max-w-xl mx-auto mb-14">
-              <h2 className="text-3xl font-bold tracking-tight">A peek at your dashboard</h2>
+              <h2 className="text-3xl font-bold tracking-tight">A peek inside Assessly</h2>
               <p className="mt-3 text-muted-foreground">
-                Illustrative preview with sample data — this is what a teacher sees after signing in.
+                Illustrative previews with sample data: what a teacher sees after signing in.
               </p>
             </div>
 
-            <MacbookFrame src="/mockups/dashboard.png" alt="Assessly teacher dashboard showing recent tests, stats and quick actions" />
+            <ProductTour />
           </div>
         </section>
 
