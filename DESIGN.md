@@ -118,16 +118,17 @@ components:
 
 **Creative North Star: "The Working Ledger"**
 
-Assessly's world is warm paper and one burnt-orange voice. Pages sit on a cream ground (`surface`, #f4f2ea); the things people actually work with (cards, forms, question sheets, tables) are white and held by hairline borders the colour of old parchment. A single terracotta accent (`primary`, #c74504) means "act here" or "this is yours". Manrope carries every word. The tokens are shared with the Doxa system so both products read as one family.
+Assessly's world is warm paper and one burnt-orange voice. Cream (`surface`, #f4f2ea) is the chrome: the teacher sidebar, the student page ground, footers and landing bands. The things people actually work with (the teacher's content area, cards, forms, question sheets) are white and held by hairline borders the colour of old parchment. A single terracotta accent (`primary`, #c74504) means "act here" or "this is yours". Manrope carries every word. The tokens are shared with the Doxa system so both products read as one family.
 
-The system covers two modes. The landing page persuades: cream bands alternate with white, the headline carries one terracotta phrase, and a MacBook-framed dashboard shows the product. The teacher and student apps operate: a white top bar, a cream page, white cards, and short scannable lists. Brand lives in the details (the shield-check mark, the accent on the primary action, the focus ring), not in decoration. Sign-in is the one place that leaves the page plane for imagery: a terracotta-tinted photograph beside the form.
+The system covers two modes. The landing page persuades: cream bands alternate with white, the headline carries one terracotta phrase, and a MacBook-framed dashboard shows the product. The teacher app operates from a cream sidebar beside a white content area with entity cards; the student app from a white top bar over a cream page with compact test rows. Both stay scannable at any list length: search, grouping and "show more" instead of ever-longer pages. Brand lives in the details (the shield-check mark, the accent on the primary action, the focus ring), not in decoration. Sign-in is the one place that leaves the page plane for imagery: a terracotta-tinted photograph beside the form.
 
 **Key Characteristics:**
 
 - One accent, terracotta, used for the primary action, focus, the logo mark and key numbers.
-- Cream ground, white working surfaces, hairline rules; depth is tonal, not shadowed.
+- Cream chrome, white working surfaces, hairline rules; depth is mostly tonal, with one faint resting shadow on cards.
 - Manrope only, a small fixed type scale, weight (not size) for hierarchy.
-- The teacher and student apps share one shell: white 56px top bar, cream page, max 1280px content.
+- Teacher shell: a cream 240px sidebar (logo, four nav items), a white 56px top bar with the account menu at top right, a white content area, max 1152px (6xl) content, no footer. Student shell: a white 64px top bar (logo, My tests, Join a test, name and avatar) over the cream page, 1024px (5xl) content.
+- Motion confirms state and keeps continuity: a 180ms page fade, a capped card/row stagger, hover lifts, drawer slides. Nothing blocks the user, and reduced motion keeps meaning without travel.
 - Sign-in pairs a tinted photograph panel (teacher only) with the form on cream; student sign-in stays a single centred card.
 - Light and dark: dark is a warm brown-black ramp (`#12100e` ground, `#1c1916` cards), never neutral grey.
 
@@ -143,8 +144,8 @@ A cream-and-white ledger with one burnt-orange accent and warm neutrals.
 
 ### Neutral
 
-- **Oat Cream** (`surface`, #f4f2ea; also `secondary`, `muted`): the page ground of the teacher and student apps, the landing's alternating bands, sign-in and 404 backgrounds, and inset panels (shown as `muted/40`–`muted/50`).
-- **Paper White** (`background`/`card`, #ffffff): the top bar, cards, inputs, popovers, sidebar and the landing's white bands.
+- **Oat Cream** (`surface`, #f4f2ea; also `secondary`, `muted`): the teacher sidebar, the student page ground, footers, the landing's alternating bands, sign-in and 404 backgrounds, and inset panels (shown as `muted/40`–`muted/50`).
+- **Paper White** (`background`/`card`, #ffffff): the teacher content area, top bars, cards, inputs, selects, popovers and the landing's white bands.
 - **Warm Ink** (`ink`, #1c1917): all primary text.
 - **Stone** (`ink-muted`, #6f6963): secondary copy, meta, placeholders. 5.4:1 on white, 4.8:1 on cream.
 - **Parchment Hairline** (`hairline`, #e8ddc8): every border, divider and input outline.
@@ -152,13 +153,13 @@ A cream-and-white ledger with one burnt-orange accent and warm neutrals.
 
 ### Semantic
 
-`success`, `warning`, `info`, `destructive` and their `-soft` grounds are defined in tokens (`--success`, `--success-soft`, …). The student results, instructions and take-test pages still use raw Tailwind green/amber/red classes and are the next place to migrate.
+`success`, `warning`, `info`, `destructive` and their `-soft` grounds are defined in tokens (`--success`, `--success-soft`, …). Status colours across teacher and student pages use these tokens (`text-success`, `bg-warning-soft`, `border-destructive/40`); no raw Tailwind palette colours remain outside `components/ui`.
 
 ### Named Rules
 
 **The One Voice Rule.** Terracotta is the only accent. It marks the primary action, the focus state and the brand mark; it is never a second decorative colour next to blues or greens.
 
-**The Cream Ground Rule.** Page grounds are `surface`; working surfaces are `card`. Never put a white page behind white cards, and never hardcode a cream hex: use `bg-surface` / `var(--surface)`.
+**The Cream Chrome Rule.** Chrome is `surface` (teacher sidebar, student page ground, footers); working surfaces are white. A card on a white teacher page is separated by its hairline border and faint shadow, so cards always carry both. Never hardcode a cream hex: use `bg-surface` / `var(--surface)`.
 
 **The Token Only Rule.** No literal `#C74504`, `#FFF9EB` or `bg-white` in components. Use `primary`, `surface`, `card`, `popover` so dark mode and future re-theming hold.
 
@@ -186,7 +187,7 @@ A cream-and-white ledger with one burnt-orange accent and warm neutrals.
 
 ## Layout
 
-Content is a single column capped at `max-w-screen-xl` (1280px), centred, with 24px side gutters. The landing stacks sections with 80px (`py-20`) vertical rhythm: a cream hero, a white product-preview band, white and cream feature bands, then FAQ and footer. The app shell is a sticky 56px white top bar, then a cream `main` with `px-6 py-8`, then a cream footer. Tabs for Teacher/Student areas live in the top bar; the sidebar exists as a white component with a hairline edge and is currently unused in the teacher layout.
+Teacher content is a single column capped at `max-w-6xl` (1152px), student content at `max-w-5xl` (1024px) with the dashboard list at `max-w-3xl`, all centred with 16 to 32px gutters; the landing caps at `max-w-screen-xl` (1280px). The landing stacks sections with 80px (`py-20`) vertical rhythm: a cream hero, a white product-preview band, white and cream feature bands, then FAQ and footer. The teacher shell is a sticky 240px cream sidebar with a hairline right edge (logo row aligned with the top bar, four nav items, no user block), a sticky 56px translucent white top bar with the account menu top right, and a white `main` with `px-8 py-8`; below `md` the sidebar becomes the top bar's logo plus a bottom tab bar. There is no teacher footer. Detail pages open with a breadcrumb trail above the title. The teacher dashboard is a work queue: "Needs grading" (wide, one row per test with submissions waiting, oldest first) beside "Published tests" (narrow, tests with students taking them listed first), each capped at 6 rows with "+N more". The student shell is a sticky 64px translucent white top bar with two nav links; the student dashboard is search plus a To do / Completed segmented control over grouped compact rows, 8 at a time. The test-instructions page centres a 2xl column and a centred, full-width Start button. The shared footer is one centred line: "© year Assessly. Assess smarter. Teach better."
 
 Sign-in is a split screen from `lg` (1024px): a 58% photograph panel on the left and the form centred on cream on the right. Below `lg` the panel disappears and the form fills the screen. Student sign-in is not split: one centred card on cream. Drawers slide from the right over the page at 440–560px wide.
 
@@ -194,11 +195,11 @@ Spacing uses the Tailwind 4px scale; common steps are 8, 12, 16, 24 and 80px.
 
 ## Elevation & Depth
 
-Flat and tonal. Surfaces separate by ground (cream page, white card) and by 1px hairline, not by shadow. Cards carry a `ring-1 ring-foreground/10` outline and, on hover, tint the ring toward the accent with a soft lift (`0 2px 16px rgba(0,0,0,0.07)`). Real elevation is reserved for things that leave the page plane: the profile dropdown (`shadow-lg`), and drawers (`shadow-2xl` over a `bg-black/40` scrim with a 300ms slide). The MacBook mockup on the landing carries a deep soft shadow because it is an illustration of a device.
+Mostly flat and tonal. Surfaces separate by ground (cream chrome, white content) and by 1px hairline. Entity cards and student rows add one very faint resting shadow (`shadow-card`, 1px/3px at about 5% ink) and on hover turn the border terracotta, deepen to `shadow-raised` and lift 2px. Real elevation is reserved for things that leave the page plane: the profile dropdown (`shadow-lg`), and drawers (`shadow-2xl` over a `bg-black/40` scrim with a 300ms slide). The MacBook mockup on the landing carries a deep soft shadow because it is an illustration of a device.
 
 ### Named Rules
 
-**The Flat At Rest Rule.** Cards, rows, badges and inputs have no resting shadow. Only the dropdown, the drawer and the device mockup lift off the page.
+**The Quiet Elevation Rule.** Rows, badges and inputs have no resting shadow; cards carry only the faint `shadow-card`. Real lift belongs to hover, the dropdown, the drawer and the device mockup.
 
 ## Shapes
 
@@ -232,7 +233,31 @@ Full pills, 20px tall, 12px medium. Soft badges use `primary-soft` with `primary
 
 ### Navigation
 
-A sticky 56px white top bar with a bottom hairline: the mark and "Assessly" wordmark on the left, the user avatar (terracotta circle with initials) and a dropdown on the right. The landing nav is a translucent white sticky bar with a ghost "Student portal" and a primary "Teacher sign in". The sidebar, when used, is white with a hairline right edge; its active item is solid terracotta.
+Teacher: a 240px cream sidebar whose logo row aligns with the 56px white top bar (account menu with Sign out at top right, no footer); its active item is a `foreground/5` wash with semibold text, never an accent fill. Student: a sticky 64px white top bar with the mark and wordmark on the left, two 40px nav links (My tests, Join a test) with a `primary-soft` active state, and the student's name and avatar on the right (no sign-out menu: students use a personal link). The landing nav is a translucent white sticky bar with a ghost "Student portal" and a primary "Teacher sign in".
+
+### Dashboard queue (signature)
+
+The teacher dashboard is two white cards, not a grid, so it holds at any number of tests. "Needs grading" lists one row per test with a count badge in the header, the oldest waiting submission, and an outlined terracotta "N to grade" chip; rows link to the submissions page filtered to that test. "Published tests" lists tests with duration, enrolled count and a `warning-soft` "N taking now" tag. Each list shows 6 rows then a "+N more" link, and each has an empty state.
+
+### Entity card (signature)
+
+The shared card for tests and students, ported from Doxa's `EntityCard`: a 16px-radius white `surface-raised` card with a hairline border and `shadow-card`. On hover the border turns terracotta, the shadow deepens to `shadow-raised`, and the card lifts 2px over 200ms (no lift under reduced motion). Cards with a destination stretch the title link over the whole card; a vertical-ellipsis menu (Questions, Edit, Delete on tests; View details, Edit, Delete on students) sits top right above that link. Cards can carry a subtitle under the title (a student's year) and a free body slot. A card with no destination page makes its name a button that opens a drawer. The footer is pinned to the bottom behind a hairline so cards in a row align. Tests are sorted newest first, with a search box, All/Published/Draft/Archived filters with counts and a Newest-first switch; students are sorted A to Z with a search that matches name or year.
+
+### Student details drawer
+
+Clicking a student's name opens a right-hand drawer: avatar, name, year (or "No year set"), date added; every assigned test as a row with its status (tinted score and percentage, outlined "To grade", "In progress", "Not started") sorted To grade first, with a search box once there are more than 6; and the personal login link behind a "Show login link" button so the token is only fetched on request. Rows with a submission link to its evaluation page.
+
+### Student test rows
+
+Student tests are 72px-minimum rows in the entity-card style: title, duration, and one action on the right: a 44px terracotta Start or Continue button, a tinted score, or a `warning-soft` "Waiting for marks". To do is grouped into In progress and Ready to start, Completed into Waiting for marks and Marked, 8 rows at a time with a "Show N more" button. A pulsing `warning` dot marks an in-progress test.
+
+### Switch
+
+A 36x20px accessible switch (`role=switch`) with a terracotta track when on and a 200ms thumb slide; used for the Newest-first sort.
+
+### Breadcrumbs
+
+Detail pages carry a trail above the title (Tests, test name, Questions; Submissions, test name, student; Students, Add student). Parents are links, the last item is the current page in medium weight, and long labels truncate. Top-level pages have no trail.
 
 ### Drawer (signature)
 
@@ -250,10 +275,12 @@ A CSS-built MacBook (dark lid, camera dot, silver base with notch) holding a 16:
 
 ### Do:
 
-- **Do** use `bg-surface` for page grounds and `bg-card` for cards, forms and popovers.
+- **Do** use `bg-surface` for chrome (sidebar, student page, footers) and `bg-card` for cards, forms, selects and popovers.
 - **Do** keep terracotta to the primary action, focus, the mark and one emphasis phrase per view.
 - **Do** separate surfaces with 1px hairlines (#e8ddc8) and tone, and keep resting surfaces shadowless.
-- **Do** open create, edit and preview flows in a right-hand drawer with the shared overlay, 300ms slide and header pattern.
+- **Do** open create, edit, preview and details flows in a right-hand drawer with the shared overlay, 300ms slide and header pattern, mounted through `Portal` so a transformed card or page can never trap it.
+- **Do** keep lists scalable: search, grouping, and a capped first page with "show more" or "+N more" instead of an ever-longer list.
+- **Do** put a breadcrumb trail above the title on every drilled-down teacher page.
 - **Do** use `tabular-nums` for scores, marks, counts and timers.
 - **Do** keep white text on any tinted photo behind a scrim that guarantees 4.5:1.
 
@@ -261,7 +288,8 @@ A CSS-built MacBook (dark lid, camera dot, silver base with notch) holding a 16:
 
 - **Don't** write a literal brand hex, `bg-white`, or a hardcoded cream in components; use tokens.
 - **Don't** put a second accent colour next to terracotta for decoration.
-- **Don't** add a shadow to cards, rows, badges or inputs at rest.
+- **Don't** add a shadow to rows, badges or inputs at rest, or put a transform on a page-level wrapper (it traps `position: fixed` drawers); page transitions are opacity only.
+- **Don't** build a view whose size is students times tests; show queues and per-entity details instead.
 - **Don't** split student sign-in into the photograph layout; it stays a single centred card.
 - **Don't** use neutral grey for dark mode; use the warm brown-black ramp.
 - **Don't** invent copy or statistics in the dashboard mockup beyond clearly labelled sample data.
