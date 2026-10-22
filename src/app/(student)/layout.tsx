@@ -17,7 +17,7 @@ export default async function StudentLayout({ children }: { children: React.Reac
   return (
     <div className="min-h-screen flex flex-col bg-surface">
       <StudentTopbar fullName={(profile as Profile).full_name} />
-      <main className="flex-1 px-6 py-8 max-w-5xl mx-auto w-full">
+      <main className="app-page flex-1 px-4 sm:px-5 lg:px-6 py-6">
         {children}
       </main>
       <Footer />

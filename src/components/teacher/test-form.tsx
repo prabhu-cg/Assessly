@@ -1,7 +1,7 @@
 'use client'
 
 import { useTransition } from 'react'
-import { useForm, type Resolver } from 'react-hook-form'
+import { useForm, Controller, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { testSchema, type TestInput } from '@/lib/validators/schemas'
 import { createTest, updateTest } from '@/app/actions/tests'
@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
+import { DateTimeField } from '@/components/teacher/date-time-field'
 import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 import type { Test } from '@/types/database'
@@ -22,7 +23,7 @@ interface TestFormProps {
 export function TestForm({ test, onCancel, onSuccess }: TestFormProps) {
   const [isPending, startTransition] = useTransition()
 
-  const { register, handleSubmit, formState: { errors } } = useForm<TestInput>({
+  const { register, control, handleSubmit, formState: { errors } } = useForm<TestInput>({
     resolver: zodResolver(testSchema) as Resolver<TestInput>,
     defaultValues: {
       title: test?.title ?? '',
@@ -98,14 +99,26 @@ export function TestForm({ test, onCancel, onSuccess }: TestFormProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 items-start gap-4">
         <div className="space-y-2">
           <Label htmlFor="starts_at">Available From</Label>
-          <Input id="starts_at" type="datetime-local" {...register('starts_at')} />
+          <Controller
+            control={control}
+            name="starts_at"
+            render={({ field }) => (
+              <DateTimeField id="starts_at" value={field.value ?? ''} onChange={field.onChange} fallbackTime="00:00" emptyTimeHint="opens at the start of the day" />
+            )}
+          />
         </div>
         <div className="space-y-2">
           <Label htmlFor="ends_at">Available Until</Label>
-          <Input id="ends_at" type="datetime-local" {...register('ends_at')} />
+          <Controller
+            control={control}
+            name="ends_at"
+            render={({ field }) => (
+              <DateTimeField id="ends_at" value={field.value ?? ''} onChange={field.onChange} fallbackTime="23:59" emptyTimeHint="closes at the end of the day" />
+            )}
+          />
         </div>
       </div>
 

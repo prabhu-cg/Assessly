@@ -62,7 +62,7 @@ export function EditTestDrawer({ test, variant = 'outline', size = 'sm', open: c
           />
           <div
             className={cn(
-              'fixed top-0 right-0 h-full w-full max-w-[560px] bg-background z-[61]',
+              'fixed top-0 right-0 h-full w-full max-w-[640px] bg-background z-[61]',
               'flex flex-col border-l border-border shadow-2xl',
               'transition-transform duration-300 ease-in-out',
               visible ? 'translate-x-0' : 'translate-x-full',

@@ -22,9 +22,12 @@ interface Props {
   initialSubmission: any
   initialQuestions: any[]
   initialAnswers: any[]
+  /** Rendered inside a drawer: drops the page header and sticks the summary to the drawer's top. */
+  embedded?: boolean
+  onChange?: () => void
 }
 
-export function EvaluationForm({ testId, submissionId, initialSubmission, initialQuestions, initialAnswers }: Props) {
+export function EvaluationForm({ testId, submissionId, initialSubmission, initialQuestions, initialAnswers, embedded = false, onChange }: Props) {
   const [submission, setSubmission] = useState(initialSubmission)
   const [questions, setQuestions] = useState(initialQuestions)
   const [answers, setAnswers] = useState(initialAnswers)
@@ -74,14 +77,14 @@ export function EvaluationForm({ testId, submissionId, initialSubmission, initia
     })
     setSaving(s => ({ ...s, [answerId]: false }))
     if (result?.error) setError(result.error)
-    else refresh()
+    else { refresh(); onChange?.() }
   }
 
   const handleFinalize = () => {
     startTransition(async () => {
       const result = await finalizeEvaluation(submissionId)
       if (result?.error) setError(result.error)
-      else refresh()
+      else { refresh(); onChange?.() }
     })
   }
 
@@ -101,7 +104,7 @@ export function EvaluationForm({ testId, submissionId, initialSubmission, initia
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
+      {!embedded && <div className="space-y-2">
         <Breadcrumbs
           items={[
             { label: 'Submissions', href: '/teacher/submissions' },
@@ -113,7 +116,7 @@ export function EvaluationForm({ testId, submissionId, initialSubmission, initia
         <p className="text-muted-foreground text-sm mt-1">
           {submission.student?.full_name} — {submission.test?.title}
         </p>
-      </div>
+      </div>}
 
       {error && (
         <Alert variant="destructive">
@@ -122,7 +125,7 @@ export function EvaluationForm({ testId, submissionId, initialSubmission, initia
       )}
 
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
-        <aside className="lg:sticky lg:top-20 lg:order-2" aria-label="Submission summary">
+        <aside className={embedded ? 'lg:sticky lg:top-0 lg:order-2' : 'lg:sticky lg:top-20 lg:order-2'} aria-label="Submission summary">
           <Card>
             <CardContent className="space-y-4 p-5">
               <div>

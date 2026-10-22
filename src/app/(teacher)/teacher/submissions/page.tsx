@@ -1,10 +1,10 @@
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { PageHeader } from '@/components/shared/page-header'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { SubmissionDrawer } from '@/components/teacher/submission-drawer'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { AlertTriangle, ClipboardList } from 'lucide-react'
 
@@ -179,13 +179,13 @@ export default async function SubmissionsPage({ searchParams }: SubmissionsPageP
                           {statusLabel[sub.status] ?? sub.status}
                         </Badge>
                         {sub.status !== 'in_progress' && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            render={<Link href={`/teacher/tests/${sub.test?.id}/submissions/${sub.id}`} />}
-                          >
-                            {sub.status === 'submitted' ? 'Evaluate' : 'View'}
-                          </Button>
+                          <SubmissionDrawer
+                            testId={sub.test?.id ?? sub.test_id}
+                            submissionId={sub.id}
+                            studentName={sub.student?.full_name ?? 'Student'}
+                            testTitle={group.testTitle}
+                            label={sub.status === 'submitted' ? 'Evaluate' : 'View'}
+                          />
                         )}
                       </div>
                     </div>

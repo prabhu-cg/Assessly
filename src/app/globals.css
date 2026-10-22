@@ -162,6 +162,13 @@
   --destructive-soft: #2e1513;
 }
 
+/* Fluid content column: tight gutters on small screens, capped and centered on big monitors. */
+@utility app-page {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 1440px;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

@@ -17,7 +17,7 @@ export function StudentTopbar({ fullName }: { fullName: string }) {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-5xl items-center gap-3 px-4 sm:px-6">
+      <div className="app-page flex h-16 items-center gap-3 px-4 sm:px-5 lg:px-6">
         <Link href="/student/dashboard" aria-label="Assessly home" className="flex shrink-0 items-center gap-2.5">
           <LogoMark className="h-7 w-auto" />
           <span className="hidden font-bold text-base tracking-tight sm:block">Assessly</span>
