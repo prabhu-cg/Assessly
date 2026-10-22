@@ -183,45 +183,45 @@ export function TestStudents({ testId, testStatus, enrolled, available, blocked 
             </p>
           ) : (
             <div className="space-y-3">
-              <div className="flex flex-wrap items-center gap-2">
-                <div className="relative min-w-40 flex-1">
-                  <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="relative w-full sm:w-72">
+                  <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
                     value={query}
                     onChange={e => setQuery(e.target.value)}
                     onKeyDown={e => { if (e.key === 'Escape') setQuery('') }}
                     placeholder="Search students"
                     aria-label="Search students"
-                    className="h-8 border-transparent bg-muted/60 pl-8 pr-8 text-sm"
+                    className="pl-8 pr-8"
                   />
                   {query && (
                     <button
                       type="button"
                       onClick={() => setQuery('')}
                       aria-label="Clear search"
-                      className="absolute right-1.5 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                      className="absolute right-2 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                     >
-                      <X className="h-3 w-3" />
+                      <X className="h-3.5 w-3.5" />
                     </button>
                   )}
                 </div>
-                <div className="flex flex-wrap gap-1.5" role="group" aria-label="Filter by status">
+
+                <div role="group" aria-label="Filter by status" className="flex rounded-lg border border-border bg-card p-0.5">
                   {['all', ...statusLabels].map(key => {
                     const active = statusFilter === key
                     const count = key === 'all' ? enrolled.length : countFor(key)
-                    if (key !== 'all' && count === 0 && !active) return null
                     return (
                       <button
                         key={key}
                         type="button"
-                        aria-pressed={active}
                         onClick={() => setStatusFilter(key)}
+                        aria-pressed={active}
                         className={cn(
-                          'h-8 rounded-lg px-2.5 text-xs font-medium tabular-nums transition-colors',
-                          active ? 'bg-primary-soft text-primary-text' : 'text-muted-foreground hover:bg-muted',
+                          'rounded-md px-3 py-1.5 text-sm font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                          active ? 'bg-primary-soft text-primary-text' : 'text-muted-foreground hover:text-foreground',
                         )}
                       >
-                        {key === 'all' ? 'All' : key} {count}
+                        {key === 'all' ? 'All' : key} <span className="ml-1 tabular-nums font-medium opacity-70">{count}</span>
                       </button>
                     )
                   })}
