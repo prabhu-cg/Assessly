@@ -6,7 +6,9 @@ import { assignStudentsToTest, removeStudentFromTest } from '@/app/actions/tests
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { UserPlus, Loader2, X, ClipboardList, Clock, CircleMinus, Check } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { UserPlus, Loader2, X, ClipboardList, Clock, CircleMinus, Check, Search } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 
@@ -91,6 +93,16 @@ export function TestStudents({ testId, testStatus, enrolled, available, blocked 
   const [isAssigning, startAssign] = useTransition()
   const [removingId, setRemovingId] = useState<string | null>(null)
   const [, startRemove] = useTransition()
+  const [query, setQuery] = useState('')
+  const [confirmRemove, setConfirmRemove] = useState<{ id: string; name: string } | null>(null)
+  const [statusFilter, setStatusFilter] = useState<string>('all')
+
+  const statusLabels = ['Not started', 'In progress', 'Submitted']
+  const countFor = (label: string) => enrolled.filter(st => statusConfig(st.submission).label === label).length
+  const visible = enrolled.filter(st =>
+    st.full_name.toLowerCase().includes(query.trim().toLowerCase()) &&
+    (statusFilter === 'all' || statusConfig(st.submission).label === statusFilter),
+  )
 
   const toggleStudent = (id: string) => {
     setSelected(prev => {
@@ -122,11 +134,13 @@ export function TestStudents({ testId, testStatus, enrolled, available, blocked 
   }
 
   const handleRemove = (studentId: string, name: string) => {
+    setConfirmRemove(null)
     setRemovingId(studentId)
     startRemove(async () => {
       const result = await removeStudentFromTest(testId, studentId)
-      if (result?.error) { toast.error(result.error); setRemovingId(null) }
+      if (result?.error) toast.error(result.error)
       else toast.success(`${name} removed from test`)
+      setRemovingId(null)
     })
   }
 
@@ -168,61 +182,135 @@ export function TestStudents({ testId, testStatus, enrolled, available, blocked 
                 : 'No students enrolled yet. Students can join using the invite code.'}
             </p>
           ) : (
-            <div className="divide-y divide-border">
-            {enrolled.map(student => {
-              const { label, variant, Icon } = statusConfig(student.submission)
-              const isSubmitted = student.submission?.status === 'submitted'
-              const isRemoving = removingId === student.id
-
-              return (
-                <div key={student.id} className="flex items-center gap-3 py-2">
-                  <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center shrink-0">
-                    <span className="text-xs font-semibold text-muted-foreground">{initials(student.full_name)}</span>
-                  </div>
-
-                  <p className="flex-1 min-w-0 text-sm font-medium truncate">{student.full_name}</p>
-
-                  {student.attemptCount > 1 && (
-                    <span className="text-xs text-muted-foreground font-medium shrink-0 tabular-nums">
-                      {student.attemptCount} attempts
-                    </span>
-                  )}
-
-                  <div className="flex items-center gap-2 shrink-0">
-                    <Badge variant={variant} className="gap-1">
-                      <Icon className="h-3 w-3" />
-                      {label}
-                    </Badge>
-
-                    {isSubmitted && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="h-7 text-xs"
-                        render={<Link href={`/teacher/tests/${testId}/submissions/${student.submission!.id}`} />}
-                      >
-                        Evaluate
-                      </Button>
-                    )}
-
+            <div className="space-y-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="relative min-w-40 flex-1">
+                  <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    value={query}
+                    onChange={e => setQuery(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Escape') setQuery('') }}
+                    placeholder="Search students"
+                    aria-label="Search students"
+                    className="h-8 border-transparent bg-muted/60 pl-8 pr-8 text-sm"
+                  />
+                  {query && (
                     <button
-                      onClick={() => handleRemove(student.id, student.full_name)}
-                      disabled={isRemoving}
-                      title="Remove from test"
-                      className="h-7 w-7 flex items-center justify-center rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive-soft transition-colors disabled:opacity-40"
+                      type="button"
+                      onClick={() => setQuery('')}
+                      aria-label="Clear search"
+                      className="absolute right-1.5 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                     >
-                      {isRemoving
-                        ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                        : <X className="h-3.5 w-3.5" />}
+                      <X className="h-3 w-3" />
                     </button>
-                  </div>
+                  )}
                 </div>
-              )
-            })}
+                <div className="flex flex-wrap gap-1.5" role="group" aria-label="Filter by status">
+                  {['all', ...statusLabels].map(key => {
+                    const active = statusFilter === key
+                    const count = key === 'all' ? enrolled.length : countFor(key)
+                    if (key !== 'all' && count === 0 && !active) return null
+                    return (
+                      <button
+                        key={key}
+                        type="button"
+                        aria-pressed={active}
+                        onClick={() => setStatusFilter(key)}
+                        className={cn(
+                          'h-8 rounded-lg px-2.5 text-xs font-medium tabular-nums transition-colors',
+                          active ? 'bg-primary-soft text-primary-text' : 'text-muted-foreground hover:bg-muted',
+                        )}
+                      >
+                        {key === 'all' ? 'All' : key} {count}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              <ul className="divide-y divide-border/60">
+                {visible.map((student, i) => {
+                  const { label, variant, Icon } = statusConfig(student.submission)
+                  const isSubmitted = student.submission?.status === 'submitted'
+                  const isRemoving = removingId === student.id
+                  const inProgress = student.submission?.status === 'in_progress'
+
+                  return (
+                    <li key={student.id} style={{ '--i': i } as React.CSSProperties} className="rise-in flex items-center gap-3 px-2 py-2.5 transition-colors hover:bg-muted/60">
+                      <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center shrink-0">
+                        <span className="text-xs font-semibold text-muted-foreground">{initials(student.full_name)}</span>
+                      </div>
+
+                      <p className="flex-1 min-w-0 text-sm font-medium truncate">{student.full_name}</p>
+
+                      {student.attemptCount > 1 && (
+                        <span className="text-xs text-muted-foreground font-medium shrink-0 tabular-nums">
+                          {student.attemptCount} attempts
+                        </span>
+                      )}
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <Badge variant={variant} className="gap-1">
+                          <Icon className="h-3 w-3" />
+                          {label}
+                        </Badge>
+
+                        {isSubmitted && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-7 text-xs"
+                            render={<Link href={`/teacher/tests/${testId}/submissions/${student.submission!.id}`} />}
+                          >
+                            Evaluate
+                          </Button>
+                        )}
+
+                        <button
+                          onClick={() => setConfirmRemove({ id: student.id, name: student.full_name })}
+                          disabled={isRemoving || inProgress}
+                          title={inProgress ? 'Taking the test right now — cannot be removed' : 'Remove from test'}
+                          aria-label={`Remove ${student.full_name} from test`}
+                          className="h-7 w-7 flex items-center justify-center rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive-soft transition-colors disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-muted-foreground"
+                        >
+                          {isRemoving
+                            ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                            : <X className="h-3.5 w-3.5" />}
+                        </button>
+                      </div>
+                    </li>
+                  )
+                })}
+                {visible.length === 0 && (
+                  <li className="flex items-center gap-2 px-2 py-4 text-sm text-muted-foreground">
+                    No students match.
+                    <button type="button" onClick={() => { setQuery(''); setStatusFilter('all') }} className="font-semibold text-primary-text hover:underline">
+                      Clear filters
+                    </button>
+                  </li>
+                )}
+              </ul>
             </div>
           )}
         </CardContent>
       </Card>
+
+      <Dialog open={confirmRemove !== null} onOpenChange={open => { if (!open) setConfirmRemove(null) }}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Remove {confirmRemove?.name}?</DialogTitle>
+            <DialogDescription>
+              They will lose access to this test. You can assign them again later.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmRemove(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={() => confirmRemove && handleRemove(confirmRemove.id, confirmRemove.name)}>
+              Remove
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* ── Assign Students Drawer ── */}
       {drawer.mounted && (

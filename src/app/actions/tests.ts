@@ -153,6 +153,16 @@ export async function removeStudentFromTest(testId: string, studentId: string) {
 
   if (!test) return { error: 'Test not found' }
 
+  // A student mid-attempt must not lose access; they would be left with an orphaned submission.
+  const { count: activeAttempts } = await supabase
+    .from('submissions')
+    .select('id', { count: 'exact', head: true })
+    .eq('test_id', testId)
+    .eq('student_id', studentId)
+    .eq('status', 'in_progress')
+
+  if (activeAttempts) return { error: 'This student is taking the test right now and cannot be removed.' }
+
   const { error } = await supabase
     .from('test_access')
     .delete()
