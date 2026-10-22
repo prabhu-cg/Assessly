@@ -60,8 +60,15 @@ export async function updateTest(id: string, formData: FormData) {
 
   const { error } = await supabase
     .from('tests')
-    // Dates are nullable: an emptied field must clear the saved value, not be skipped as undefined.
-    .update({ ...parsed.data, starts_at: parsed.data.starts_at ?? null, ends_at: parsed.data.ends_at ?? null })
+    // Optional fields are nullable: an emptied field must clear the saved value, not be skipped as undefined.
+    .update({
+      ...parsed.data,
+      description: parsed.data.description ?? null,
+      instructions: parsed.data.instructions ?? null,
+      pass_mark: parsed.data.pass_mark ?? null,
+      starts_at: parsed.data.starts_at ?? null,
+      ends_at: parsed.data.ends_at ?? null,
+    })
     .eq('id', id)
     .eq('teacher_id', user.id)
 
