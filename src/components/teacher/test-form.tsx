@@ -14,6 +14,15 @@ import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 import type { Test } from '@/types/database'
 
+/** ISO timestamp -> `YYYY-MM-DDTHH:mm` in the viewer's timezone, as the date/time inputs expect. */
+function toLocalInput(iso: string | null | undefined) {
+  if (!iso) return ''
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return ''
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
+
 interface TestFormProps {
   test?: Test
   onCancel?: () => void
@@ -31,13 +40,18 @@ export function TestForm({ test, onCancel, onSuccess }: TestFormProps) {
       duration_minutes: test?.duration_minutes ?? 60,
       instructions: test?.instructions ?? '',
       pass_mark: test?.pass_mark ?? undefined,
+      starts_at: toLocalInput(test?.starts_at),
+      ends_at: toLocalInput(test?.ends_at),
     },
   })
 
   const onSubmit = (data: TestInput) => {
     const formData = new FormData()
     Object.entries(data).forEach(([key, value]) => {
-      if (value !== undefined && value !== '') formData.append(key, String(value))
+      if (value === undefined || value === '') return
+      // Local input values carry no timezone; send an absolute instant so the server stores what was picked.
+      if (key === 'starts_at' || key === 'ends_at') formData.append(key, new Date(String(value)).toISOString())
+      else formData.append(key, String(value))
     })
 
     startTransition(async () => {
