@@ -125,43 +125,48 @@ export default async function TestDetailPage({ params }: TestDetailPageProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        {[
-          { icon: Clock, value: test.duration_minutes, label: 'minutes' },
-          { icon: Hash, value: questions?.length ?? 0, label: 'questions' },
-          { icon: ClipboardList, value: totalMarks, label: 'total marks' },
-          { icon: Users, value: submissionCount ?? 0, label: 'submissions' },
-        ].map(({ icon: Icon, value, label }) => (
-          <Card key={label}>
-            <CardContent className="p-4 flex items-center gap-3">
-              <Icon className="h-5 w-5 text-muted-foreground" />
-              <div>
-                <p className="text-lg font-semibold">{value}</p>
-                <p className="text-xs text-muted-foreground">{label}</p>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_30rem]">
+        <div className="order-2 lg:order-1">
+          <TestStudents
+            testId={id}
+            testStatus={test.status}
+            enrolled={enrolledStudents}
+            available={availableStudents}
+            blocked={blockedStudents}
+          />
+        </div>
+        <aside className="space-y-4 order-1 lg:order-2" aria-label="Test details">
+          <div className="grid grid-cols-2 gap-4">
+            {[
+              { icon: Clock, value: test.duration_minutes, label: 'minutes' },
+              { icon: Hash, value: questions?.length ?? 0, label: 'questions' },
+              { icon: ClipboardList, value: totalMarks, label: 'total marks' },
+              { icon: Users, value: submissionCount ?? 0, label: 'submissions' },
+            ].map(({ icon: Icon, value, label }) => (
+              <Card key={label}>
+                <CardContent className="p-4 flex items-center gap-3">
+                  <Icon className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <p className="text-lg font-semibold">{value}</p>
+                    <p className="text-xs text-muted-foreground">{label}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {test.instructions && (
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium">Instructions</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{test.instructions}</p>
+              </CardContent>
+            </Card>
+          )}
+        </aside>
       </div>
-
-      {test.instructions && (
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Instructions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground whitespace-pre-wrap">{test.instructions}</p>
-          </CardContent>
-        </Card>
-      )}
-
-      <TestStudents
-        testId={id}
-        testStatus={test.status}
-        enrolled={enrolledStudents}
-        available={availableStudents}
-        blocked={blockedStudents}
-      />
     </div>
   )
 }
