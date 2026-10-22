@@ -5,7 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Breadcrumbs } from '@/components/shared/breadcrumbs'
-import { Clock, Hash, Users, BookOpen, ClipboardList } from 'lucide-react'
+import { Clock, Hash, Users, BookOpen, ClipboardList, CalendarClock, Trophy } from 'lucide-react'
+import { LocalDateTime } from '@/components/teacher/local-date-time'
 import { EditTestDrawer } from '@/components/teacher/edit-test-drawer'
 import { TestStudents, type EnrolledStudent, type BlockedStudent } from '@/components/teacher/test-students'
 
@@ -97,6 +98,21 @@ export default async function TestDetailPage({ params }: TestDetailPageProps) {
     s => !enrolledIds.has(s.id) && !activeSubmissionIds.has(s.id)
   )
 
+  // Scores are judged on each student's latest attempt so retakes don't skew the numbers.
+  const latestSubs = Object.values(submissionsByStudent).map(subs => subs[0])
+  const evaluated = latestSubs.filter(s => s.status === 'evaluated' && s.total_marks > 0)
+  const averagePct = evaluated.length
+    ? Math.round(evaluated.reduce((sum, s) => sum + (s.obtained_marks / s.total_marks) * 100, 0) / evaluated.length)
+    : null
+  const passRate = evaluated.length && test.pass_mark != null
+    ? Math.round((evaluated.filter(s => s.obtained_marks >= test.pass_mark).length / evaluated.length) * 100)
+    : null
+  const statusCounts = {
+    inProgress: latestSubs.filter(s => s.status === 'in_progress').length,
+    submitted: latestSubs.filter(s => s.status === 'submitted').length,
+    evaluated: latestSubs.filter(s => s.status === 'evaluated').length,
+  }
+
   return (
     <div className="space-y-6">
       <div className="space-y-2">
@@ -125,7 +141,7 @@ export default async function TestDetailPage({ params }: TestDetailPageProps) {
         </div>
       </div>
 
-      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_30rem]">
+      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_34rem]">
         <div className="order-2 lg:order-1">
           <TestStudents
             testId={id}
@@ -135,7 +151,8 @@ export default async function TestDetailPage({ params }: TestDetailPageProps) {
             blocked={blockedStudents}
           />
         </div>
-        <aside className="space-y-4 order-1 lg:order-2" aria-label="Test details">
+        <aside className="space-y-4 order-1 lg:order-2" aria-label="Test overview">
+          <h2 className="text-sm font-semibold">Test overview</h2>
           <div className="grid grid-cols-2 gap-4">
             {[
               { icon: Clock, value: test.duration_minutes, label: 'minutes' },
@@ -154,6 +171,68 @@ export default async function TestDetailPage({ params }: TestDetailPageProps) {
               </Card>
             ))}
           </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <Card>
+              <CardContent className="space-y-3 p-4">
+                <div className="flex items-center gap-2 text-sm font-semibold">
+                  <CalendarClock className="h-4 w-4 text-muted-foreground" />Availability
+                </div>
+                <dl className="space-y-1.5 text-sm">
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-muted-foreground">Opens</dt>
+                    <dd>{test.starts_at ? <LocalDateTime iso={test.starts_at} /> : <span className="text-muted-foreground">Anytime</span>}</dd>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-muted-foreground">Closes</dt>
+                    <dd>{test.ends_at ? <LocalDateTime iso={test.ends_at} /> : <span className="text-muted-foreground">No end date</span>}</dd>
+                  </div>
+                </dl>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="space-y-3 p-4">
+                <div className="flex items-center gap-2 text-sm font-semibold">
+                  <Trophy className="h-4 w-4 text-muted-foreground" />Scoring
+                </div>
+                <dl className="space-y-1.5 text-sm">
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-muted-foreground">Pass mark</dt>
+                    <dd>{test.pass_mark != null ? `${test.pass_mark} / ${totalMarks}` : <span className="text-muted-foreground">Not set</span>}</dd>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-muted-foreground">Average score</dt>
+                    <dd className="tabular-nums">{averagePct != null ? `${averagePct}%` : <span className="text-muted-foreground">No results yet</span>}</dd>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-muted-foreground">Pass rate</dt>
+                    <dd className="tabular-nums">{passRate != null ? `${passRate}%` : <span className="text-muted-foreground">—</span>}</dd>
+                  </div>
+                </dl>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card>
+            <CardContent className="space-y-3 p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2 text-sm font-semibold">
+                  <ClipboardList className="h-4 w-4 text-muted-foreground" />Submissions
+                </div>
+                {statusCounts.submitted > 0 && (
+                  <Link href={`/teacher/submissions?test=${id}&status=submitted`} className="text-xs font-semibold text-primary-text hover:underline">
+                    Review {statusCounts.submitted}
+                  </Link>
+                )}
+              </div>
+              <dl className="space-y-1.5 text-sm tabular-nums">
+                <div className="flex justify-between gap-3"><dt className="text-muted-foreground">In progress</dt><dd>{statusCounts.inProgress}</dd></div>
+                <div className="flex justify-between gap-3"><dt className="text-muted-foreground">Awaiting evaluation</dt><dd>{statusCounts.submitted}</dd></div>
+                <div className="flex justify-between gap-3"><dt className="text-muted-foreground">Evaluated</dt><dd>{statusCounts.evaluated}</dd></div>
+              </dl>
+            </CardContent>
+          </Card>
 
           {test.instructions && (
             <Card>
