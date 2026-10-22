@@ -3,6 +3,9 @@
 import { useState, useEffect, useTransition } from 'react'
 import Link from 'next/link'
 import { assignStudentsToTest, removeStudentFromTest } from '@/app/actions/tests'
+import { getStudentDetails } from '@/app/actions/student-details'
+import { StudentDetailsDrawer } from '@/components/teacher/student-details-drawer'
+import type { StudentRow } from '@/components/teacher/student-types'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -94,6 +97,9 @@ export function TestStudents({ testId, testStatus, enrolled, available, blocked 
   const [removingId, setRemovingId] = useState<string | null>(null)
   const [, startRemove] = useTransition()
   const [query, setQuery] = useState('')
+  const [detailsFor, setDetailsFor] = useState<{ id: string; name: string } | null>(null)
+  const [detailsOpen, setDetailsOpen] = useState(false)
+  const [details, setDetails] = useState<StudentRow | null>(null)
   const [confirmRemove, setConfirmRemove] = useState<{ id: string; name: string } | null>(null)
   const [statusFilter, setStatusFilter] = useState<string>('all')
 
@@ -103,6 +109,16 @@ export function TestStudents({ testId, testStatus, enrolled, available, blocked 
     st.full_name.toLowerCase().includes(query.trim().toLowerCase()) &&
     (statusFilter === 'all' || statusConfig(st.submission).label === statusFilter),
   )
+
+  const openDetails = (id: string, name: string) => {
+    setDetailsFor({ id, name })
+    setDetailsOpen(true)
+    setDetails(null)
+    getStudentDetails(id).then(result => {
+      if ('error' in result) { toast.error(result.error); setDetailsOpen(false) }
+      else setDetails(result.student)
+    })
+  }
 
   const toggleStudent = (id: string) => {
     setSelected(prev => {
@@ -206,7 +222,7 @@ export function TestStudents({ testId, testStatus, enrolled, available, blocked 
                   )}
                 </div>
 
-                <div role="group" aria-label="Filter by status" className="flex rounded-lg border border-border bg-card p-0.5">
+                <div role="group" aria-label="Filter by status" className="ml-auto flex rounded-lg border border-border bg-card p-0.5">
                   {['all', ...statusLabels].map(key => {
                     const active = statusFilter === key
                     const count = key === 'all' ? enrolled.length : countFor(key)
@@ -241,7 +257,15 @@ export function TestStudents({ testId, testStatus, enrolled, available, blocked 
                         <span className="text-xs font-semibold text-muted-foreground">{initials(student.full_name)}</span>
                       </div>
 
-                      <p className="flex-1 min-w-0 text-sm font-medium truncate">{student.full_name}</p>
+                      <div className="min-w-0 flex-1">
+                        <button
+                          type="button"
+                          onClick={() => openDetails(student.id, student.full_name)}
+                          className="max-w-full truncate rounded-sm text-left text-sm font-medium underline-offset-4 outline-none hover:text-primary-text hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
+                        >
+                          {student.full_name}
+                        </button>
+                      </div>
 
                       {student.attemptCount > 1 && (
                         <span className="text-xs text-muted-foreground font-medium shrink-0 tabular-nums">
@@ -311,6 +335,20 @@ export function TestStudents({ testId, testStatus, enrolled, available, blocked 
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {detailsFor && (
+        <StudentDetailsDrawer
+          key={detailsFor.id}
+          studentId={detailsFor.id}
+          studentName={detailsFor.name}
+          addedDate={details?.created_at ?? ''}
+          yearLevel={details?.year_level ?? null}
+          tests={details?.tests ?? []}
+          loading={!details}
+          open={detailsOpen}
+          onOpenChange={setDetailsOpen}
+        />
+      )}
 
       {/* ── Assign Students Drawer ── */}
       {drawer.mounted && (
