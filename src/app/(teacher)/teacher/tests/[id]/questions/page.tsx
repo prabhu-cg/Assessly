@@ -26,6 +26,7 @@ import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 import { ConfirmDialog } from '@/components/shared/confirm-dialog'
 import type { Question, Test } from '@/types/database'
+import { QuestionImage } from '@/components/shared/question-image'
 
 const statusVariant: Record<string, 'success' | 'secondary' | 'outline' | 'muted'> = {
   draft: 'muted', published: 'success', archived: 'outline',
@@ -74,6 +75,7 @@ function SortableQuestion({ question: q, index, onEdit, onDelete }: SortableQues
 
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium leading-snug">{q.content}</p>
+<QuestionImage src={q.image_url} className="max-h-40" />
               {q.type === 'mcq' && q.options && (
                 <ul className="mt-2 space-y-1">
                   {(q.options as { id: string; text: string }[]).map((opt, i) => (
@@ -192,6 +194,7 @@ function PreviewDrawer({ open, onClose, test, questions }: {
                 </span>
                 <div className="flex-1">
                   <p className="font-medium text-sm leading-relaxed">{q.content}</p>
+<QuestionImage src={q.image_url} className="max-h-40" />
                   <div className="flex items-center gap-2 mt-1">
                     <Badge variant="secondary" className="text-xs">{typeLabel[q.type]}</Badge>
                     <span className="text-xs text-muted-foreground">{q.marks} mark{q.marks !== 1 ? 's' : ''}</span>

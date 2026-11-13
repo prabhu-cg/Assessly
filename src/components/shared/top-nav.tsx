@@ -53,7 +53,7 @@ export function TopNav({ profile }: TopNavProps) {
         {/* Logo */}
         <Link href={tabs[0].href} className="flex items-center gap-2.5 shrink-0">
           <LogoMark className="h-7 w-auto" />
-          <span className="font-bold text-base tracking-tight">Assessly</span>
+          <span className="font-display text-xl text-ink-strong">Assessly</span>
         </Link>
 
         {/* User menu */}
@@ -64,21 +64,21 @@ export function TopNav({ profile }: TopNavProps) {
             className="flex items-center gap-2 rounded-full px-2 py-1 hover:bg-secondary transition-colors outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
             <span className="text-sm text-muted-foreground hidden sm:block">{profile.full_name}</span>
-            <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold ring-2 ring-border">
+            <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-bold ring-2 ring-border">
               {initials}
             </div>
             <ChevronDown className={cn('h-3.5 w-3.5 text-muted-foreground transition-transform', menuOpen && 'rotate-180')} />
           </button>
 
           {menuOpen && (
-            <div className="absolute right-0 top-full mt-2 w-52 bg-popover border border-border rounded-lg shadow-lg py-1 z-50">
+            <div className="absolute right-0 top-full mt-2 w-52 bg-popover border border-border rounded-xl py-1 z-50">
               {/* User info */}
               <div className="px-3 py-2.5 border-b border-border">
                 <p className="text-sm font-semibold">{profile.full_name}</p>
                 {profile.role === 'teacher' && (
                   <p className="text-xs text-muted-foreground mt-0.5 truncate">{profile.email}</p>
                 )}
-                <span className="inline-block mt-1 text-xs font-medium text-primary capitalize">{profile.role}</span>
+                <span className="inline-block mt-1 text-xs font-medium text-primary-text capitalize">{profile.role}</span>
               </div>
               {/* Sign out — teachers only */}
               {profile.role === 'teacher' && (
@@ -107,7 +107,7 @@ export function TopNav({ profile }: TopNavProps) {
               className={cn(
                 'flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap',
                 isActive
-                  ? 'border-primary text-primary'
+                  ? 'border-primary text-primary-text'
                   : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
               )}
             >

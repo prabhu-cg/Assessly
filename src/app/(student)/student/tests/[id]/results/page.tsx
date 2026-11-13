@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { Home, BookOpen, CheckCircle2, Clock, MessageSquare } from 'lucide-react'
 import type { Answer, MCQOption, Question } from '@/types/database'
+import { QuestionImage } from '@/components/shared/question-image'
 
 interface ResultsPageProps {
   params: Promise<{ id: string }>
@@ -80,7 +81,7 @@ export default async function ResultsPage({ params, searchParams }: ResultsPageP
           )}>
             {isEvaluated
               ? <CheckCircle2 className="h-7 w-7 text-success" />
-              : <Clock className="h-7 w-7 text-primary" />
+              : <Clock className="h-7 w-7 text-primary-text" />
             }
           </div>
           <h1 className="text-xl font-bold">
@@ -103,7 +104,7 @@ export default async function ResultsPage({ params, searchParams }: ResultsPageP
             <div className="space-y-3">
               {/* Big score */}
               <div className="flex items-end justify-center gap-1.5">
-                <span className="text-[4rem] font-bold text-primary leading-none">{obtained}</span>
+                <span className="text-[4rem] font-bold text-primary-text leading-none">{obtained}</span>
                 <span className="text-2xl text-muted-foreground pb-1">/ {total}</span>
               </div>
               {/* Score bar */}
@@ -213,6 +214,7 @@ export default async function ResultsPage({ params, searchParams }: ResultsPageP
 
                   {/* Question text */}
                   <p className="text-sm font-medium leading-relaxed">{q.content}</p>
+<QuestionImage src={q.image_url} />
 
                   {/* MCQ options */}
                   {q.type === 'mcq' && options && (
@@ -240,7 +242,7 @@ export default async function ResultsPage({ params, searchParams }: ResultsPageP
                             {opt.text}
                             {isEvaluated && isCorrect && <span className="ml-2 text-success font-medium">✓</span>}
                             {isEvaluated && !isCorrect && isSelected && <span className="ml-2 text-destructive font-medium">✗</span>}
-                            {!isEvaluated && isSelected && <span className="ml-2 text-primary text-xs font-medium">Your answer</span>}
+                            {!isEvaluated && isSelected && <span className="ml-2 text-primary-text text-xs font-medium">Your answer</span>}
                           </div>
                         )
                       })}

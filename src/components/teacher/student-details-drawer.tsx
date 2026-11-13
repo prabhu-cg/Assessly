@@ -179,7 +179,7 @@ export function StudentDetailsDrawer({
                         return (
                           <li key={t.testId} style={{ '--i': i } as React.CSSProperties} className="rise-in">
                             {t.submissionId ? (
-                              <Link href={`/teacher/tests/${t.testId}/submissions/${t.submissionId}`} className="flex items-center gap-3 px-3 py-2.5 outline-none transition-colors hover:bg-foreground/5 focus-visible:bg-foreground/5">
+                              <Link href={`/teacher/tests/${t.testId}/submissions/${t.submissionId}`} className="flex items-center gap-3 px-3 py-2.5 outline-none transition-colors hover:bg-secondary focus-visible:bg-foreground/5">
                                 {inner}
                               </Link>
                             ) : (

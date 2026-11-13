@@ -96,7 +96,7 @@ export default async function TeacherDashboard() {
         <section className="lg:col-span-3 rounded-xl border border-border bg-card" aria-labelledby="queue-h">
           <div className="flex items-center justify-between px-5 py-4">
             <h2 id="queue-h" className="text-base font-semibold flex items-center gap-2">
-              <ClipboardCheck className="h-4 w-4 text-primary" />
+              <ClipboardCheck className="h-4 w-4 text-primary-text" />
               Needs grading
               {totalWaiting > 0 && <Badge variant="secondary" className="tabular-nums">{totalWaiting}</Badge>}
             </h2>
@@ -114,7 +114,7 @@ export default async function TeacherDashboard() {
                 <li key={q.id} className="border-b border-border last:border-b-0">
                   <Link
                     href={`/teacher/submissions?test=${q.id}&status=submitted`}
-                    className="flex items-center gap-4 px-5 py-3 hover:bg-foreground/5 transition-colors"
+                    className="flex items-center gap-4 px-5 py-3 hover:bg-secondary transition-colors"
                   >
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-semibold">{q.title}</p>
@@ -141,7 +141,7 @@ export default async function TeacherDashboard() {
         <section className="lg:col-span-2 rounded-xl border border-border bg-card" aria-labelledby="active-h">
           <div className="flex items-center justify-between px-5 py-4">
             <h2 id="active-h" className="text-base font-semibold flex items-center gap-2">
-              <BookOpen className="h-4 w-4 text-primary" />
+              <BookOpen className="h-4 w-4 text-primary-text" />
               Published tests
               <Badge variant="secondary" className="tabular-nums">{published.length}</Badge>
             </h2>
@@ -155,7 +155,7 @@ export default async function TeacherDashboard() {
             <ul className="border-t border-border">
               {active.slice(0, ACTIVE_LIMIT).map(t => (
                 <li key={t.id} className="border-b border-border last:border-b-0">
-                  <Link href={`/teacher/tests/${t.id}`} className="flex items-center gap-3 px-5 py-3 hover:bg-foreground/5 transition-colors">
+                  <Link href={`/teacher/tests/${t.id}`} className="flex items-center gap-3 px-5 py-3 hover:bg-secondary transition-colors">
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-semibold">{t.title}</p>
                       <p className="flex items-center gap-1 text-xs text-muted-foreground">

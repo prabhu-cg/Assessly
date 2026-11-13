@@ -87,6 +87,8 @@ create table public.questions (
   -- For MCQ: [{id: uuid, text: string}, ...] (2–6 options)
   options           jsonb,
   correct_option_id text,
+  -- Optional picture shown with the question (public URL in the question-images bucket)
+  image_url         text,
   marks             integer not null default 1 check (marks > 0),
   order_index       integer not null default 0,
   created_at        timestamptz not null default now()

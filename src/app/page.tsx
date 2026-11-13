@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button'
 import { LogoMark, Wordmark } from '@/components/shared/logo'
 import { ProductTour } from '@/components/shared/product-tour'
 import { Footer } from '@/components/shared/footer'
+import { ThemeToggle } from '@/components/shared/theme-toggle'
 import { FaqAccordion } from '@/components/shared/faq-accordion'
 
 const STATS = [
@@ -112,6 +113,7 @@ export default function LandingPage() {
         <div className="max-w-screen-xl mx-auto flex items-center justify-between px-4 py-4 sm:px-6">
           <Wordmark />
           <nav className="flex items-center gap-2">
+            <ThemeToggle />
             <Button variant="ghost" render={<Link href="/student-login" />}>
               <span className="sm:hidden">Students</span>
               <span className="hidden sm:inline">Student portal</span>
@@ -127,15 +129,11 @@ export default function LandingPage() {
           className="relative overflow-hidden py-20 sm:py-28 text-center"
           style={{ backgroundColor: 'var(--surface)' }}
         >
-          <div className="absolute inset-x-0 top-0 flex justify-center pointer-events-none select-none">
-            <LogoMark className="h-[28rem] w-auto opacity-[0.06] -translate-y-1/3" />
-          </div>
-
           <div className="relative max-w-screen-xl mx-auto px-6">
             <div className="max-w-3xl mx-auto">
-              <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight">
+              <h1 className="text-5xl sm:text-7xl leading-none">
                 Create, share, and grade exams —{' '}
-                <span style={{ color: 'var(--primary)' }}>without the busywork.</span>
+                <span className="text-primary-text">without the busywork.</span>
               </h1>
               <p className="mt-5 text-lg text-muted-foreground max-w-xl mx-auto">
                 Assessly is a modern examination platform for teachers and students. Build a test,
@@ -159,7 +157,7 @@ export default function LandingPage() {
             <div className="max-w-3xl mx-auto mt-16 grid grid-cols-2 sm:grid-cols-4 gap-6">
               {STATS.map(stat => (
                 <div key={stat.label}>
-                  <div className="text-2xl sm:text-3xl font-extrabold" style={{ color: 'var(--primary)' }}>
+                  <div className="font-display text-3xl sm:text-4xl text-ink-strong">
                     {stat.value}
                   </div>
                   <div className="text-sm text-muted-foreground mt-1">{stat.label}</div>
@@ -173,7 +171,7 @@ export default function LandingPage() {
         <section className="py-20">
           <div className="max-w-screen-xl mx-auto px-6">
             <div className="text-center max-w-xl mx-auto mb-14">
-              <h2 className="text-3xl font-bold tracking-tight">A peek inside Assessly</h2>
+              <h2 className="text-4xl">A peek inside Assessly</h2>
               <p className="mt-3 text-muted-foreground">
                 Illustrative previews with sample data: what a teacher sees after signing in.
               </p>
@@ -184,10 +182,10 @@ export default function LandingPage() {
         </section>
 
         {/* ── Features ── */}
-        <section className="py-20">
+        <section className="py-20" style={{ backgroundColor: 'var(--surface)' }}>
           <div className="max-w-screen-xl mx-auto px-6">
             <div className="text-center max-w-xl mx-auto mb-14">
-              <h2 className="text-3xl font-bold tracking-tight">What Assessly does</h2>
+              <h2 className="text-4xl">What Assessly does</h2>
               <p className="mt-3 text-muted-foreground">
                 Everything a classroom needs to run a test, from question to grade.
               </p>
@@ -196,12 +194,12 @@ export default function LandingPage() {
               {FEATURES.map(feature => (
                 <div key={feature.title}>
                   <div
-                    className="h-11 w-11 rounded-xl flex items-center justify-center mb-4"
+                    className="h-11 w-11 rounded-full flex items-center justify-center mb-4"
                     style={{ backgroundColor: 'var(--primary-soft)' }}
                   >
-                    <feature.icon className="h-5.5 w-5.5" style={{ color: 'var(--primary)' }} />
+                    <feature.icon className="h-5.5 w-5.5 text-primary-text" />
                   </div>
-                  <h3 className="font-semibold">{feature.title}</h3>
+                  <h3 className="text-xl font-semibold">{feature.title}</h3>
                   <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">
                     {feature.description}
                   </p>
@@ -212,26 +210,25 @@ export default function LandingPage() {
         </section>
 
         {/* ── How it works ── */}
-        <section className="py-20" style={{ backgroundColor: 'var(--surface)' }}>
+        <section className="py-20">
           <div className="max-w-screen-xl mx-auto px-6">
             <div className="text-center max-w-xl mx-auto mb-14">
-              <h2 className="text-3xl font-bold tracking-tight">How it works</h2>
+              <h2 className="text-4xl">How it works</h2>
               <p className="mt-3 text-muted-foreground">
                 From a blank test to a graded submission in four steps.
               </p>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {STEPS.map(step => (
-                <div key={step.num} className="rounded-2xl border border-border bg-card p-6">
+                <div key={step.num} className="rounded-[20px] border border-border bg-card p-6">
                   <div className="flex items-center gap-3 mb-4">
                     <span
-                      className="h-8 w-8 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0"
-                      style={{ backgroundColor: 'var(--primary)' }}
+                      className="h-8 w-8 rounded-full flex items-center justify-center text-sm font-semibold text-primary-foreground bg-primary shrink-0"
                     >
                       {step.num}
                     </span>
                   </div>
-                  <h3 className="font-semibold">{step.title}</h3>
+                  <h3 className="text-xl font-semibold">{step.title}</h3>
                   <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">
                     {step.description}
                   </p>
@@ -246,7 +243,7 @@ export default function LandingPage() {
           <div className="max-w-screen-xl mx-auto px-6">
             <div className="max-w-2xl mx-auto">
               <div className="text-center mb-14">
-                <h2 className="text-3xl font-bold tracking-tight">Frequently asked questions</h2>
+                <h2 className="text-4xl">Frequently asked questions</h2>
                 <p className="mt-3 text-muted-foreground">
                   Everything else you might be wondering about.
                 </p>
@@ -257,24 +254,23 @@ export default function LandingPage() {
         </section>
 
         {/* ── Final CTA ── */}
-        <section className="bg-primary py-20">
+        <section className="py-20">
           <div className="max-w-screen-xl mx-auto px-6">
             <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-primary-foreground">
+              <h2 className="text-4xl sm:text-5xl text-ink-strong">
                 Ready to run your next test?
               </h2>
-              <p className="mt-4 text-lg text-primary-foreground/80">
+              <p className="mt-4 text-lg text-muted-foreground">
                 Sign in to your teacher dashboard, or ask your teacher for an invite code.
               </p>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-                <Button size="lg" variant="secondary" render={<Link href="/login" />}>
+                <Button size="lg" render={<Link href="/login" />}>
                   Teacher sign in
                   <ArrowRight />
                 </Button>
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
                   render={<Link href="/student-login" />}
                 >
                   I'm a student

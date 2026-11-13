@@ -15,6 +15,7 @@ import { Separator } from '@/components/ui/separator'
 import { Breadcrumbs } from '@/components/shared/breadcrumbs'
 import { AlertTriangle, CheckCircle2, Loader2, Save } from 'lucide-react'
 import Link from 'next/link'
+import { QuestionImage } from '@/components/shared/question-image'
 
 interface Props {
   testId: string
@@ -216,6 +217,7 @@ export function EvaluationForm({ testId, submissionId, initialSubmission, initia
                 </span>
                 <div className="flex-1">
                   <p className="font-medium leading-snug">{question.content}</p>
+<QuestionImage src={question.image_url} />
                   <div className="flex items-center gap-2 mt-1">
                     <Badge variant="secondary" className="text-xs">{typeLabel[question.type]}</Badge>
                     <span className="text-xs text-muted-foreground">{question.marks} mark{question.marks !== 1 ? 's' : ''}</span>

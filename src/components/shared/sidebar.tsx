@@ -72,7 +72,7 @@ export function MobileNav({ role }: SidebarProps) {
             href={href}
             className={cn(
               'flex flex-1 flex-col items-center gap-1 py-2 text-xs font-medium transition-colors',
-              isActive ? 'text-primary' : 'text-muted-foreground'
+              isActive ? 'text-primary-text' : 'text-muted-foreground'
             )}
           >
             <Icon className="h-5 w-5" />

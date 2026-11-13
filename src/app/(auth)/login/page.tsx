@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Loader2, Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import { LogoMark } from '@/components/shared/logo'
+import { ThemeToggle } from '@/components/shared/theme-toggle'
 import { AuthPanel } from '@/components/shared/auth-panel'
 import { toast } from 'sonner'
 
@@ -78,7 +79,8 @@ export default function LoginPage() {
       </AuthPanel>
 
       {/* ── Right panel ── */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 py-8 sm:py-12" style={{ backgroundColor: 'var(--surface)' }}>
+      <div className="relative flex-1 flex flex-col items-center justify-center px-6 py-8 sm:py-12" style={{ backgroundColor: 'var(--surface)' }}>
+        <ThemeToggle className="absolute right-4 top-4" />
         <div className="w-full max-w-sm">
 
           {/* Logo + tagline */}

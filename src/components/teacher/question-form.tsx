@@ -4,7 +4,9 @@ import { useState, useTransition } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { v4 as uuidv4 } from 'uuid'
-import { createQuestion, updateQuestion } from '@/app/actions/questions'
+import { createQuestion, updateQuestion, createQuestionImageUpload } from '@/app/actions/questions'
+import { createClient } from '@/lib/supabase/client'
+import { QuestionImageField } from '@/components/teacher/question-image-field'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -44,6 +46,9 @@ type FormValues = MCQFormValues | OpenFormValues
 export function QuestionForm({ testId, question, onSuccess, onCancel }: QuestionFormProps) {
   const [isPending, startTransition] = useTransition()
   const [qType, setQType] = useState<QuestionType>(question?.type ?? 'mcq')
+  const initialImage = question?.image_url ?? null
+  const [imageUrl, setImageUrl] = useState<string | null>(initialImage)
+  const [uploading, setUploading] = useState(false)
 
   const defaultOptions = question?.options ?? [
     { id: uuidv4(), text: '' },
@@ -66,13 +71,46 @@ export function QuestionForm({ testId, question, onSuccess, onCancel }: Question
   const correctOptionId = watch('correct_option_id')
   const watchedOptions = watch('options') as { id: string; text: string }[]
 
+  async function uploadImage(file: File) {
+    if (!file.type.startsWith('image/')) return toast.error('That file is not an image.')
+    setUploading(true)
+    try {
+      const prepared = await prepareImage(file)
+      const ticket = await createQuestionImageUpload(testId, prepared.type, prepared.size)
+      if ('error' in ticket && ticket.error) return toast.error(ticket.error)
+      const { path, token, publicUrl } = ticket as { path: string; token: string; publicUrl: string }
+      const { error } = await createClient().storage
+        .from('question-images')
+        .uploadToSignedUrl(path, token, prepared, { contentType: prepared.type })
+      if (error) return toast.error(error.message)
+      setImageUrl(publicUrl)
+    } catch {
+      toast.error('Could not upload the image. Try again.')
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  // Paste a screenshot from the clipboard anywhere in the form. Plain text pastes are left alone.
+  function onPaste(e: React.ClipboardEvent) {
+    const file = Array.from(e.clipboardData.items)
+      .find(i => i.kind === 'file' && i.type.startsWith('image/'))
+      ?.getAsFile()
+    if (!file) return
+    e.preventDefault()
+    void uploadImage(file)
+  }
+
   const onSubmit = (data: any) => {
+    if (uploading) return toast.error('Wait for the image to finish uploading.')
     const payload = {
       type: qType,
       content: data.content,
       marks: Number(data.marks),
       options: qType === 'mcq' ? data.options : null,
       correct_option_id: qType === 'mcq' ? data.correct_option_id : null,
+      // Only sent when changed: undefined leaves the saved image alone, null removes it.
+      image_url: imageUrl !== initialImage ? imageUrl : undefined,
     }
 
     startTransition(async () => {
@@ -95,7 +133,7 @@ export function QuestionForm({ testId, question, onSuccess, onCancel }: Question
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} onPaste={onPaste} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label>Question Type</Label>
@@ -130,6 +168,11 @@ export function QuestionForm({ testId, question, onSuccess, onCancel }: Question
           placeholder="Enter the question text..."
           rows={3}
         />
+      </div>
+
+      <div className="space-y-2">
+        <Label>Image (optional)</Label>
+        <QuestionImageField value={imageUrl} uploading={uploading} onFile={uploadImage} onRemove={() => setImageUrl(null)} />
       </div>
 
       {qType === 'mcq' && (
@@ -191,4 +234,20 @@ export function QuestionForm({ testId, question, onSuccess, onCancel }: Question
       </div>
     </form>
   )
+}
+
+/** Pasted retina screenshots are big. Shrink anything over 2 MB or 1800 px wide to a WebP before uploading (GIFs are left alone). */
+async function prepareImage(file: File): Promise<File> {
+  if (file.type === 'image/gif') return file
+  const bitmap = await createImageBitmap(file).catch(() => null)
+  if (!bitmap) return file
+  const MAX = 1800
+  if (file.size <= 2 * 1024 * 1024 && bitmap.width <= MAX) return file
+  const scale = Math.min(1, MAX / bitmap.width)
+  const canvas = document.createElement('canvas')
+  canvas.width = Math.round(bitmap.width * scale)
+  canvas.height = Math.round(bitmap.height * scale)
+  canvas.getContext('2d')!.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
+  const blob = await new Promise<Blob | null>(res => canvas.toBlob(res, 'image/webp', 0.9))
+  return blob ? new File([blob], 'question.webp', { type: 'image/webp' }) : file
 }

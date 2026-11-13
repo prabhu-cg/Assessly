@@ -40,6 +40,7 @@ export interface Question {
   content: string
   options: MCQOption[] | null
   correct_option_id: string | null
+  image_url?: string | null
   marks: number
   order_index: number
   created_at: string

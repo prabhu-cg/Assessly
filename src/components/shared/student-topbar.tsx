@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import { BookOpen, KeyRound } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { LogoMark } from '@/components/shared/logo'
+import { ThemeToggle } from '@/components/shared/theme-toggle'
 
 const links = [
   { href: '/student/dashboard', label: 'My tests', icon: BookOpen },
@@ -20,7 +21,7 @@ export function StudentTopbar({ fullName }: { fullName: string }) {
       <div className="app-page flex h-16 items-center gap-3 px-4 sm:px-5 lg:px-6">
         <Link href="/student/dashboard" aria-label="Assessly home" className="flex shrink-0 items-center gap-2.5">
           <LogoMark className="h-7 w-auto" />
-          <span className="hidden font-bold text-base tracking-tight sm:block">Assessly</span>
+          <span className="font-display text-xl text-ink-strong hidden sm:block">Assessly</span>
         </Link>
 
         <nav aria-label="Student" className="ml-2 flex items-center gap-1 sm:ml-6">
@@ -32,10 +33,10 @@ export function StudentTopbar({ fullName }: { fullName: string }) {
                 href={href}
                 aria-current={active ? 'page' : undefined}
                 className={cn(
-                  'flex h-10 items-center gap-2 rounded-lg px-3 text-sm outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/50',
+                  'flex h-10 items-center gap-2 rounded-full px-4 text-sm outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/50',
                   active
                     ? 'bg-primary-soft font-semibold text-primary-text'
-                    : 'font-medium text-muted-foreground hover:bg-foreground/5 hover:text-foreground',
+                    : 'font-medium text-muted-foreground hover:bg-secondary hover:text-ink-strong',
                 )}
               >
                 <Icon className="size-4 shrink-0" />
@@ -46,6 +47,7 @@ export function StudentTopbar({ fullName }: { fullName: string }) {
         </nav>
 
         <div className="ml-auto flex items-center gap-2.5">
+          <ThemeToggle />
           <span className="hidden text-sm font-medium sm:block">{fullName}</span>
           <span className="flex size-9 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground" aria-hidden>
             {initials}

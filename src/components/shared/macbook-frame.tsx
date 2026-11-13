@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-export function MacbookFrame({ src, alt }: { src: string; alt: string }) {
+export function MacbookFrame({ src, srcDark, alt }: { src: string; srcDark?: string; alt: string }) {
   return (
     <div className="mx-auto w-full max-w-5xl">
       {/* Lid */}
@@ -13,9 +13,20 @@ export function MacbookFrame({ src, alt }: { src: string; alt: string }) {
             alt={alt}
             width={2880}
             height={1800}
-            className="h-full w-full object-cover object-top"
+            className={`h-full w-full object-cover object-top ${srcDark ? 'dark:hidden' : ''}`}
             sizes="(min-width: 1024px) 960px, 100vw"
           />
+          {srcDark && (
+          <Image
+            src={srcDark}
+            alt=""
+            aria-hidden
+            width={2880}
+            height={1800}
+            className="hidden h-full w-full object-cover object-top dark:block"
+            sizes="(min-width: 1024px) 960px, 100vw"
+          />
+          )}
         </div>
       </div>
       {/* Base */}

@@ -78,7 +78,7 @@ export function StudentsBrowser({ students }: { students: StudentRow[] }) {
 
       {visible.length === 0 ? (
         <div className="rounded-xl border border-dashed border-border bg-card px-6 py-16 text-center">
-          <SearchX className="mx-auto mb-3 h-6 w-6 text-primary" />
+          <SearchX className="mx-auto mb-3 h-6 w-6 text-primary-text" />
           <p className="text-sm font-semibold">No students match &ldquo;{query.trim()}&rdquo;</p>
           <button type="button" onClick={() => setQuery('')} className="mt-2 text-sm font-semibold text-primary-text hover:underline">
             Clear search

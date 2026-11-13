@@ -32,10 +32,13 @@ export const mcqOptionSchema = z.object({
   text: z.string().min(1, 'Option text is required'),
 })
 
+const questionImage = z.string().url().max(500).nullable().optional()
+
 export const questionSchema = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('mcq'),
     content: z.string().min(3, 'Question content is required'),
+    image_url: questionImage,
     marks: z.coerce.number().min(1),
     options: z.array(mcqOptionSchema).min(2).max(6),
     correct_option_id: z.string().min(1, 'Select the correct answer'),
@@ -43,6 +46,7 @@ export const questionSchema = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('short_answer'),
     content: z.string().min(3, 'Question content is required'),
+    image_url: questionImage,
     marks: z.coerce.number().min(1),
     options: z.null().optional(),
     correct_option_id: z.null().optional(),
@@ -50,6 +54,7 @@ export const questionSchema = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('long_answer'),
     content: z.string().min(3, 'Question content is required'),
+    image_url: questionImage,
     marks: z.coerce.number().min(1),
     options: z.null().optional(),
     correct_option_id: z.null().optional(),

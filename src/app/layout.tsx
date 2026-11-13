@@ -1,13 +1,19 @@
 import type { Metadata } from "next";
-import { Manrope } from "next/font/google";
+import { DM_Sans, Newsreader } from "next/font/google";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/components/shared/theme-provider";
 
-const manrope = Manrope({
+const dmSans = DM_Sans({
   variable: "--font-sans",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+});
+
+const newsreader = Newsreader({
+  variable: "--font-newsreader",
+  subsets: ["latin"],
+  weight: ["500"],
 });
 
 export const metadata: Metadata = {
@@ -23,11 +29,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${manrope.variable} ${GeistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
+      className={`${dmSans.variable} ${newsreader.variable} ${GeistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        {children}
-        <Toaster />
+        <ThemeProvider>
+          {children}
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

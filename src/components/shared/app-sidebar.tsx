@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 import { logout } from '@/app/actions/auth'
 import { LogOut, ChevronDown } from 'lucide-react'
 import { LogoMark } from '@/components/shared/logo'
+import { ThemeToggle } from '@/components/shared/theme-toggle'
 import { teacherLinks } from '@/components/shared/sidebar'
 import type { Profile } from '@/types/database'
 
@@ -18,7 +19,7 @@ export function AppSidebar() {
       <div className="flex h-14 shrink-0 items-center border-b border-border px-4">
         <Link href="/teacher/dashboard" aria-label="Assessly home" className="flex items-center gap-2.5">
           <LogoMark className="h-7 w-auto" />
-          <span className="font-bold text-base tracking-tight">Assessly</span>
+          <span className="font-display text-xl text-ink-strong">Assessly</span>
         </Link>
       </div>
 
@@ -31,10 +32,10 @@ export function AppSidebar() {
               href={href}
               aria-current={isActive ? 'page' : undefined}
               className={cn(
-                'flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                'flex items-center gap-3 rounded-full px-3.5 py-2 text-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring',
                 isActive
-                  ? 'bg-foreground/5 font-semibold text-foreground'
-                  : 'font-medium text-muted-foreground hover:bg-foreground/5 hover:text-foreground',
+                  ? 'bg-primary-soft font-semibold text-primary-text'
+                  : 'font-medium text-muted-foreground hover:bg-secondary hover:text-ink-strong',
               )}
             >
               <Icon className="h-4 w-4 shrink-0" />
@@ -71,16 +72,18 @@ export function AppTopbar({ profile }: { profile: Profile }) {
     <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center justify-between border-b border-border bg-background/85 px-4 backdrop-blur-md lg:px-6">
       <Link href="/teacher/dashboard" className="md:invisible flex items-center gap-2.5">
         <LogoMark className="h-6 w-auto" />
-        <span className="font-bold text-base tracking-tight">Assessly</span>
+        <span className="font-display text-xl text-ink-strong">Assessly</span>
       </Link>
 
+      <div className="flex items-center gap-1">
+      <ThemeToggle />
       <div className="relative" ref={ref}>
         <button
           type="button"
           onClick={() => setOpen(o => !o)}
           aria-haspopup="menu"
           aria-expanded={open}
-          className="flex items-center gap-2 rounded-full py-1 pl-3 pr-1.5 hover:bg-foreground/5 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="flex items-center gap-2 rounded-full py-1 pl-3 pr-1.5 hover:bg-secondary transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <span className="hidden sm:block text-sm font-medium">{profile.full_name}</span>
           <span className="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">
@@ -90,7 +93,7 @@ export function AppTopbar({ profile }: { profile: Profile }) {
         </button>
 
         {open && (
-          <div role="menu" className="absolute right-0 top-full mt-2 w-60 rounded-lg border border-border bg-popover py-1 shadow-lg">
+          <div role="menu" className="absolute right-0 top-full mt-2 w-60 rounded-xl border border-border-strong bg-popover py-1">
             <div className="border-b border-border px-3 py-2.5">
               <p className="text-sm font-semibold">{profile.full_name}</p>
               <p className="mt-0.5 truncate text-xs text-muted-foreground">{profile.email}</p>
@@ -107,6 +110,7 @@ export function AppTopbar({ profile }: { profile: Profile }) {
             </form>
           </div>
         )}
+      </div>
       </div>
     </header>
   )

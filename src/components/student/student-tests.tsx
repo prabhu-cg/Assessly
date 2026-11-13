@@ -169,19 +169,19 @@ export function StudentTests({ firstName, items, initialTab }: { firstName: stri
           <div className="rise-in rounded-card border border-dashed border-border bg-card px-6 py-14 text-center">
             {q ? (
               <>
-                <SearchX className="mx-auto mb-3 size-7 text-primary" />
+                <SearchX className="mx-auto mb-3 size-7 text-primary-text" />
                 <p className="text-sm font-semibold">No tests match &ldquo;{query.trim()}&rdquo;</p>
                 <button type="button" onClick={() => setQuery('')} className="mt-2 text-sm font-semibold text-primary-text hover:underline">Clear search</button>
               </>
             ) : tab === 'todo' ? (
               <>
-                <PartyPopper className="mx-auto mb-3 size-7 text-primary" />
+                <PartyPopper className="mx-auto mb-3 size-7 text-primary-text" />
                 <p className="text-sm font-semibold">You&apos;re all caught up</p>
                 <p className="mx-auto mt-1 max-w-sm text-sm text-muted-foreground">Your teacher will add the next test. Got an invite code? Use Join a test.</p>
               </>
             ) : (
               <>
-                <CheckCircle2 className="mx-auto mb-3 size-7 text-primary" />
+                <CheckCircle2 className="mx-auto mb-3 size-7 text-primary-text" />
                 <p className="text-sm font-semibold">Nothing completed yet</p>
                 <Button variant="outline" className="mt-3" onClick={() => switchTab('todo')}>See your tests</Button>
               </>

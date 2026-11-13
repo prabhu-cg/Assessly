@@ -16,6 +16,7 @@ import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
 import { ChevronLeft, ChevronRight, SkipForward, Send, Menu, X, Save, AlertTriangle, Maximize2 } from 'lucide-react'
 import type { Question, Test } from '@/types/database'
+import { QuestionImage } from '@/components/shared/question-image'
 
 export default function TakeTestPage() {
   const params = useParams()
@@ -341,6 +342,7 @@ export default function TakeTestPage() {
                 </span>
                 <div className="flex-1">
                   <p className="font-medium text-base leading-relaxed">{currentQuestion.content}</p>
+<QuestionImage src={currentQuestion.image_url} />
                   <div className="flex items-center gap-2 mt-2">
                     <Badge variant="secondary" className="text-xs">
                       {currentQuestion.type === 'mcq' ? 'MCQ' : currentQuestion.type === 'short_answer' ? 'Short Answer' : 'Essay'}

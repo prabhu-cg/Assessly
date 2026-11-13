@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { LogoMark } from '@/components/shared/logo'
+import { ThemeToggle } from '@/components/shared/theme-toggle'
 import { Footer } from '@/components/shared/footer'
 import { Link2 } from 'lucide-react'
 import { logout } from '@/app/actions/auth'
@@ -9,12 +10,13 @@ import { logout } from '@/app/actions/auth'
 export default function StudentLoginPage() {
   return (
     <div className="min-h-svh flex flex-col" style={{ backgroundColor: 'var(--surface)' }}>
-      <div className="flex-1 flex flex-col items-center justify-center px-6 py-10">
+      <div className="relative flex-1 flex flex-col items-center justify-center px-6 py-10">
+        <ThemeToggle className="absolute right-4 top-4" />
 
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 mb-10">
           <LogoMark className="h-10 w-auto" />
-          <span className="text-xl font-bold tracking-tight">Assessly</span>
+          <span className="font-display text-xl text-ink-strong">Assessly</span>
         </Link>
 
         {/* Card */}
@@ -24,7 +26,7 @@ export default function StudentLoginPage() {
             className="h-16 w-16 rounded-2xl flex items-center justify-center mx-auto mb-5"
             style={{ backgroundColor: 'var(--primary-soft)' }}
           >
-            <Link2 className="h-8 w-8" style={{ color: 'var(--primary)' }} />
+            <Link2 className="h-8 w-8" style={{ color: 'var(--primary-text)' }} />
           </div>
 
           <h1 className="text-2xl font-bold mb-2">Use your link!</h1>
@@ -43,8 +45,7 @@ export default function StudentLoginPage() {
             ].map(({ num, text }) => (
               <div key={num} className="flex items-center gap-3">
                 <span
-                  className="h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0"
-                  style={{ backgroundColor: 'var(--primary)' }}
+                  className="h-6 w-6 rounded-full flex items-center justify-center text-xs font-semibold text-primary-foreground bg-primary shrink-0"
                 >
                   {num}
                 </span>

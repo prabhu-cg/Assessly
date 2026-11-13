@@ -104,7 +104,7 @@ export default async function InstructionsPage({ params }: InstructionsPageProps
               'You can navigate between questions and review before submitting.',
             ].map(rule => (
               <li key={rule} className="flex items-start gap-2">
-                <AlertCircle className="h-4 w-4 mt-0.5 text-primary shrink-0" />
+                <AlertCircle className="h-4 w-4 mt-0.5 text-primary-text shrink-0" />
                 {rule}
               </li>
             ))}

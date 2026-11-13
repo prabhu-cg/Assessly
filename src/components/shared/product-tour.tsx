@@ -5,9 +5,9 @@ import { cn } from '@/lib/utils'
 import { MacbookFrame } from '@/components/shared/macbook-frame'
 
 const SCREENS = [
-  { key: 'dashboard', label: 'Dashboard', src: '/mockups/dashboard.png', alt: 'Assessly dashboard: submissions waiting for grading and published tests with students taking them now' },
-  { key: 'tests', label: 'Tests', src: '/mockups/tests.png', alt: 'Assessly tests page: test cards with status, search, filters and a newest-first switch' },
-  { key: 'students', label: 'Students', src: '/mockups/students.png', alt: 'Assessly students page: student cards showing year, tests assigned and completed' },
+  { key: 'dashboard', label: 'Dashboard', src: '/mockups/dashboard-light-v2.png', srcDark: '/mockups/dashboard-dark-v2.png', alt: 'Assessly dashboard: submissions waiting for grading and published tests with students taking them now' },
+  { key: 'tests', label: 'Tests', src: '/mockups/tests-light-v2.png', srcDark: '/mockups/tests-dark-v2.png', alt: 'Assessly tests page: test cards with status, search, filters and a newest-first switch' },
+  { key: 'students', label: 'Students', src: '/mockups/students-light-v2.png', srcDark: '/mockups/students-dark-v2.png', alt: 'Assessly students page: student cards showing year, tests assigned and completed' },
 ] as const
 
 export function ProductTour() {
@@ -34,7 +34,7 @@ export function ProductTour() {
         ))}
       </div>
       <div key={screen.key} className="fade-in">
-        <MacbookFrame src={screen.src} alt={screen.alt} />
+        <MacbookFrame src={screen.src} srcDark={screen.srcDark} alt={screen.alt} />
       </div>
     </div>
   )

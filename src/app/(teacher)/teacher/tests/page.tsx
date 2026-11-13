@@ -34,7 +34,7 @@ export default async function TeacherTestsPage({
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-16 text-center">
             <div className="h-12 w-12 rounded-2xl bg-primary-soft flex items-center justify-center mb-4">
-              <FileText className="h-6 w-6 text-primary" />
+              <FileText className="h-6 w-6 text-primary-text" />
             </div>
             <h3 className="font-semibold mb-1">No tests yet</h3>
             <p className="text-sm text-muted-foreground mb-4">Create your first test to get started</p>

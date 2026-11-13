@@ -53,7 +53,7 @@ export function EntityCard({
   index?: number
 }) {
   return (
-    <li style={{ '--i': index } as React.CSSProperties} className="rise-in group relative flex flex-col rounded-card border bg-surface-raised p-5 shadow-card transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:border-primary hover:shadow-raised has-focus-visible:ring-3 has-focus-visible:ring-ring/50 motion-reduce:transition-none motion-reduce:hover:translate-y-0">
+    <li style={{ '--i': index } as React.CSSProperties} className="rise-in group relative flex flex-col rounded-card border bg-surface-raised p-5 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:border-border-strong hover:shadow-raised has-focus-visible:ring-3 has-focus-visible:ring-ring/50 motion-reduce:transition-none motion-reduce:hover:translate-y-0">
       <div className="flex items-start gap-3">
         {leading}
         <div className="min-w-0 flex-1">
