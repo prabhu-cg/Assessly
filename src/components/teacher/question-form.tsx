@@ -43,6 +43,12 @@ interface OpenFormValues {
 
 type FormValues = MCQFormValues | OpenFormValues
 
+const QUESTION_TYPE_LABELS: Record<string, string> = {
+  mcq: 'Multiple Choice',
+  short_answer: 'Short Answer',
+  long_answer: 'Long Answer / Essay',
+}
+
 export function QuestionForm({ testId, question, onSuccess, onCancel }: QuestionFormProps) {
   const [isPending, startTransition] = useTransition()
   const [qType, setQType] = useState<QuestionType>(question?.type ?? 'mcq')
@@ -138,8 +144,8 @@ export function QuestionForm({ testId, question, onSuccess, onCancel }: Question
         <div className="space-y-2">
           <Label>Question Type</Label>
           <Select value={qType} onValueChange={handleTypeChange}>
-            <SelectTrigger>
-              <SelectValue />
+            <SelectTrigger className="w-full">
+              <SelectValue>{(v: string) => QUESTION_TYPE_LABELS[v] ?? v}</SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="mcq">Multiple Choice</SelectItem>
@@ -155,7 +161,7 @@ export function QuestionForm({ testId, question, onSuccess, onCancel }: Question
             type="number"
             {...register('marks', { min: 1 })}
             min={1}
-            className="w-full"
+            className="w-24"
           />
         </div>
       </div>

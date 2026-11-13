@@ -1,63 +1,78 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-18T20:27:13.860148+00:00",
+  "generatedAt": "2026-11-13T14:30:00+00:00",
   "title": "Design System: Assessly",
   "extensions": {
     "colorMeta": {
       "primary": {
         "role": "primary",
-        "displayName": "Assessly Terracotta",
-        "canonical": "#c74504",
+        "displayName": "Butter Amber",
+        "canonical": "#e8b923",
         "tonalRamp": [
-          "#3a1301",
-          "#5e1f02",
-          "#822c03",
-          "#a93a03",
-          "#c74504",
-          "#e2680f",
-          "#f2a06b",
-          "#fdefe7"
+          "#3b2e00",
+          "#5c4700",
+          "#826400",
+          "#a98100",
+          "#d4a615",
+          "#e8b923",
+          "#f0cf63",
+          "#faf4df"
         ]
       },
       "surface": {
         "role": "neutral",
-        "displayName": "Oat Cream",
-        "canonical": "#f4f2ea",
+        "displayName": "Desk",
+        "canonical": "#fcfaf3",
         "tonalRamp": [
-          "#2a2823",
-          "#4a473f",
-          "#6f6963",
-          "#9a9487",
-          "#c9c3b4",
-          "#e4dfd0",
-          "#f4f2ea",
-          "#fbfaf6"
+          "#262420",
+          "#353335",
+          "#4d4a4d",
+          "#6b6b6b",
+          "#a8a399",
+          "#f8f4e4",
+          "#fcfaf3",
+          "#ffffff"
         ]
       },
       "hairline": {
         "role": "neutral",
-        "displayName": "Parchment Hairline",
-        "canonical": "#e8ddc8",
+        "displayName": "Butter Hairline",
+        "canonical": "#ece5cc",
         "tonalRamp": [
-          "#5a4d33",
-          "#7d6c47",
-          "#a38f62",
-          "#c4b184",
-          "#d6c7ab",
-          "#e8ddc8",
-          "#f2ebdb",
-          "#faf6ec"
+          "#433e35",
+          "#8a7f6e",
+          "#a39a82",
+          "#dccfa6",
+          "#ece5cc",
+          "#f3eedb",
+          "#f8f4e4",
+          "#fcfaf3"
+        ]
+      },
+      "accent-text": {
+        "role": "accent",
+        "displayName": "Ochre",
+        "canonical": "#826400",
+        "tonalRamp": [
+          "#3b2e00",
+          "#5c4700",
+          "#826400",
+          "#a98100",
+          "#c99a14",
+          "#e8b923",
+          "#f0c94a",
+          "#faf4df"
         ]
       }
     },
     "typographyMeta": {
       "display": {
         "displayName": "Display",
-        "purpose": "Landing hero headline only."
+        "purpose": "Landing hero headline only (Newsreader 500, 72px)."
       },
       "headline": {
         "displayName": "Headline",
-        "purpose": "Landing section and app page titles."
+        "purpose": "Landing section titles and every h1/h2 (Newsreader 500)."
       },
       "title": {
         "displayName": "Title",
@@ -74,24 +89,19 @@
     },
     "shadows": [
       {
-        "name": "card",
-        "value": "0 1px 2px 0 #1010140a, 0 1px 3px 0 #1010140f",
-        "purpose": "Faint resting shadow on entity cards and student rows (shadow-card)."
-      },
-      {
         "name": "raised",
-        "value": "0 2px 4px -1px #1010140f, 0 8px 24px -6px #1010141f",
-        "purpose": "Hover state of cards (shadow-raised)."
-      },
-      {
-        "name": "dropdown",
-        "value": "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)",
-        "purpose": "Account and row menus (shadow-lg)."
+        "value": "0 2px 4px -1px rgb(53 51 53 / 0.06), 0 12px 24px -8px rgb(53 51 53 / 0.16)",
+        "purpose": "Hover state of clickable entity cards (shadow-raised). Resting cards are flat."
       },
       {
         "name": "drawer",
         "value": "0 25px 50px -12px rgba(0,0,0,0.25)",
         "purpose": "Right-hand drawers (shadow-2xl)."
+      },
+      {
+        "name": "device",
+        "value": "0 25px 50px -12px rgba(0,0,0,0.25)",
+        "purpose": "The MacBook mockup on the landing page."
       }
     ],
     "motion": [
@@ -107,7 +117,7 @@
       },
       {
         "name": "card-hover",
-        "value": "200ms: border to primary, shadow-raised, translateY(-2px)",
+        "value": "200ms: border to hairline-strong, shadow-raised, translateY(-2px)",
         "purpose": "Hover lift on cards and student rows; off under reduced motion."
       },
       {
@@ -124,6 +134,11 @@
         "name": "pulse-dot",
         "value": "1.8s ease-in-out infinite, opacity to 0.35",
         "purpose": "In-progress test marker; stops under reduced motion."
+      },
+      {
+        "name": "button-press",
+        "value": "transform scale(0.98) on :active",
+        "purpose": "Press feedback on every pill button."
       }
     ],
     "breakpoints": [
@@ -150,9 +165,9 @@
       "name": "Primary Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "The one terracotta action per view.",
+      "description": "The one amber action per view.",
       "html": "<button class=\"ds-btn-primary\">New test</button>",
-      "css": ".ds-btn-primary{background:var(--primary);color:#fff;height:42px;padding:0 16px;border:1px solid transparent;border-radius:6px;font:500 14px Manrope,system-ui,sans-serif;cursor:pointer;transition:background .15s}.ds-btn-primary:hover{background:var(--primary-hover)}.ds-btn-primary:active{transform:translateY(1px)}.ds-btn-primary:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in oklab,var(--ring) 50%,transparent)}"
+      "css": ".ds-btn-primary{background:var(--primary);color:var(--primary-foreground);height:44px;padding:0 16px;border:1px solid transparent;border-radius:9999px;font:600 14px 'DM Sans',system-ui,sans-serif;cursor:pointer;transition:background .15s}.ds-btn-primary:hover{background:var(--primary-hover)}.ds-btn-primary:active{transform:scale(.98)}.ds-btn-primary:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in oklab,var(--ring) 50%,transparent)}"
     },
     {
       "name": "Outline Button",
@@ -160,23 +175,23 @@
       "refersTo": "button-outline",
       "description": "Secondary action on white or cream.",
       "html": "<button class=\"ds-btn-outline\">Add student</button>",
-      "css": ".ds-btn-outline{background:var(--card);color:var(--foreground);height:42px;padding:0 16px;border:1px solid var(--border);border-radius:6px;font:500 14px Manrope,system-ui,sans-serif;cursor:pointer;transition:background .15s}.ds-btn-outline:hover{background:var(--muted)}.ds-btn-outline:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in oklab,var(--ring) 50%,transparent)}"
+      "css": ".ds-btn-outline{background:var(--card);color:var(--foreground);height:44px;padding:0 16px;border:1px solid var(--border-strong);border-radius:9999px;font:600 14px 'DM Sans',system-ui,sans-serif;cursor:pointer;transition:background .15s}.ds-btn-outline:hover{background:var(--secondary)}.ds-btn-outline:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in oklab,var(--ring) 50%,transparent)}"
     },
     {
       "name": "Text Input",
       "kind": "input",
       "refersTo": "input-control",
-      "description": "White field, hairline border, terracotta focus. Selects and textareas share it.",
+      "description": "White field, hairline border, amber focus. Selects and textareas share it.",
       "html": "<input class=\"ds-input\" placeholder=\"Search students\"/>",
-      "css": ".ds-input{height:40px;width:240px;padding:4px 10px;background:var(--card);color:var(--foreground);border:1px solid var(--input);border-radius:8px;font:400 16px Manrope,system-ui,sans-serif;outline:none;transition:border-color .15s,box-shadow .15s}.ds-input::placeholder{color:var(--muted-foreground)}.ds-input:focus-visible{border-color:var(--ring);box-shadow:0 0 0 3px color-mix(in oklab,var(--ring) 50%,transparent)}"
+      "css": ".ds-input{height:40px;width:240px;padding:4px 12px;background:var(--card);color:var(--foreground);border:1px solid var(--input);border-radius:8px;font:400 16px 'DM Sans',system-ui,sans-serif;outline:none;transition:border-color .15s,box-shadow .15s}.ds-input::placeholder{color:var(--muted-foreground)}.ds-input:focus-visible{border-color:var(--ring);box-shadow:0 0 0 3px color-mix(in oklab,var(--ring) 50%,transparent)}"
     },
     {
       "name": "Entity Card",
       "kind": "card",
       "refersTo": "card",
-      "description": "Doxa-style card for tests and students: faint resting shadow, terracotta border and 2px lift on hover, pinned footer.",
+      "description": "Doxa-style card for tests and students: faint resting shadow, amber border and 2px lift on hover, pinned footer.",
       "html": "<div class=\"ds-ec\"><div class=\"ds-ec-top\"><div><span class=\"ds-ec-badge\">published</span><h3 class=\"ds-ec-title\">Year 4 Maths</h3><p class=\"ds-ec-sub\">Year 4</p></div><span class=\"ds-ec-menu\" aria-hidden=\"true\">&#8942;</span></div><p class=\"ds-ec-meta\">10 min &middot; 4 questions &middot; AB12CD34</p><p class=\"ds-ec-foot\">Created 3 days ago</p></div>",
-      "css": ".ds-ec{width:300px;background:var(--surface-raised);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:0 1px 2px 0 #1010140a,0 1px 3px 0 #1010140f;transition:border-color .2s,box-shadow .2s,transform .2s;font-family:Manrope,system-ui,sans-serif}.ds-ec:hover{border-color:var(--primary);box-shadow:0 2px 4px -1px #1010140f,0 8px 24px -6px #1010141f;transform:translateY(-2px)}.ds-ec-top{display:flex;justify-content:space-between;align-items:flex-start}.ds-ec-badge{display:inline-block;height:20px;padding:0 8px;border-radius:9999px;background:var(--success-soft);color:var(--success);font-size:12px;font-weight:500;line-height:20px}.ds-ec-title{margin:8px 0 0;font-size:16px;font-weight:600;line-height:1.35}.ds-ec-sub{margin:2px 0 0;font-size:14px;color:var(--muted-foreground)}.ds-ec-menu{color:var(--muted-foreground);font-size:18px;line-height:1}.ds-ec-meta{margin:16px 0 0;font-size:12px;color:var(--muted-foreground)}.ds-ec-foot{margin:16px 0 0;padding-top:12px;border-top:1px solid var(--border);font-size:12px;color:var(--muted-foreground)}"
+      "css": ".ds-ec{width:300px;background:var(--surface-raised);border:1px solid var(--border);border-radius:20px;padding:20px;box-shadow:0 1px 2px 0 #1010140a,0 1px 3px 0 #1010140f;transition:border-color .2s,box-shadow .2s,transform .2s;font-family:'DM Sans',system-ui,sans-serif}.ds-ec:hover{border-color:var(--primary);box-shadow:0 2px 4px -1px #1010140f,0 8px 24px -6px #1010141f;transform:translateY(-2px)}.ds-ec-top{display:flex;justify-content:space-between;align-items:flex-start}.ds-ec-badge{display:inline-block;height:20px;padding:0 8px;border-radius:9999px;background:var(--success-soft);color:var(--success);font-size:12px;font-weight:500;line-height:20px}.ds-ec-title{margin:8px 0 0;font-size:16px;font-weight:600;line-height:1.35}.ds-ec-sub{margin:2px 0 0;font-size:14px;color:var(--muted-foreground)}.ds-ec-menu{color:var(--muted-foreground);font-size:18px;line-height:1}.ds-ec-meta{margin:16px 0 0;font-size:12px;color:var(--muted-foreground)}.ds-ec-foot{margin:16px 0 0;padding-top:12px;border-top:1px solid var(--border);font-size:12px;color:var(--muted-foreground)}"
     },
     {
       "name": "Status Badge",
@@ -184,7 +199,7 @@
       "refersTo": "badge-soft",
       "description": "Pill badge for test status.",
       "html": "<span class=\"ds-badge\">published</span>",
-      "css": ".ds-badge{display:inline-flex;align-items:center;height:20px;padding:2px 8px;border-radius:9999px;background:var(--success-soft);color:var(--success);font:500 12px Manrope,system-ui,sans-serif}"
+      "css": ".ds-badge{display:inline-flex;align-items:center;height:20px;padding:2px 8px;border-radius:9999px;background:var(--success-soft);color:var(--success);font:500 12px 'DM Sans',system-ui,sans-serif}"
     },
     {
       "name": "Teacher Sidebar",
@@ -192,7 +207,7 @@
       "refersTo": "nav-bar",
       "description": "Cream sidebar: logo row aligned with the top bar, quiet foreground-wash active item.",
       "html": "<nav class=\"ds-side\"><div class=\"ds-side-logo\">Assessly</div><a class=\"ds-side-a ds-on\">Dashboard</a><a class=\"ds-side-a\">Tests</a><a class=\"ds-side-a\">Students</a><a class=\"ds-side-a\">Submissions</a></nav>",
-      "css": ".ds-side{width:240px;background:var(--surface);border-right:1px solid var(--border);padding-bottom:12px;font-family:Manrope,system-ui,sans-serif}.ds-side-logo{height:56px;display:flex;align-items:center;padding:0 16px;border-bottom:1px solid var(--border);font-weight:700;font-size:16px;letter-spacing:-.025em}.ds-side-a{display:block;margin:4px 12px 0;padding:8px 12px;border-radius:6px;font-size:14px;font-weight:500;color:var(--muted-foreground);transition:background .15s,color .15s}.ds-side-a:first-of-type{margin-top:12px}.ds-side-a:hover{background:color-mix(in oklab,var(--foreground) 5%,transparent);color:var(--foreground)}.ds-side-a.ds-on{background:color-mix(in oklab,var(--foreground) 5%,transparent);color:var(--foreground);font-weight:600}"
+      "css": ".ds-side{width:240px;background:var(--surface);border-right:1px solid var(--border);padding-bottom:12px;font-family:'DM Sans',system-ui,sans-serif}.ds-side-logo{height:56px;display:flex;align-items:center;padding:0 16px;border-bottom:1px solid var(--border);font-family:Newsreader,Georgia,serif;font-weight:500;font-size:20px;letter-spacing:-.02em}.ds-side-a{display:block;margin:4px 12px 0;padding:8px 12px;border-radius:9999px;font-size:14px;font-weight:500;color:var(--muted-foreground);transition:background .15s,color .15s}.ds-side-a:first-of-type{margin-top:12px}.ds-side-a:hover{background:var(--secondary);color:var(--ink-strong)}.ds-side-a.ds-on{background:var(--primary-soft);color:var(--primary-text);font-weight:600}"
     },
     {
       "name": "Student Test Row",
@@ -200,28 +215,27 @@
       "refersTo": "card",
       "description": "72px compact row with one 44px action; scales to long lists.",
       "html": "<div class=\"ds-row\"><div class=\"ds-row-text\"><p class=\"ds-row-title\">Year 3 test</p><p class=\"ds-row-meta\">60 min &middot; In progress</p></div><span class=\"ds-row-act\">Continue</span></div>",
-      "css": ".ds-row{display:flex;align-items:center;gap:16px;min-height:72px;width:420px;padding:12px 16px;background:var(--surface-raised);border:1px solid var(--border);border-radius:16px;box-shadow:0 1px 2px 0 #1010140a,0 1px 3px 0 #1010140f;font-family:Manrope,system-ui,sans-serif;transition:border-color .2s,transform .2s}.ds-row:hover{border-color:var(--primary);transform:translateY(-2px)}.ds-row-text{flex:1;min-width:0}.ds-row-title{margin:0;font-size:16px;font-weight:600}.ds-row-meta{margin:2px 0 0;font-size:14px;color:var(--muted-foreground)}.ds-row-act{display:inline-flex;align-items:center;height:44px;padding:0 16px;border-radius:8px;background:var(--primary);color:#fff;font-size:14px;font-weight:700}"
+      "css": ".ds-row{display:flex;align-items:center;gap:16px;min-height:72px;width:420px;padding:12px 16px;background:var(--surface-raised);border:1px solid var(--border);border-radius:16px;box-shadow:0 1px 2px 0 #1010140a,0 1px 3px 0 #1010140f;font-family:'DM Sans',system-ui,sans-serif;transition:border-color .2s,transform .2s}.ds-row:hover{border-color:var(--primary);transform:translateY(-2px)}.ds-row-text{flex:1;min-width:0}.ds-row-title{margin:0;font-size:16px;font-weight:600}.ds-row-meta{margin:2px 0 0;font-size:14px;color:var(--muted-foreground)}.ds-row-act{display:inline-flex;align-items:center;height:44px;padding:0 16px;border-radius:8px;background:var(--primary);color:#fff;font-size:14px;font-weight:700}"
     },
     {
       "name": "Switch",
       "kind": "custom",
       "refersTo": "button-primary",
-      "description": "Accessible on/off switch (newest-first sort), terracotta when on.",
+      "description": "Accessible on/off switch (newest-first sort), amber when on.",
       "html": "<span class=\"ds-switch\"><span class=\"ds-switch-thumb\"></span></span>",
       "css": ".ds-switch{position:relative;display:inline-flex;align-items:center;width:36px;height:20px;border-radius:9999px;background:var(--primary);cursor:pointer}.ds-switch-thumb{position:absolute;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transform:translateX(16px);transition:transform .2s ease-out}"
     }
   ],
   "narrative": {
-    "northStar": "The Working Ledger",
-    "overview": "**Creative North Star: \"The Working Ledger\"**\n\nAssessly's world is warm paper and one burnt-orange voice. Cream (`surface`, #f4f2ea) is the chrome: the teacher sidebar, the student page ground, footers and landing bands. The things people actually work with (the teacher's content area, cards, forms, question sheets) are white and held by hairline borders the colour of old parchment. A single terracotta accent (`primary`, #c74504) means \"act here\" or \"this is yours\". Manrope carries every word. The tokens are shared with the Doxa system so both products read as one family.\n\nThe system covers two modes. The landing page persuades: cream bands alternate with white, the headline carries one terracotta phrase, and a MacBook-framed dashboard shows the product. The teacher app operates from a cream sidebar beside a white content area with entity cards; the student app from a white top bar over a cream page with compact test rows. Both stay scannable at any list length: search, grouping and \"show more\" instead of ever-longer pages. Brand lives in the details (the shield-check mark, the accent on the primary action, the focus ring), not in decoration. Sign-in is the one place that leaves the page plane for imagery: a terracotta-tinted photograph beside the form.",
+    "northStar": "White Paper on a Butter Desk",
+    "overview": "**Creative North Star: \"White Paper on a Butter Desk\"**\n\nAssessly uses the SiteNest \"Butter\" design system, shared with Aemora: white paper on a pale butter desk, butter hairlines and one amber accent. Desk (`desk`, #fcfaf3) is the chrome; paper (white) is what people work with. Amber (`accent`, #e8b923) is a fill that marks what is actionable or selected, and is never text; accent-coloured text is ochre (`accent-text`, #826400). Newsreader carries headlines, DM Sans carries everything else. Light and dark themes are both first class, with a toggle and no system option.",
     "keyCharacteristics": [
-      "One accent, terracotta, used for the primary action, focus, the logo mark and key numbers.",
-      "Cream chrome, white working surfaces, hairline rules; depth is mostly tonal, with one faint resting shadow on cards.",
-      "Manrope only, a small fixed type scale, weight (not size) for hierarchy.",
-      "Teacher shell: a cream 240px sidebar (logo, four nav items), a white 56px top bar with the account menu at top right, a white content area, max 1152px (6xl) content, no footer. Student shell: a white 64px top bar (logo, My tests, Join a test, name and avatar) over the cream page, 1024px (5xl) content.",
-      "Motion confirms state and keeps continuity: a 180ms page fade, a capped card/row stagger, hover lifts, drawer slides. Nothing blocks the user, and reduced motion keeps meaning without travel.",
-      "Sign-in pairs a tinted photograph panel (teacher only) with the form on cream; student sign-in stays a single centred card.",
-      "Light and dark: dark is a warm brown-black ramp (`#12100e` ground, `#1c1916` cards), never neutral grey."
+      "One amber voice: a fill, never text. Text on amber is charcoal; accent text is ochre.",
+      "Newsreader 500 for every h1 and h2, enforced by one unlayered rule; DM Sans 600 for titles, labels and buttons.",
+      "Paper (white) on desk (pale butter) with butter hairlines; flat pages, with lift only on hover for clickable cards, drawers and the device mockup.",
+      "Every button a pill; fields 8px; menus 12px; cards 20px. Selection is amber tint, hover is sand, never grey.",
+      "Light and dark themes with a pill toggle (light default, no system option); dark is a warm charcoal ramp.",
+      "Short numeric inputs, select boxes that show labels, and an image field that states its limits and accepts pasted screenshots."
     ],
     "rules": [
       {

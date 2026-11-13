@@ -6,6 +6,8 @@ import {
   ClipboardList,
   BarChart3,
   ShieldCheck,
+  ImagePlus,
+  SunMoon,
   ArrowRight,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -53,6 +55,16 @@ const FEATURES = [
     title: 'Role-based access',
     description: 'Teachers and students each get a dashboard scoped to exactly what they need — nothing more, nothing less.',
   },
+  {
+    icon: ImagePlus,
+    title: 'Images in questions',
+    description: 'Add a diagram, graph or photo to any question. Choose a file, drag one in, or paste a screenshot straight from your clipboard.',
+  },
+  {
+    icon: SunMoon,
+    title: 'Light and dark mode',
+    description: 'Switch themes in one click, for teachers and students, on any device. Your choice is remembered.',
+  },
 ]
 
 const STEPS = [
@@ -94,6 +106,14 @@ const FAQS = [
   {
     question: 'Is student data kept private?',
     answer: "Yes. Assessly uses row-level security so teachers and students can only access data tied to their own account and tests. We don't sell data or share it with third parties.",
+  },
+  {
+    question: 'Can I add images to questions?',
+    answer: "Yes. Every question can carry one image: choose a file, drag it in, or paste a screenshot from your clipboard (⌘V or Ctrl+V). PNG, JPG, WebP and GIF are supported, up to 5 MB each; large PNG and JPG images are resized automatically.",
+  },
+  {
+    question: 'Is there a dark mode?',
+    answer: 'Yes. Use the sun and moon button in the top bar to switch between light and dark. It works on every page, for teachers and students.',
   },
   {
     question: 'Do I need to install anything?',
@@ -190,7 +210,7 @@ export default function LandingPage() {
                 Everything a classroom needs to run a test, from question to grade.
               </p>
             </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {FEATURES.map(feature => (
                 <div key={feature.title}>
                   <div

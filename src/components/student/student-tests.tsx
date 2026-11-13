@@ -134,7 +134,7 @@ export function StudentTests({ firstName, items, initialTab }: { firstName: stri
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
-        <div role="tablist" aria-label="Tests" className="flex rounded-xl border border-border bg-card p-1">
+        <div role="tablist" aria-label="Tests" className="flex rounded-full border border-border bg-surface p-1">
           {([['todo', 'To do', todo.length], ['done', 'Completed', done.length]] as const).map(([key, label, n]) => (
             <button
               key={key}
@@ -143,12 +143,12 @@ export function StudentTests({ firstName, items, initialTab }: { firstName: stri
               type="button"
               onClick={() => switchTab(key)}
               className={cn(
-                'flex h-10 items-center gap-2 rounded-lg px-4 text-sm font-semibold outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/50',
-                tab === key ? 'bg-primary-soft text-primary-text' : 'text-muted-foreground hover:text-foreground',
+                'flex h-10 items-center gap-2 rounded-full px-4 text-sm font-semibold outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/50',
+                tab === key ? 'bg-primary-soft text-primary-text' : 'text-muted-foreground hover:text-ink-strong',
               )}
             >
               {label}
-              <span className={cn('rounded-full px-1.5 text-xs tabular-nums', tab === key ? 'bg-primary/15' : 'bg-foreground/10')}>{n}</span>
+              <span className={cn('rounded-full px-1.5 text-xs tabular-nums', tab === key ? 'bg-primary/20' : 'bg-secondary')}>{n}</span>
             </button>
           ))}
         </div>

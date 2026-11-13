@@ -16,7 +16,7 @@ export function ProductTour() {
 
   return (
     <div>
-      <div role="tablist" aria-label="Product screens" className="mx-auto mb-8 flex w-fit rounded-xl border border-border bg-card p-1">
+      <div role="tablist" aria-label="Product screens" className="mx-auto mb-8 flex w-fit rounded-full border border-border bg-surface p-1">
         {SCREENS.map(s => (
           <button
             key={s.key}
@@ -25,8 +25,8 @@ export function ProductTour() {
             aria-selected={active === s.key}
             onClick={() => setActive(s.key)}
             className={cn(
-              'h-10 rounded-lg px-5 text-sm font-semibold outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/50',
-              active === s.key ? 'bg-primary-soft text-primary-text' : 'text-muted-foreground hover:text-foreground',
+              'h-10 rounded-full px-5 text-sm font-semibold outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/50',
+              active === s.key ? 'bg-primary-soft text-primary-text' : 'text-muted-foreground hover:text-ink-strong',
             )}
           >
             {s.label}

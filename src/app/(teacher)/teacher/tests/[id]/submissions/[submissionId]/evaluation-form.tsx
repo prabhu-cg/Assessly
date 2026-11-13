@@ -273,8 +273,13 @@ export function EvaluationForm({ testId, submissionId, initialSubmission, initia
                         min={0}
                         max={question.marks}
                         value={marks[answer.id] ?? ''}
-                        onChange={e => setMarks(m => ({ ...m, [answer.id]: e.target.value }))}
-                        className="h-8 text-sm"
+                        onChange={e => {
+                          // Keep the value between 0 and the question's maximum
+                          const raw = e.target.value
+                          const v = raw === '' ? '' : String(Math.min(Math.max(Number(raw), 0), question.marks))
+                          setMarks(m => ({ ...m, [answer.id]: v }))
+                        }}
+                        className="h-9 w-20 text-sm"
                       />
                     </div>
                   </div>

@@ -95,6 +95,7 @@ export function TestForm({ test, onCancel, onSuccess }: TestFormProps) {
             {...register('duration_minutes')}
             min={1}
             max={480}
+            className="w-28"
           />
           {errors.duration_minutes && (
             <p className="text-sm text-destructive">{errors.duration_minutes.message}</p>
@@ -109,6 +110,7 @@ export function TestForm({ test, onCancel, onSuccess }: TestFormProps) {
             {...register('pass_mark')}
             placeholder="Optional"
             min={0}
+            className="w-28"
           />
         </div>
       </div>

@@ -83,9 +83,11 @@ export function QuestionImageField({
           <span className="text-xs text-muted-foreground">Choose a file, drag one in, or paste a screenshot (⌘V / Ctrl+V)</span>
         </button>
       )}
-      <p className="text-xs text-muted-foreground">
-        You can paste a screenshot straight from your clipboard anywhere in this form. PNG, JPG, WebP or GIF, up to 5 MB.
-      </p>
+      <ul className="space-y-0.5 text-xs text-muted-foreground">
+        <li>You can paste a screenshot straight from your clipboard anywhere in this form.</li>
+        <li>PNG, JPG, WebP or GIF, up to 5 MB. Large PNG and JPG images are resized automatically; GIFs are not.</li>
+        <li>{value ? 'One image per question. Remove this one to add a different image.' : 'One image per question.'}</li>
+      </ul>
     </div>
   )
 }

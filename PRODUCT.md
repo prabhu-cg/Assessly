@@ -20,19 +20,19 @@ Not yet confirmed by the owner. Evidence in the code points to controlled access
 
 ## Operating Context
 
-Teachers work in a desktop browser: a work-queue dashboard (submissions waiting, published tests), a filterable Tests card list, a searchable Students card list with a per-student details drawer listing every assigned test and result, and a Submissions list. Students take tests in fullscreen with a persistent countdown, autosave, a question navigator, and skip-and-return. Tests move Draft, Publish, Archive. Questions are multiple choice (2 to 6 options), short answer, or essay, each with marks. Written answers are graded by the teacher, who then finalizes an evaluation to release results.
+Teachers work in a desktop browser: a work-queue dashboard (submissions waiting, published tests), a filterable Tests card list, a searchable Students card list with a per-student details drawer listing every assigned test and result, and a Submissions list. Students take tests in fullscreen with a persistent countdown, autosave, a question navigator, and skip-and-return. Tests move Draft, Publish, Archive. Questions are multiple choice (2 to 6 options), short answer, or essay, each with marks and an optional image (chosen, dragged in, or pasted from a screenshot; PNG, JPG, WebP or GIF up to 5 MB, one per question). Written answers are graded by the teacher, who then finalizes an evaluation to release results.
 
 ## Capabilities and Constraints
 
-Stack: Next.js 16 App Router, TypeScript, Tailwind v4, shadcn/ui on base-ui, Supabase auth and Postgres with row-level security, hosted on Vercel. Preserve the existing features and flows: test lifecycle, three question types, student management (including the optional year label stored in `profiles.year_level`, added by `supabase/migrations/2026-10-add-profile-year-level.sql`), submissions list and evaluation with a sticky summary, drawers for create, edit, preview and student details. Students have no sign-out control by design: they use a personal link. Terminology: test, question, submission, evaluation, invite code, focus violation.
+Stack: Next.js 16 App Router, TypeScript, Tailwind v4, shadcn/ui on base-ui, Supabase auth and Postgres with row-level security, hosted on Vercel. Preserve the existing features and flows: test lifecycle, three question types with an optional image per question (stored in the public `question-images` Supabase bucket, URL in `questions.image_url`, added by `supabase/migrations/2026-11-add-question-image.sql`), student management (including the optional year label stored in `profiles.year_level`, added by `supabase/migrations/2026-10-add-profile-year-level.sql`), submissions list and evaluation with a sticky summary, drawers for create, edit, preview and student details. Teachers can read only the students they created, plus students who joined one of their tests (`supabase/migrations/2026-11-limit-teacher-student-visibility.sql`). Students have no sign-out control by design: they use a personal link. Terminology: test, question, submission, evaluation, invite code, focus violation.
 
 ## Brand Commitments
 
-Name: Assessly, tagline "Assess smarter. Teach better." Binding: terracotta primary #c74504, Manrope typeface, the shield-check logo mark, and token consistency with the Doxa design system. Both a light and a warm dark theme must keep working.
+Name: Assessly, tagline "Assess smarter. Teach better." Binding: the SiteNest "Butter" tokens shared with Aemora (amber #e8b923 as a fill, ochre #826400 for accent text, desk #fcfaf3), Newsreader for headlines with DM Sans for everything else, the shield-check logo mark in amber, and pill buttons. Light is the default; dark is a warm charcoal ramp. A toggle switches between them, with no system option.
 
 ## Evidence on Hand
 
-Feature documentation in FEATURES.md and progress notes in PROGRESS.md. Real screenshots do not exist outside the sample dashboard on the landing page. No testimonials, customer names, or usage statistics exist; do not invent any.
+Feature documentation in FEATURES.md and progress notes in PROGRESS.md. The landing page's product screenshots are captures of fictional sample data (a teacher named Paula, sample tests and students) in light and dark; no real customer data appears. A demo teacher account with the same sample data exists for sharing. No testimonials, customer names, or usage statistics exist; do not invent any.
 
 ## Product Principles
 

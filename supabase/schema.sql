@@ -194,11 +194,26 @@ create policy "Users can read own profile"
   on public.profiles for select
   using (id = auth.uid());
 
+-- Helper: can the current teacher see this student? (created them, or the student joined one of their tests)
+create or replace function public.teacher_can_see_student(p_student_id uuid)
+returns boolean language sql security definer stable set search_path = public as $$
+  select
+    exists (
+      select 1 from public.profiles p
+      where p.id = p_student_id and p.role = 'student' and p.created_by = auth.uid()
+    )
+    or exists (
+      select 1 from public.test_access ta
+      join public.tests t on t.id = ta.test_id
+      where ta.student_id = p_student_id and t.teacher_id = auth.uid()
+    );
+$$;
+
 create policy "Teachers can read student profiles they created"
   on public.profiles for select
   using (
     public.current_role() = 'teacher'
-    and (id = auth.uid() or created_by = auth.uid() or role = 'student')
+    and (id = auth.uid() or public.teacher_can_see_student(id))
   );
 
 create policy "Teachers can insert student profiles"

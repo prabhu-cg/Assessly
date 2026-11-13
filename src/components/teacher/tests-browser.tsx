@@ -61,7 +61,7 @@ export function TestsBrowser({ tests }: { tests: TestRow[] }) {
           />
         </div>
 
-        <div role="group" aria-label="Filter by status" className="flex rounded-lg border border-border bg-card p-0.5">
+        <div role="group" aria-label="Filter by status" className="flex rounded-full border border-border bg-surface p-1">
           {FILTERS.map(f => (
             <button
               key={f}
@@ -69,8 +69,8 @@ export function TestsBrowser({ tests }: { tests: TestRow[] }) {
               onClick={() => setFilter(f)}
               aria-pressed={filter === f}
               className={cn(
-                'rounded-md px-3 py-1.5 text-sm font-semibold capitalize transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                filter === f ? 'bg-primary-soft text-primary-text' : 'text-muted-foreground hover:text-foreground',
+                'rounded-full px-3.5 py-1.5 text-sm font-semibold capitalize transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                filter === f ? 'bg-primary-soft text-primary-text' : 'text-muted-foreground hover:text-ink-strong',
               )}
             >
               {f} <span className="ml-1 tabular-nums font-medium opacity-70">{counts[f]}</span>
