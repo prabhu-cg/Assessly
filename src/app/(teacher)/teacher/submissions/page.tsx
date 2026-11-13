@@ -96,7 +96,7 @@ export default async function SubmissionsPage({ searchParams }: SubmissionsPageP
       />
 
       <form className="flex gap-3 flex-wrap">
-        <Select name="test" defaultValue={params.test ?? ''}>
+        <Select name="test" defaultValue={params.test ?? ''} items={[{ value: '', label: 'All tests' }, ...(tests ?? []).map(t => ({ value: t.id, label: t.title }))]}>
           <SelectTrigger className="w-48">
             <SelectValue placeholder="All tests" />
           </SelectTrigger>
@@ -105,7 +105,7 @@ export default async function SubmissionsPage({ searchParams }: SubmissionsPageP
             {tests?.map(t => <SelectItem key={t.id} value={t.id}>{t.title}</SelectItem>)}
           </SelectContent>
         </Select>
-        <Select name="status" defaultValue={params.status ?? ''}>
+        <Select name="status" defaultValue={params.status ?? ''} items={[{ value: '', label: 'All statuses' }, { value: 'submitted', label: 'Submitted' }, { value: 'evaluated', label: 'Evaluated' }, { value: 'in_progress', label: 'In Progress' }]}>
           <SelectTrigger className="w-40">
             <SelectValue placeholder="All statuses" />
           </SelectTrigger>

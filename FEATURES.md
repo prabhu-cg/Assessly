@@ -16,6 +16,7 @@
 ### Question Builder
 - Three question types: **Multiple Choice (MCQ)**, **Short Answer**, and **Essay**
 - MCQ supports 2–6 options per question with a designated correct answer
+- Optional **image on any question**: choose a file, drag one in, or paste a screenshot straight from the clipboard (⌘V / Ctrl+V). PNG, JPG, WebP or GIF up to 5 MB, one per question; large PNG and JPG images are resized automatically. Images show on the student's test and results pages and in grading
 - Assign marks per question; total marks are calculated automatically
 - Reorder questions; add as many as needed
 - MCQ answers are auto-graded on submission — no manual work required
@@ -153,13 +154,16 @@ The above measures cover browser-based cheating on a single device. They do not 
 | Hosting | Vercel (production) |
 | Repository | GitHub |
 
+### Appearance
+- Light and dark mode for teachers and students, switched with a toggle in the top bar (light by default, remembered per browser)
+
 ### Security
 - All database access governed by Row Level Security (RLS) policies
 - Students can only read tests they have been granted access to
-- Teachers can only read/write their own tests and students
+- Teachers can only read/write their own tests and students (plus students who joined one of their tests by invite code)
 - Service role key used server-side only (never exposed to the client)
 - Environment variables managed via Vercel — never committed to the repository
 
 ---
 
-*Last updated: May 2026*
+*Last updated: November 2026*

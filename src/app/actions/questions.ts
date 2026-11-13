@@ -4,9 +4,9 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { questionSchema } from '@/lib/validators/schemas'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { QUESTION_IMAGE_BUCKET, questionImagePath, removeQuestionImages } from '@/lib/question-images'
 import { v4 as uuidv4 } from 'uuid'
 
-const QUESTION_IMAGE_BUCKET = 'question-images'
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024
 const IMAGE_TYPES: Record<string, string> = {
   'image/png': 'png',
@@ -17,15 +17,7 @@ const IMAGE_TYPES: Record<string, string> = {
 
 /** Only accept image URLs that point at our own bucket, so a question can never embed an arbitrary remote image. */
 function isOwnImageUrl(url: string) {
-  try {
-    const u = new URL(url)
-    return (
-      u.origin === new URL(process.env.NEXT_PUBLIC_SUPABASE_URL!).origin &&
-      u.pathname.startsWith(`/storage/v1/object/public/${QUESTION_IMAGE_BUCKET}/`)
-    )
-  } catch {
-    return false
-  }
+  return questionImagePath(url) !== null
 }
 
 let bucketReady = false
@@ -114,6 +106,9 @@ export async function updateQuestion(questionId: string, testId: string, data: u
 
   if (parsed.data.image_url && !isOwnImageUrl(parsed.data.image_url)) return { error: 'Invalid image' }
 
+  // Remember the current image so the old file can be deleted if it is replaced or removed
+  const { data: before } = await supabase.from('questions').select('image_url').eq('id', questionId).maybeSingle()
+
   const { error } = await supabase
     .from('questions')
     .update({
@@ -129,6 +124,10 @@ export async function updateQuestion(questionId: string, testId: string, data: u
 
   if (error) return { error: error.message }
 
+  if (parsed.data.image_url !== undefined && before?.image_url && before.image_url !== parsed.data.image_url) {
+    await removeQuestionImages([before.image_url])
+  }
+
   revalidatePath(`/teacher/tests/${testId}/questions`)
   return { success: true }
 }
@@ -138,6 +137,8 @@ export async function deleteQuestion(questionId: string, testId: string) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
 
+  const { data: before } = await supabase.from('questions').select('image_url').eq('id', questionId).maybeSingle()
+
   const { error } = await supabase
     .from('questions')
     .delete()
@@ -145,7 +146,31 @@ export async function deleteQuestion(questionId: string, testId: string) {
 
   if (error) return { error: error.message }
 
+  await removeQuestionImages([before?.image_url])
+
   revalidatePath(`/teacher/tests/${testId}/questions`)
+  return { success: true }
+}
+
+/**
+ * Delete an image that was uploaded in the form but never saved on a question (removed, replaced or cancelled).
+ * Refuses if a question still uses it, and only works on a test the teacher owns.
+ */
+export async function discardQuestionImage(testId: string, url: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+
+  const path = questionImagePath(url)
+  if (!path || !path.startsWith(`${testId}/`)) return { error: 'Invalid image' }
+
+  const { data: test } = await supabase.from('tests').select('id').eq('id', testId).eq('teacher_id', user.id).maybeSingle()
+  if (!test) return { error: 'Test not found' }
+
+  const { data: inUse } = await supabase.from('questions').select('id').eq('image_url', url).limit(1)
+  if (inUse?.length) return { success: true }
+
+  await removeQuestionImages([url])
   return { success: true }
 }
 

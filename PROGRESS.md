@@ -16,7 +16,7 @@ Built with Next.js 15 App Router, TypeScript, Tailwind CSS, shadcn/ui (base-ui v
 | Database | Supabase PostgreSQL |
 | Auth | Supabase Auth (email + password) |
 | Forms | React Hook Form + Zod v4 |
-| Font | Manrope (Google Fonts) |
+| Font | Newsreader (headlines) + DM Sans (Google Fonts via next/font) |
 | Deployment | Vercel (Free plan) |
 
 ### Important API notes
@@ -106,14 +106,22 @@ SUPABASE_SERVICE_ROLE_KEY=eyJ...
 
 | Token | Value |
 |-------|-------|
-| Font | Manrope |
-| Primary (buttons, links, active) | `#ee661d` (orange) |
-| Background | `#ffffff` (white) |
-| Secondary / muted surfaces | `#fff9eb` (warm cream) |
-| Border | `#e8ddc8` |
-| Border radius | `6px` (0.375rem) |
+Butter system (SiteNest / Aemora tokens). Full detail in [DESIGN.md](./DESIGN.md).
+
+| Token | Value |
+|-------|-------|
+| Headline font | Newsreader 500 (every h1 and h2) |
+| Body font | DM Sans (600 for titles, labels, buttons) |
+| Primary fill (buttons, logo, active tint) | `#e8b923` amber, charcoal text on it, never used as text |
+| Accent text / focus ring | `#826400` ochre |
+| Background | `#ffffff` (paper) |
+| Surface (sidebar, landing bands) | `#fcfaf3` (desk) |
+| Hover / secondary tint | `#f8f4e4` (sand) |
+| Border | `#ece5cc` hairline, `#dccfa6` strong, `#8a7f6e` for field outlines |
+| Radius | pill buttons, `8px` fields, `12px` menus, `20px` cards |
 | Input height | `40px` |
-| Button height | `42px` |
+| Button height | `44px` (36 sm, 52 lg) |
+| Theme | light (default) and dark, toggle in every top bar, no system option |
 
 ---
 
@@ -152,7 +160,10 @@ Since students are created via the app, the first teacher must be set up manuall
 - [x] Student: test-taking UI — timer, autosave, question navigator, submit
 - [x] Student: results page
 - [x] Top tab navigation (replaced sidebar)
-- [x] Theme: Manrope font, orange accent, warm cream surfaces
+- [x] Theme: Butter reskin (amber accent, Newsreader + DM Sans, pill buttons), light and dark mode with a toggle
+- [x] Question images: choose, drag in, or paste a screenshot (PNG/JPG/WebP/GIF, up to 5 MB, one per question); files are deleted with the question, the image or the test
+- [x] Teachers limited to their own students by row-level security
+- [x] Landing page: sample-data screenshots in light and dark, images and dark-mode features, FAQ, SiteNest-style footer
 - [x] TypeScript clean (0 errors)
 - [x] Git initialized, initial commit made
 

@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { testSchema, joinTestSchema } from '@/lib/validators/schemas'
 import { v4 as uuidv4 } from 'uuid'
+import { removeTestImageFolder } from '@/lib/question-images'
 
 export async function createTest(formData: FormData) {
   const supabase = await createClient()
@@ -109,6 +110,9 @@ export async function deleteTest(id: string) {
     .eq('teacher_id', user.id)
 
   if (error) return { error: error.message }
+
+  // Question rows are gone (cascade); delete their uploaded images too
+  await removeTestImageFolder(id)
 
   revalidatePath('/teacher/tests')
   return { success: true }

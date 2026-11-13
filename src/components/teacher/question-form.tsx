@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { v4 as uuidv4 } from 'uuid'
-import { createQuestion, updateQuestion, createQuestionImageUpload } from '@/app/actions/questions'
+import { createQuestion, updateQuestion, createQuestionImageUpload, discardQuestionImage } from '@/app/actions/questions'
 import { createClient } from '@/lib/supabase/client'
 import { QuestionImageField } from '@/components/teacher/question-image-field'
 import { Button } from '@/components/ui/button'
@@ -77,6 +77,21 @@ export function QuestionForm({ testId, question, onSuccess, onCancel }: Question
   const correctOptionId = watch('correct_option_id')
   const watchedOptions = watch('options') as { id: string; text: string }[]
 
+  // An image uploaded in this form but not saved yet: delete its file if it is removed, replaced or the form is cancelled.
+  function discardIfUnsaved(url: string | null) {
+    if (url && url !== initialImage) void discardQuestionImage(testId, url)
+  }
+
+  function removeImage() {
+    discardIfUnsaved(imageUrl)
+    setImageUrl(null)
+  }
+
+  function handleCancel() {
+    discardIfUnsaved(imageUrl)
+    onCancel?.()
+  }
+
   async function uploadImage(file: File) {
     if (!file.type.startsWith('image/')) return toast.error('That file is not an image.')
     setUploading(true)
@@ -89,6 +104,7 @@ export function QuestionForm({ testId, question, onSuccess, onCancel }: Question
         .from('question-images')
         .uploadToSignedUrl(path, token, prepared, { contentType: prepared.type })
       if (error) return toast.error(error.message)
+      discardIfUnsaved(imageUrl)
       setImageUrl(publicUrl)
     } catch {
       toast.error('Could not upload the image. Try again.')
@@ -178,7 +194,7 @@ export function QuestionForm({ testId, question, onSuccess, onCancel }: Question
 
       <div className="space-y-2">
         <Label>Image (optional)</Label>
-        <QuestionImageField value={imageUrl} uploading={uploading} onFile={uploadImage} onRemove={() => setImageUrl(null)} />
+        <QuestionImageField value={imageUrl} uploading={uploading} onFile={uploadImage} onRemove={removeImage} />
       </div>
 
       {qType === 'mcq' && (
@@ -233,7 +249,7 @@ export function QuestionForm({ testId, question, onSuccess, onCancel }: Question
           {question ? 'Save Changes' : 'Add Question'}
         </Button>
         {onCancel && (
-          <Button type="button" variant="outline" size="sm" onClick={onCancel}>
+          <Button type="button" variant="outline" size="sm" onClick={handleCancel}>
             Cancel
           </Button>
         )}
