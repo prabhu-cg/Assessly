@@ -6,6 +6,7 @@ import { TestForm } from '@/components/teacher/test-form'
 import { Pencil, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Portal } from '@/components/shared/portal'
+import { useUnsavedGuard } from '@/components/shared/unsaved-guard'
 import type { Test } from '@/types/database'
 
 interface EditTestDrawerProps {
@@ -41,6 +42,12 @@ export function EditTestDrawer({ test, variant = 'outline', size = 'sm', open: c
     onOpenChange?.(next)
   }
   const closeDrawer = () => setOpen(false)
+  const { setDirty, requestClose, dialog } = useUnsavedGuard({
+    formId: 'test-form',
+    close: closeDrawer,
+    active: mounted,
+    description: 'Your changes to this test have not been saved. If you close now, they will be lost.',
+  })
 
   return (
     <>
@@ -58,7 +65,7 @@ export function EditTestDrawer({ test, variant = 'outline', size = 'sm', open: c
               'fixed inset-0 bg-black/40 z-[60] transition-opacity duration-300',
               visible ? 'opacity-100' : 'opacity-0',
             )}
-            onClick={closeDrawer}
+            onClick={requestClose}
           />
           <div
             className={cn(
@@ -75,7 +82,7 @@ export function EditTestDrawer({ test, variant = 'outline', size = 'sm', open: c
               </div>
               <button
                 type="button"
-                onClick={closeDrawer}
+                onClick={requestClose}
                 aria-label="Close"
                 className="h-8 w-8 flex items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
               >
@@ -83,11 +90,12 @@ export function EditTestDrawer({ test, variant = 'outline', size = 'sm', open: c
               </button>
             </div>
             <div className="flex-1 overflow-y-auto p-6">
-              <TestForm test={test} onCancel={closeDrawer} onSuccess={closeDrawer} />
+              <TestForm test={test} onCancel={requestClose} onSuccess={closeDrawer} onDirtyChange={setDirty} />
             </div>
           </div>
         </Portal>
       )}
+      {dialog}
     </>
   )
 }

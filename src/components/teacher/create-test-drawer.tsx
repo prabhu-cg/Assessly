@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { TestForm } from '@/components/teacher/test-form'
 import { Plus, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useUnsavedGuard } from '@/components/shared/unsaved-guard'
 
 interface CreateTestDrawerProps {
   label?: string
@@ -29,6 +30,13 @@ export function CreateTestDrawer({ label = 'New Test', defaultOpen = false }: Cr
     setTimeout(() => setMounted(false), 300)
   }
 
+  const { setDirty, requestClose, dialog } = useUnsavedGuard({
+    formId: 'test-form',
+    close: closeDrawer,
+    active: mounted,
+    description: 'This test has not been saved yet. If you close now, everything you entered will be lost.',
+  })
+
   return (
     <>
       <Button onClick={openDrawer}>
@@ -43,7 +51,7 @@ export function CreateTestDrawer({ label = 'New Test', defaultOpen = false }: Cr
               'fixed inset-0 bg-black/40 z-[60] transition-opacity duration-300',
               open ? 'opacity-100' : 'opacity-0',
             )}
-            onClick={closeDrawer}
+            onClick={requestClose}
           />
           <div
             className={cn(
@@ -62,18 +70,19 @@ export function CreateTestDrawer({ label = 'New Test', defaultOpen = false }: Cr
               </div>
               <button
                 type="button"
-                onClick={closeDrawer}
+                onClick={requestClose}
                 className="h-8 w-8 flex items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
             <div className="flex-1 overflow-y-auto p-6">
-              <TestForm onCancel={closeDrawer} />
+              <TestForm onCancel={requestClose} onDirtyChange={setDirty} />
             </div>
           </div>
         </>
       )}
+      {dialog}
     </>
   )
 }

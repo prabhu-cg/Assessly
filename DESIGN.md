@@ -257,7 +257,7 @@ Clicking a student's name opens a drawer: avatar, name, year, date added; every 
 
 ### Switch, breadcrumbs, drawer
 
-A 36x20px accessible switch with an amber track when on. Breadcrumbs sit above detail-page titles with a medium-weight current page. Create, edit, preview and details flows open as right-hand drawers mounted through `Portal` (so a transformed card can never trap them); destructive confirmations stay as small centred dialogs.
+A 36x20px accessible switch with an amber track when on. Breadcrumbs sit above detail-page titles with a medium-weight current page. Create, edit, preview and details flows open as right-hand drawers mounted through `Portal` (so a transformed card can never trap them); destructive confirmations stay as small centred dialogs. Drawers that hold a form guard against losing work: closing one with unsaved changes (backdrop, X or Cancel) opens an "Unsaved changes" dialog above the drawer that says what will be lost and offers **Keep editing**, **Discard and close** (outline, red text) and **Save** (the one primary). Save submits the form exactly as its own button does. A clean form closes without asking. Closing a question drawer also deletes any image uploaded in it but not saved.
 
 ### Auth panel and device mockup
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useTransition } from 'react'
+import { useEffect, useTransition } from 'react'
 import { useForm, Controller, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { testSchema, type TestInput } from '@/lib/validators/schemas'
@@ -27,12 +27,14 @@ interface TestFormProps {
   test?: Test
   onCancel?: () => void
   onSuccess?: () => void
+  /** Reports whether the form has unsaved changes. */
+  onDirtyChange?: (dirty: boolean) => void
 }
 
-export function TestForm({ test, onCancel, onSuccess }: TestFormProps) {
+export function TestForm({ test, onCancel, onSuccess, onDirtyChange }: TestFormProps) {
   const [isPending, startTransition] = useTransition()
 
-  const { register, control, handleSubmit, formState: { errors } } = useForm<TestInput>({
+  const { register, control, handleSubmit, formState: { errors, isDirty } } = useForm<TestInput>({
     resolver: zodResolver(testSchema) as Resolver<TestInput>,
     defaultValues: {
       title: test?.title ?? '',
@@ -44,6 +46,8 @@ export function TestForm({ test, onCancel, onSuccess }: TestFormProps) {
       ends_at: toLocalInput(test?.ends_at),
     },
   })
+
+  useEffect(() => { onDirtyChange?.(isDirty) }, [isDirty, onDirtyChange])
 
   const onSubmit = (data: TestInput) => {
     const formData = new FormData()
@@ -69,7 +73,7 @@ export function TestForm({ test, onCancel, onSuccess }: TestFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+    <form id="test-form" onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       <div className="space-y-2">
         <Label htmlFor="title">Test Title *</Label>
         <Input id="title" {...register('title')} placeholder="e.g. Chapter 5 — Algebra Quiz" />

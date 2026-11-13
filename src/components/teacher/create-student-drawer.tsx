@@ -14,6 +14,7 @@ import { Plus, X, Loader2, Copy, Check, Link2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { YearOptions } from '@/components/teacher/year-options'
 import { toast } from 'sonner'
+import { useUnsavedGuard } from '@/components/shared/unsaved-guard'
 
 interface CreateStudentDrawerProps {
   label?: string
@@ -29,7 +30,7 @@ export function CreateStudentDrawer({ label = 'Add Student', defaultOpen = false
   const [generatedLink, setGeneratedLink] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<CreateStudentInput>({
+  const { register, handleSubmit, reset, formState: { errors, isDirty } } = useForm<CreateStudentInput>({
     resolver: zodResolver(createStudentSchema),
   })
 
@@ -56,6 +57,15 @@ export function CreateStudentDrawer({ label = 'Add Student', defaultOpen = false
       setCopied(false)
     }, 300)
   }
+
+  const { setDirty, requestClose, dialog } = useUnsavedGuard({
+    formId: 'student-form',
+    close: closeDrawer,
+    active: mounted,
+    description: 'This student has not been added yet. If you close now, what you entered will be lost.',
+  })
+  const formDirty = isDirty && !generatedLink
+  useEffect(() => { setDirty(formDirty) }, [formDirty, setDirty])
 
   const handleCopy = async () => {
     if (!generatedLink) return
@@ -97,7 +107,7 @@ export function CreateStudentDrawer({ label = 'Add Student', defaultOpen = false
               'fixed inset-0 bg-black/40 z-[60] transition-opacity duration-300',
               open ? 'opacity-100' : 'opacity-0',
             )}
-            onClick={!generatedLink ? closeDrawer : undefined}
+            onClick={!generatedLink ? requestClose : undefined}
           />
           <div
             className={cn(
@@ -120,7 +130,7 @@ export function CreateStudentDrawer({ label = 'Add Student', defaultOpen = false
               </div>
               <button
                 type="button"
-                onClick={closeDrawer}
+                onClick={generatedLink ? closeDrawer : requestClose}
                 className="h-8 w-8 flex items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
               >
                 <X className="h-4 w-4" />
@@ -181,7 +191,7 @@ export function CreateStudentDrawer({ label = 'Add Student', defaultOpen = false
                   </Button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <form id="student-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                   {error && (
                     <Alert variant="destructive">
                       <AlertDescription>{error}</AlertDescription>
@@ -223,7 +233,7 @@ export function CreateStudentDrawer({ label = 'Add Student', defaultOpen = false
                       {isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                       Create & Get Link
                     </Button>
-                    <Button type="button" variant="outline" onClick={closeDrawer} disabled={isPending}>
+                    <Button type="button" variant="outline" onClick={requestClose} disabled={isPending}>
                       Cancel
                     </Button>
                   </div>
@@ -233,6 +243,7 @@ export function CreateStudentDrawer({ label = 'Add Student', defaultOpen = false
           </div>
         </>
       )}
+      {dialog}
     </>
   )
 }

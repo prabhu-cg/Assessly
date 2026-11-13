@@ -27,6 +27,7 @@ import { toast } from 'sonner'
 import { ConfirmDialog } from '@/components/shared/confirm-dialog'
 import type { Question, Test } from '@/types/database'
 import { QuestionImage } from '@/components/shared/question-image'
+import { useUnsavedGuard } from '@/components/shared/unsaved-guard'
 
 const statusVariant: Record<string, 'success' | 'secondary' | 'outline' | 'muted'> = {
   draft: 'muted', published: 'success', archived: 'outline',
@@ -276,6 +277,15 @@ export default function QuestionsPage() {
     setTimeout(() => { setMounted(false); setEditingQuestion(null) }, 300)
   }
 
+  const { setDirty, requestClose, dialog: unsavedDialog } = useUnsavedGuard({
+    formId: 'question-form',
+    close: closeDrawer,
+    active: mounted,
+    description: editingQuestion
+      ? 'Your changes to this question have not been saved. If you close now, they will be lost, along with any image you uploaded.'
+      : 'This question has not been saved yet. If you close now, it will be lost, along with any image you uploaded.',
+  })
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
     if (!over || active.id === over.id) return
@@ -431,7 +441,7 @@ export default function QuestionsPage() {
               'fixed inset-0 bg-black/40 z-[60] transition-opacity duration-300',
               open ? 'opacity-100' : 'opacity-0',
             )}
-            onClick={closeDrawer}
+            onClick={requestClose}
           />
           <div
             className={cn(
@@ -452,7 +462,7 @@ export default function QuestionsPage() {
               </div>
               <button
                 type="button"
-                onClick={closeDrawer}
+                onClick={requestClose}
                 className="h-8 w-8 flex items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
               >
                 <X className="h-4 w-4" />
@@ -464,12 +474,14 @@ export default function QuestionsPage() {
                 testId={testId}
                 question={editingQuestion ?? undefined}
                 onSuccess={() => { closeDrawer(); refresh() }}
-                onCancel={closeDrawer}
+                onCancel={requestClose}
+                onDirtyChange={setDirty}
               />
             </div>
           </div>
         </>
       )}
+      {unsavedDialog}
     </div>
   )
 }

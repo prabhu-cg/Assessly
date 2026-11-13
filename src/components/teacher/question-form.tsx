@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useEffect, useRef, useState, useTransition } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { v4 as uuidv4 } from 'uuid'
@@ -23,6 +23,8 @@ interface QuestionFormProps {
   question?: Question
   onSuccess?: () => void
   onCancel?: () => void
+  /** Reports whether the form has unsaved changes (including an uploaded but unsaved image). */
+  onDirtyChange?: (dirty: boolean) => void
 }
 
 interface MCQFormValues {
@@ -49,7 +51,7 @@ const QUESTION_TYPE_LABELS: Record<string, string> = {
   long_answer: 'Long Answer / Essay',
 }
 
-export function QuestionForm({ testId, question, onSuccess, onCancel }: QuestionFormProps) {
+export function QuestionForm({ testId, question, onSuccess, onCancel, onDirtyChange }: QuestionFormProps) {
   const [isPending, startTransition] = useTransition()
   const [qType, setQType] = useState<QuestionType>(question?.type ?? 'mcq')
   const initialImage = question?.image_url ?? null
@@ -63,7 +65,7 @@ export function QuestionForm({ testId, question, onSuccess, onCancel }: Question
     { id: uuidv4(), text: '' },
   ]
 
-  const { register, handleSubmit, setValue, watch, control, formState: { errors } } = useForm<any>({
+  const { register, handleSubmit, setValue, watch, control, formState: { errors, isDirty } } = useForm<any>({
     defaultValues: {
       type: question?.type ?? 'mcq',
       content: question?.content ?? '',
@@ -87,10 +89,19 @@ export function QuestionForm({ testId, question, onSuccess, onCancel }: Question
     setImageUrl(null)
   }
 
-  function handleCancel() {
-    discardIfUnsaved(imageUrl)
-    onCancel?.()
-  }
+  // Unsaved changes, for the parent drawer's close guard
+  const initialType = question?.type ?? 'mcq'
+  const dirty = isDirty || imageUrl !== initialImage || qType !== initialType
+  useEffect(() => { onDirtyChange?.(dirty) }, [dirty, onDirtyChange])
+
+  // Whatever way the form goes away (Cancel, X, backdrop, discard), an uploaded image that was never saved is deleted.
+  const unsavedImageRef = useRef<string | null>(null)
+  const savedRef = useRef(false)
+  useEffect(() => { unsavedImageRef.current = imageUrl !== initialImage ? imageUrl : null }, [imageUrl, initialImage])
+  useEffect(() => () => {
+    const url = unsavedImageRef.current
+    if (url && !savedRef.current) void discardQuestionImage(testId, url)
+  }, [testId])
 
   async function uploadImage(file: File) {
     if (!file.type.startsWith('image/')) return toast.error('That file is not an image.')
@@ -143,6 +154,7 @@ export function QuestionForm({ testId, question, onSuccess, onCancel }: Question
       if (result?.error) {
         toast.error(result.error)
       } else {
+        savedRef.current = true
         onSuccess?.()
       }
     })
@@ -155,7 +167,7 @@ export function QuestionForm({ testId, question, onSuccess, onCancel }: Question
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} onPaste={onPaste} className="space-y-4">
+    <form id="question-form" onSubmit={handleSubmit(onSubmit)} onPaste={onPaste} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label>Question Type</Label>
@@ -249,7 +261,7 @@ export function QuestionForm({ testId, question, onSuccess, onCancel }: Question
           {question ? 'Save Changes' : 'Add Question'}
         </Button>
         {onCancel && (
-          <Button type="button" variant="outline" size="sm" onClick={handleCancel}>
+          <Button type="button" variant="outline" size="sm" onClick={onCancel}>
             Cancel
           </Button>
         )}
