@@ -1,6 +1,6 @@
 ---
 name: Assessly
-description: Assess smarter. Teach better. A flat, warm examination platform for teachers and students: white paper on a pale butter desk, butter hairlines and one amber accent, built on the SiteNest "Butter" tokens shared with Aemora.
+description: "Assess smarter. Teach better. A flat, warm examination platform for teachers and students. White paper on a pale butter desk, butter hairlines and one amber accent, built on the SiteNest \"Butter\" tokens shared with Aemora."
 colors:
   accent: "#e8b923"
   accent-hover: "#d4a615"
