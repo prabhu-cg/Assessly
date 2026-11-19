@@ -138,7 +138,7 @@ export default function LandingPage() {
     <div className="min-h-svh flex flex-col">
       {/* ── Nav ── */}
       <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="max-w-screen-xl mx-auto flex items-center justify-between px-4 py-4 sm:px-6">
+        <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-4 sm:px-6">
           <Wordmark />
           <nav className="flex items-center gap-1 sm:gap-2">
             <ThemeToggle />
@@ -157,7 +157,7 @@ export default function LandingPage() {
           className="relative overflow-hidden py-20 sm:py-28 text-center"
           style={{ backgroundColor: 'var(--surface)' }}
         >
-          <div className="relative max-w-screen-xl mx-auto px-6">
+          <div className="relative max-w-6xl mx-auto px-6">
             <div className="max-w-3xl mx-auto">
               <h1 className="text-5xl sm:text-7xl leading-none">
                 Set work, run tests, and grade it all —{' '}
@@ -196,8 +196,8 @@ export default function LandingPage() {
         </section>
 
         {/* ── Product preview ── */}
-        <section className="py-20">
-          <div className="max-w-screen-xl mx-auto px-6">
+        <section className="overflow-x-clip py-20">
+          <div className="max-w-6xl mx-auto px-6">
             <div className="text-center max-w-xl mx-auto mb-14">
               <h2 className="text-4xl">A peek inside Assessly</h2>
               <p className="mt-3 text-muted-foreground">
@@ -211,7 +211,7 @@ export default function LandingPage() {
 
         {/* ── Features ── */}
         <section className="py-20" style={{ backgroundColor: 'var(--surface)' }}>
-          <div className="max-w-screen-xl mx-auto px-6">
+          <div className="max-w-6xl mx-auto px-6">
             <div className="text-center max-w-xl mx-auto mb-14">
               <h2 className="text-4xl">What Assessly does</h2>
               <p className="mt-3 text-muted-foreground">
@@ -239,7 +239,7 @@ export default function LandingPage() {
 
         {/* ── How it works ── */}
         <section className="py-20">
-          <div className="max-w-screen-xl mx-auto px-6">
+          <div className="max-w-6xl mx-auto px-6">
             <div className="text-center max-w-xl mx-auto mb-14">
               <h2 className="text-4xl">How it works</h2>
               <p className="mt-3 text-muted-foreground">
@@ -268,7 +268,7 @@ export default function LandingPage() {
 
         {/* ── FAQ ── */}
         <section className="py-20" style={{ backgroundColor: 'var(--surface)' }}>
-          <div className="max-w-screen-xl mx-auto px-6">
+          <div className="max-w-6xl mx-auto px-6">
             <div className="max-w-2xl mx-auto">
               <div className="text-center mb-14">
                 <h2 className="text-4xl">Frequently asked questions</h2>
@@ -283,7 +283,7 @@ export default function LandingPage() {
 
         {/* ── Final CTA ── */}
         <section className="py-20">
-          <div className="max-w-screen-xl mx-auto px-6">
+          <div className="max-w-6xl mx-auto px-6">
             <div className="max-w-3xl mx-auto text-center">
               <h2 className="text-4xl sm:text-5xl text-ink-strong">
                 Ready for your next test or assignment?

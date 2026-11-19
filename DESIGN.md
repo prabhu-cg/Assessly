@@ -68,7 +68,7 @@ spacing:
   lg: "16px"
   xl: "24px"
   section: "80px"
-  container-max: "1280px"
+  container-max: "1152px"
 components:
   button-primary:
     backgroundColor: "{colors.accent}"
@@ -185,9 +185,9 @@ The system covers two modes. The landing page persuades: desk and white bands al
 
 ## Layout
 
-The landing caps at `max-w-screen-xl` (1280px) with 80px (`py-20`) vertical rhythm. Sections **alternate desk and white**: hero (desk), product preview (white), features (desk), how it works (white), FAQ (desk), final call to action (white). The final call to action is not an amber band. The footer follows SiteNest: a white ground with a hairline top border, the mark and wordmark (with tagline) on the left, the copyright centred and "Student portal" and "Teacher sign in" on the right (the same order as the header), stacking and centring on mobile.
+The landing caps at `max-w-6xl` (1152px) with 80px (`py-20`) vertical rhythm. Sections **alternate desk and white**: hero (desk), product preview (white), features (desk), how it works (white), FAQ (desk), final call to action (white). The final call to action is not an amber band. The footer follows SiteNest: a white ground with a hairline top border, the mark and wordmark (with tagline) on the left, the copyright centred and About, Privacy and Terms on the right, stacking and centring on mobile.
 
-The teacher shell is a sticky 240px desk sidebar (logo row aligned with the top bar, five pill nav items) beside a 56px white top bar holding the theme toggle and account menu; content is `app-page` (fluid, capped at 1440px) with `px-4` to `px-6` gutters; below `md` the sidebar is replaced by a hamburger pill at the left of the top bar that opens the same links in a left-hand sheet (there is no bottom tab bar). Detail pages open with a breadcrumb trail. The dashboard is a work queue: "Needs grading" (wide, one row per test or assignment with submissions waiting, oldest first, labelled Test or Assignment, an outlined "N to grade" pill) beside "Published tests" and "Assignments out" (narrow, stacked; tests carry a `warning-soft` "N taking now" tag, assignments an outlined "N to review" pill), each capped at 6 rows. The student shell is one 1024px column (`max-w-5xl`): the top bar, page content and footer share the same left and right edges, and focused pages (join, instructions, the assignment editor, results) sit narrower and centred inside it. It is a sticky 64px white top bar (logo at the left, My tests, Assignments and Join a test centred on the bar, theme toggle, name and avatar at the right; below `sm` the links move into the same hamburger sheet). The footer inside the student app shows My tests and Assignments instead of Student portal and Teacher sign in, so a student is never offered the teacher entrance over a white page; the dashboard is search plus a To do / Completed control over grouped rows, 8 at a time.
+The teacher shell is a sticky 240px desk sidebar (logo row aligned with the top bar, five pill nav items) beside a 56px white top bar holding the theme toggle and account menu; content is `app-page` (fluid, capped at 1440px) with `px-4` to `px-6` gutters; below `md` the sidebar is replaced by a hamburger pill at the left of the top bar that opens the same links in a left-hand sheet (there is no bottom tab bar). Detail pages open with a breadcrumb trail. The dashboard is a work queue: "Needs grading" (wide, one row per test or assignment with submissions waiting, oldest first, labelled Test or Assignment, an outlined "N to grade" pill) beside "Published tests" and "Assignments out" (narrow, stacked; tests carry a `warning-soft` "N taking now" tag, assignments an outlined "N to review" pill), each capped at 6 rows. The student shell is one 1024px column (`max-w-5xl`): the top bar, page content and footer share the same left and right edges, and focused pages (join, instructions, the assignment editor, results) sit narrower and centred inside it. It is a sticky 64px white top bar (logo at the left, My tests, Assignments and Join a test centred on the bar, theme toggle, name and avatar at the right; below `sm` the links move into the same hamburger sheet). The footer inside the student app shows My tests, Assignments, Privacy and Terms (the public footer shows About, Privacy and Terms; neither links to a sign-in page, the header does); the dashboard is search plus a To do / Completed control over grouped rows, 8 at a time.
 
 Sign-in is a split screen from `lg`: a 58% photograph panel on the left (under a flat charcoal scrim, no gradient, no tint) and the form on desk on the right with the theme toggle at its top right. Student sign-in is one centred card. Drawers slide from the right at 440 to 560px.
 
@@ -262,6 +262,10 @@ The teacher's assignment page is a workspace under the title: a pill segmented c
 ### File preview drawer
 
 Any attached file (a teacher's brief files, a student's own files in review and in results) opens in a right-hand drawer over the same flat scrim. PDFs, PNG, JPG, WebP, GIF and text files show in place; Word, Excel, PowerPoint and zip files cannot be previewed, so the drawer says so plainly and offers Download. The header carries the file name and two real links styled as pills: Open in new tab and Download. File rows pair a `primary-soft` icon tile with name, type label and size, and a quick download button.
+
+### Information pages
+
+About, Privacy and Terms share one frame (`InfoPage`), modelled on Doxa: the landing header, the desk ground, a `max-w-[51rem]` column and the public footer (About, Privacy and Terms). The Newsreader title (3rem to 3.75rem) and a muted "Last updated" line sit on the desk; the content sits in one white 20px card with a hairline border and 40px padding. Sections inside it are numbered ("1. Acceptance") with DM Sans 600 headings at 18px and 15px muted body text, with no rules between them; About's label and value list is a plain hairline-divided list inside the card, never a second box. The pages are public, signed in or not, and the student footer shows Privacy and Terms.
 
 ### Mobile menu
 

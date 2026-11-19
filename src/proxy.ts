@@ -30,6 +30,8 @@ export async function proxy(request: NextRequest) {
 
   // Public paths that don't require auth
   const publicPaths = ['/login', '/student-login', '/']
+  // Information pages open for everyone, signed in or not
+  if (['/about', '/privacy', '/terms'].includes(pathname)) return supabaseResponse
   const isStudentLink = pathname.startsWith('/s/')
   if (isStudentLink) return supabaseResponse
 

@@ -1,15 +1,19 @@
 import Link from 'next/link'
 import { LogoMark } from '@/components/shared/logo'
 
-const PUBLIC_LINKS = [
-  { href: '/student-login', label: 'Student portal' },
-  { href: '/login', label: 'Teacher sign in' },
+const INFO_LINKS = [
+  { href: '/about', label: 'About' },
+  { href: '/privacy', label: 'Privacy' },
+  { href: '/terms', label: 'Terms' },
 ]
+
+const PUBLIC_LINKS = INFO_LINKS
 
 // A signed-in student is never offered the teacher sign-in; they get their own places instead.
 const STUDENT_LINKS = [
   { href: '/student/dashboard', label: 'My tests' },
   { href: '/student/assignments', label: 'Assignments' },
+  ...INFO_LINKS.slice(1),
 ]
 
 export function Footer({ audience = 'public' }: { audience?: 'public' | 'student' }) {
@@ -31,7 +35,7 @@ export function Footer({ audience = 'public' }: { audience?: 'public' | 'student
         <p className="text-sm text-muted-foreground">
           © {new Date().getFullYear()} Assessly. Assess smarter. Teach better.
         </p>
-        <nav aria-label="Footer" className="flex items-center gap-5">
+        <nav aria-label="Footer" className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
           {LINKS.map(l => (
             <Link key={l.href} href={l.href} className="text-sm text-muted-foreground transition-colors hover:text-ink-strong">
               {l.label}
