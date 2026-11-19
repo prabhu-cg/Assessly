@@ -141,7 +141,7 @@ The system covers two modes. The landing page persuades: desk and white bands al
 
 ### Accent
 
-- **Butter Amber** (`accent`, #e8b923; `--primary`): the primary button, logo mark, active-tab underline, the toggle track and chart fills. Charcoal text on it reaches AA.
+- **Butter Amber** (`accent`, #e8b923; `--primary`): the primary button, active-tab underline, the toggle track and chart fills. Charcoal text on it reaches AA.
 - **Amber Hover** (`accent-hover`, #d4a615; dark #f0c94a): hover for the primary fill.
 - **Ochre** (`accent-text`, #826400; dark #f0c94a): accent-coloured text, links, the focus ring and active nav text. The only accent allowed as text.
 - **Amber Tint** (`accent-tint`, #faf4df; dark #2a2410): the accent as a ground: selected items, soft badges, icon tiles.
@@ -187,13 +187,13 @@ The system covers two modes. The landing page persuades: desk and white bands al
 
 The landing caps at `max-w-screen-xl` (1280px) with 80px (`py-20`) vertical rhythm. Sections **alternate desk and white**: hero (desk), product preview (white), features (desk), how it works (white), FAQ (desk), final call to action (white). The final call to action is not an amber band. The footer follows SiteNest: a white ground with a hairline top border, the mark and wordmark (with tagline) on the left, the copyright centred and "Student portal" and "Teacher sign in" on the right (the same order as the header), stacking and centring on mobile.
 
-The teacher shell is a sticky 240px desk sidebar (logo row aligned with the top bar, four pill nav items) beside a 56px white top bar holding the theme toggle and account menu; content is `app-page` (fluid, capped at 1440px) with `px-4` to `px-6` gutters; below `md` the sidebar becomes a bottom tab bar. Detail pages open with a breadcrumb trail. The dashboard is a work queue: "Needs grading" (wide, one row per test with submissions waiting, oldest first, an outlined "N to grade" pill) beside "Published tests" (narrow, with a `warning-soft` "N taking now" tag), each capped at 6 rows. The student shell is a sticky 64px white top bar (logo, My tests, Join a test, theme toggle, name and avatar) over a white page; the dashboard is search plus a To do / Completed control over grouped rows, 8 at a time.
+The teacher shell is a sticky 240px desk sidebar (logo row aligned with the top bar, five pill nav items) beside a 56px white top bar holding the theme toggle and account menu; content is `app-page` (fluid, capped at 1440px) with `px-4` to `px-6` gutters; below `md` the sidebar is replaced by a hamburger pill at the left of the top bar that opens the same links in a left-hand sheet (there is no bottom tab bar). Detail pages open with a breadcrumb trail. The dashboard is a work queue: "Needs grading" (wide, one row per test or assignment with submissions waiting, oldest first, labelled Test or Assignment, an outlined "N to grade" pill) beside "Published tests" and "Assignments out" (narrow, stacked; tests carry a `warning-soft` "N taking now" tag, assignments an outlined "N to review" pill), each capped at 6 rows. The student shell is a sticky 64px white top bar (logo at the left, My tests, Assignments and Join a test centred on the bar, theme toggle, name and avatar at the right; below `sm` the links move into the same hamburger sheet). The footer inside the student app shows My tests and Assignments instead of Student portal and Teacher sign in, so a student is never offered the teacher entrance over a white page; the dashboard is search plus a To do / Completed control over grouped rows, 8 at a time.
 
 Sign-in is a split screen from `lg`: a 58% photograph panel on the left (under a flat charcoal scrim, no gradient, no tint) and the form on desk on the right with the theme toggle at its top right. Student sign-in is one centred card. Drawers slide from the right at 440 to 560px.
 
 ## Elevation & Depth
 
-Flat by default. Surfaces separate by ground and 1px hairline. Clickable entity cards lift on hover: the border strengthens to `hairline-strong`, the card rises 2px and gains `shadow-raised` (a soft charcoal-tinted shadow); under reduced motion there is no lift. Menus use a `hairline-strong` border and no shadow; drawers sit over a `bg-black/40` scrim; the MacBook mockup carries a deep soft shadow because it is a picture of a device.
+Flat by default. Surfaces separate by ground and 1px hairline. Clickable entity cards lift on hover: the border strengthens to `hairline-strong`, the card rises 2px and gains `shadow-raised` (a soft charcoal-tinted shadow); under reduced motion there is no lift. Menus use a `hairline-strong` border and no shadow. Drawers (the same sheet as Doxa) carry `shadow-drawer` (`-12px 0 40px -12px` charcoal at 20%) on a 20px rounded left edge with a hairline, over a flat `bg-black/40` scrim with no blur; they slide in over 220ms with an exponential ease-out and the scrim fades over 180ms; the header is fixed over a scrolling body and its title is Newsreader at 24px, clamped. Dialogs are 20px, `max-w-md`, with `shadow-raised` over the same flat scrim, a `desk` footer, and a destructive confirmation is an outline button with red text, never a solid red block, while a positive confirmation (hand in, publish) uses the one primary. the MacBook mockup carries a deep soft shadow because it is a picture of a device.
 
 ### Named Rules
 
@@ -201,7 +201,7 @@ Flat by default. Surfaces separate by ground and 1px hairline. Clickable entity 
 
 ## Shapes
 
-Pills for every button and chip; 8px for fields and compact controls; 12px for menus and popovers; 20px for cards, panels, dialogs and landing cards. Borders are 1px hairline, dashed only for empty or upload zones. The logo mark is a shield with a check, filled amber (white on the photo panel).
+Pills for every button and chip; 8px for fields and compact controls; 12px for menus and popovers; 20px for cards, panels, dialogs and landing cards. Borders are 1px hairline, dashed only for empty or upload zones. The logo mark is a shield with a check, filled deep amber (`--logo`, #d4a615, the same as accent-hover and the favicon) (white on the photo panel).
 
 ## Components
 
@@ -241,7 +241,7 @@ A 36px pill icon button (moon in light mode, sun in dark mode) with a `sand` hov
 
 ### Question image field
 
-An optional Image field on the question form: a dashed 12px zone you can click, drop a file on, or paste a screenshot into (⌘V or Ctrl+V works anywhere in the form; text pastes are untouched). It states its limits in the UI: PNG, JPG, WebP or GIF up to 5 MB; large PNG and JPG images are resized automatically, GIFs are not; one image per question. A set image shows as a preview with a round remove button and a spinner while uploading. Images appear above the answer area on the teacher question list, the student test page, the results page and the grading view.
+An optional Image field on the question form: a dashed 12px zone you can click, drop a file on, or paste a screenshot into (⌘V or Ctrl+V works anywhere in the form; text pastes are untouched). It states its limits in the UI: PNG, JPG, WebP or GIF up to 5 MB; large PNG and JPG images are resized automatically, GIFs are not; one image per question. A set image shows as a preview with a round remove button and a spinner while uploading. Images appear above the answer area on the teacher question list, the student test page, the results page and the grading view; assignment questions use the same field, the same bucket (in a folder named after the assignment) and the same places (the assignment question list, the student's work and result pages, and the review page).
 
 ### Dashboard rows
 
@@ -255,13 +255,21 @@ Clicking a student's name opens a drawer: avatar, name, year, date added; every 
 
 72px-minimum rows: title, duration and one action on the right: a 44px amber Start or Continue pill, a tinted score, or a `warning-soft` "Waiting for marks". Grouped into In progress / Ready to start and Waiting for marks / Marked, 8 at a time. A pulsing `warning` dot marks an in-progress test.
 
+### Assignments
+
+The teacher's assignment page is a workspace under the title: a pill segmented control (Students, Questions, Brief and files) beside a hairline "At a glance" column of plain definition lists (no metric tiles). The Students tab is a tracker: one 20px panel of hairline rows, each with initials, name, a status badge (Not started `muted`, In progress outlined, Handed in default, Returned outlined in `warning`, Marked `secondary`, Shared `success`), an outlined `warning` Late badge, the score, and a primary Review pill for work waiting. Files are rows with a `primary-soft` icon tile, name, size and a download or remove button; the upload zone is dashed, drag or choose, with the limits stated. The review page keeps the test evaluation layout (sticky summary on the right with live score and one primary action), adds Return for revision as a quiet red-text ghost, and marks and comments sit under each answer. For students, an assignment row is a 72px card like a test row with the due date and a coloured urgency word (Overdue in `destructive`, due within a day in `warning`); the work page is a pill segmented control with three tabs (Brief, Questions with a count, Your files with a count; Questions is omitted when there are none) over a sticky bar with the autosave status, Save draft and the one primary Hand in. A returned assignment opens with a `warning-soft` note from the teacher; a handed-in one shows a `warning-soft` Waiting for marks banner until the result is shared, then a score, percentage and a `primary-soft` feedback block.
+
+### Mobile menu
+
+Below `md` (teacher) or `sm` (student) a 40px ghost pill with a menu icon sits at the left of the top bar, before the logo. It opens a left-hand sheet that follows the drawer treatment: `desk` ground, 20px rounded right edge, `shadow-drawer-left`, flat `bg-black/40` scrim, 220ms slide. The header is the mark and Newsreader wordmark with a close button; the body is the app's links as 48px pills at 16px, the current page in `accent-tint` with `accent-text` and 600 weight. It closes on choosing a link, on Escape or the scrim, and by itself when the window grows past the breakpoint. Focus moves into the sheet and returns to the button, Tab stays inside, and the page behind does not scroll.
+
 ### Switch, breadcrumbs, drawer
 
 A 36x20px accessible switch with an amber track when on. Breadcrumbs sit above detail-page titles with a medium-weight current page. Create, edit, preview and details flows open as right-hand drawers mounted through `Portal` (so a transformed card can never trap them); destructive confirmations stay as small centred dialogs. Drawers that hold a form guard against losing work: closing one with unsaved changes (backdrop, X or Cancel) opens an "Unsaved changes" dialog above the drawer that says what will be lost and offers **Keep editing**, **Discard and close** (outline, red text) and **Save** (the one primary). Save submits the form exactly as its own button does. A clean form closes without asking. Closing a question drawer also deletes any image uploaded in it but not saved.
 
 ### Auth panel and device mockup
 
-The auth panel is a library or classroom photograph under a flat charcoal scrim with the white mark, the daily quote and the copyright line. The device mockup is a CSS-built MacBook holding a 16:10 screenshot; the landing shows a light or dark capture to match the theme. The captures are 2880x1800 PNGs of fictional sample data (`public/mockups/*-light-v2.png` and `*-dark-v2.png`); retake them whenever the app chrome changes, and rename the files so caches refresh.
+The auth panel is a library or classroom photograph under a flat charcoal scrim with the white mark, the daily quote and the copyright line. The device mockup is a CSS-built MacBook holding a 16:10 screenshot; the landing shows a light or dark capture to match the theme. The captures are 2880x1800 PNGs of fictional sample data (`public/mockups/*-light-v3.png` and `*-dark-v3.png`: dashboard, tests, assignments and students); retake them whenever the app chrome changes, and rename the files so caches refresh.
 
 ## Do's and Don'ts
 

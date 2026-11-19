@@ -20,7 +20,7 @@ export default async function StudentLayout({ children }: { children: React.Reac
       <main className="app-page flex-1 px-4 sm:px-5 lg:px-6 py-6">
         {children}
       </main>
-      <Footer />
+      <Footer audience="student" />
     </div>
   )
 }

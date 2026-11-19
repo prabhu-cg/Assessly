@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { CalendarDays, CheckCircle2, ClipboardList, Search, SearchX } from 'lucide-react'
+import { CalendarDays, CheckCircle2, ClipboardList, NotebookPen, Search, SearchX } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { EntityCard, EntityGrid, EntityMeta } from '@/components/shared/entity-card'
 import { StudentActions } from '@/components/teacher/student-actions'
@@ -12,7 +12,8 @@ function StudentCard({ student, index }: { student: StudentRow; index: number })
   const [detailsOpen, setDetailsOpen] = useState(false)
   const assigned = student.tests.length
   const completed = student.tests.filter(t => t.state === 'to_grade' || t.state === 'marked').length
-  const toGrade = student.tests.filter(t => t.state === 'to_grade').length
+  const toGrade = student.tests.filter(t => t.state === 'to_grade').length + student.assignments.filter(a => a.status === 'submitted').length
+  const assignmentCount = student.assignments.length
 
   return (
     <EntityCard
@@ -29,6 +30,7 @@ function StudentCard({ student, index }: { student: StudentRow; index: number })
         <>
           <EntityMeta icon={ClipboardList} className="tabular-nums">{assigned} assigned</EntityMeta>
           <EntityMeta icon={CheckCircle2} className="tabular-nums">{completed} completed</EntityMeta>
+          {assignmentCount > 0 && <EntityMeta icon={NotebookPen} className="tabular-nums">{assignmentCount} assignment{assignmentCount !== 1 ? 's' : ''}</EntityMeta>}
           {toGrade > 0 && <span className="font-semibold tabular-nums text-primary-text">{toGrade} to grade</span>}
         </>
       }
@@ -45,6 +47,7 @@ function StudentCard({ student, index }: { student: StudentRow; index: number })
           addedDate={student.created_at}
           yearLevel={student.year_level}
           tests={student.tests}
+          assignments={student.assignments}
           detailsOpen={detailsOpen}
           onDetailsOpenChange={setDetailsOpen}
         />

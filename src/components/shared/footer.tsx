@@ -1,12 +1,19 @@
 import Link from 'next/link'
 import { LogoMark } from '@/components/shared/logo'
 
-const LINKS = [
+const PUBLIC_LINKS = [
   { href: '/student-login', label: 'Student portal' },
   { href: '/login', label: 'Teacher sign in' },
 ]
 
-export function Footer() {
+// A signed-in student is never offered the teacher sign-in; they get their own places instead.
+const STUDENT_LINKS = [
+  { href: '/student/dashboard', label: 'My tests' },
+  { href: '/student/assignments', label: 'Assignments' },
+]
+
+export function Footer({ audience = 'public' }: { audience?: 'public' | 'student' }) {
+  const LINKS = audience === 'student' ? STUDENT_LINKS : PUBLIC_LINKS
   return (
     <footer className="shrink-0 border-t border-border bg-background px-6">
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 py-12 sm:flex-row sm:justify-between">

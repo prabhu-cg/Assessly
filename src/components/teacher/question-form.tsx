@@ -271,7 +271,7 @@ export function QuestionForm({ testId, question, onSuccess, onCancel, onDirtyCha
 }
 
 /** Pasted retina screenshots are big. Shrink anything over 2 MB or 1800 px wide to a WebP before uploading (GIFs are left alone). */
-async function prepareImage(file: File): Promise<File> {
+export async function prepareImage(file: File): Promise<File> {
   if (file.type === 'image/gif') return file
   const bitmap = await createImageBitmap(file).catch(() => null)
   if (!bitmap) return file

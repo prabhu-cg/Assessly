@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import type { StudentRow, StudentTestEntry } from '@/components/teacher/student-types'
+import { loadAssignmentEntries } from '@/lib/student-assignment-entries'
 
 /** One student's profile plus their tests and results, for the details drawer. */
 export async function getStudentDetails(studentId: string): Promise<{ error: string } | { student: StudentRow }> {
@@ -51,6 +52,8 @@ export async function getStudentDetails(studentId: string): Promise<{ error: str
     }]
   })
 
+  const assignments = (await loadAssignmentEntries(supabase, user.id, [studentId])).get(studentId) ?? []
+
   return {
     student: {
       id: profile.id,
@@ -58,6 +61,7 @@ export async function getStudentDetails(studentId: string): Promise<{ error: str
       created_at: profile.created_at,
       year_level: profile.year_level ?? null,
       tests,
+      assignments,
     },
   }
 }

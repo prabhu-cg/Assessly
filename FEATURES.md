@@ -21,6 +21,20 @@
 - Reorder questions; add as many as needed
 - MCQ answers are auto-graded on submission — no manual work required
 
+### Assignments
+- Any attached file (the teacher's brief files, a student's own files in review and in their results) opens in a right-hand drawer: PDFs, PNG, JPG, WebP, GIF and text files are shown in place; Word, Excel, PowerPoint and zip files can't be previewed, so the drawer offers Download. Every file also has Open in new tab and a quick download button
+- Create an assignment with a title, summary, written brief, due date, marks for the written work and an optional pass mark
+- Optional questions, the same three types as tests (multiple choice is auto-marked on hand-in); reorder with the up and down buttons
+- Optional image on any assignment question, same as tests: choose a file, drag one in, or paste a screenshot (PNG, JPG, WebP or GIF up to 5 MB, one per question). Images show to students on the work and result pages and to you in review
+- Attach up to 5 files for students (PDF, Word, Excel, PowerPoint, text, image or zip, 10 MB each); students open them from the brief
+- Draft → Publish → Archive; students only see a published assignment
+- Assign it to the students you choose, from a searchable picker; unassign anyone who has not handed in
+- Track every student from Not started to In progress, Handed in, Returned, Marked and Shared, with search, filters, a Late flag and scores
+- Review one student's work: written response, files, answers; give marks (clamped to each maximum), a comment per answer and overall feedback
+- Return work for revision with a note; the student edits and hands in again
+- Share the result when ready: per student, or all marked results at once. Students see no marks, comments or answer keys until you share
+- The dashboard's Needs grading list and the Assignments out panel include assignments
+
 ### Student Management
 - Create student accounts directly from the dashboard (no self-registration)
 - Students receive credentials from the teacher — controlled access
@@ -47,6 +61,15 @@
 - Join a test using an **invite code** shared by the teacher — no browsing or searching
 - Dashboard shows all joined tests, their status, and available actions
 - Tests are only accessible while published; archived tests are hidden
+
+### Assignments
+- Assignments sit under their own Assignments tab, with To do and Completed lists, search and a due-date order; the dashboard links to what is waiting
+- Each assignment shows the brief and teacher files (click to preview), in three tabs: **Brief** (the brief and your teacher's files, click to preview), **Questions** (with an answered count) and **Your files** ("Type or upload your work": a text box plus up to 5 files, 10 MB each, both optional). The Questions tab only appears when there are questions; everything stays as you switch tabs, and Hand in is always at the bottom
+- Autosave: work saves as you type; Save draft and a Hand in confirmation that warns when it is late
+- Late work is accepted and marked Late
+- After hand-in the work is locked, shown as Waiting for marks
+- If the teacher returns it, the note shows at the top and the student can revise and hand in again
+- Once the teacher shares the result: score, percentage, pass or not, overall feedback, per-answer marks, comments and correct answers
 
 ### Taking a Test
 - Test opens in **fullscreen mode** — browser chrome is hidden during the exam
@@ -155,15 +178,18 @@ The above measures cover browser-based cheating on a single device. They do not 
 | Repository | GitHub |
 
 ### Appearance
+- On phones, navigation is a hamburger menu in the top bar that opens the app's links in a sheet; there is no bottom bar
 - Light and dark mode for teachers and students, switched with a toggle in the top bar (light by default, remembered per browser)
 
 ### Security
 - All database access governed by Row Level Security (RLS) policies
 - Students can only read tests they have been granted access to
 - Teachers can only read/write their own tests and students (plus students who joined one of their tests by invite code)
+- Assignment tables are teacher-only under row-level security; students reach their own assignment through server actions that check they are assigned, and answer keys, marks and comments stay on the server until a result is shared
+- Assignment files live in a private storage bucket and are served with one-hour signed links
 - Service role key used server-side only (never exposed to the client)
 - Environment variables managed via Vercel — never committed to the repository
 
 ---
 
-*Last updated: November 2026*
+*Last updated: November 2026 (assignments added)*

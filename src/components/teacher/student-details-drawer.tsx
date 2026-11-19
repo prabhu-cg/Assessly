@@ -6,7 +6,8 @@ import { getStudentAccessLink } from '@/app/actions/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Portal } from '@/components/shared/portal'
-import type { StudentTestEntry } from '@/components/teacher/student-types'
+import type { StudentAssignmentEntry, StudentTestEntry } from '@/components/teacher/student-types'
+import { LateBadge, WorkBadge, workState } from '@/components/shared/assignment-ui'
 import { Loader2, Link2, Copy, Check, X, Search, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
@@ -29,12 +30,12 @@ export function useDrawerState(want: boolean) {
 
 export const drawerClass = (visible: boolean) => cn(
   'fixed top-0 right-0 h-full w-full max-w-[480px] bg-background z-[61]',
-  'flex flex-col border-l border-border shadow-2xl',
-  'transition-transform duration-300 ease-in-out motion-reduce:transition-none',
+  'flex flex-col border-l border-border shadow-drawer rounded-l-card',
+  'transition-transform duration-[220ms] ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none',
   visible ? 'translate-x-0' : 'translate-x-full',
 )
 export const backdropClass = (visible: boolean) => cn(
-  'fixed inset-0 bg-black/40 z-[60] transition-opacity duration-300',
+  'fixed inset-0 bg-black/40 z-[60] transition-opacity duration-[180ms]',
   visible ? 'opacity-100' : 'opacity-0',
 )
 
@@ -69,6 +70,7 @@ interface StudentDetailsDrawerProps {
   addedDate: string
   yearLevel: string | null
   tests: StudentTestEntry[]
+  assignments?: StudentAssignmentEntry[]
   open: boolean
   onOpenChange: (open: boolean) => void
   /** Details are still being fetched: name is known, the rest shows a spinner. */
@@ -77,7 +79,7 @@ interface StudentDetailsDrawerProps {
 
 /** Right-hand drawer with a student's tests, results and personal login link. */
 export function StudentDetailsDrawer({
-  studentId, studentName, addedDate, yearLevel, tests, open, onOpenChange, loading = false,
+  studentId, studentName, addedDate, yearLevel, tests, assignments = [], open, onOpenChange, loading = false,
 }: StudentDetailsDrawerProps) {
   const details = useDrawerState(open)
   const [studentLink, setStudentLink] = useState<string | null>(null)
@@ -93,6 +95,11 @@ export function StudentDetailsDrawer({
       .filter(t => !q || t.title.toLowerCase().includes(q))
       .sort((a, b) => STATE_ORDER[a.state] - STATE_ORDER[b.state] || (b.submittedAt ?? '').localeCompare(a.submittedAt ?? ''))
   }, [tests, testQuery])
+
+  const assignmentsSorted = useMemo(() => {
+    const order = { submitted: 0, returned: 1, in_progress: 2, not_started: 3, evaluated: 4 } as const
+    return [...assignments].sort((a, b) => order[a.status] - order[b.status] || (b.submittedAt ?? '').localeCompare(a.submittedAt ?? ''))
+  }, [assignments])
 
   const loadLink = () => {
     startLoadLink(async () => {
@@ -118,10 +125,10 @@ export function StudentDetailsDrawer({
           <div className={drawerClass(details.visible)} role="dialog" aria-label={`${studentName} details`}>
             <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
               <div>
-                <h2 className="text-base font-semibold">Student details</h2>
-                <p className="text-xs text-muted-foreground mt-0.5">Tests, results and login link</p>
+                <h2 className="text-2xl leading-tight">Student details</h2>
+                <p className="text-xs text-muted-foreground mt-0.5">Tests, assignments, results and login link</p>
               </div>
-              <button type="button" onClick={() => onOpenChange(false)} aria-label="Close" className="h-8 w-8 flex items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+              <button type="button" onClick={() => onOpenChange(false)} aria-label="Close" className="h-8 w-8 flex items-center justify-center rounded-full text-muted-foreground hover:bg-secondary hover:text-ink-strong transition-colors">
                 <X className="h-4 w-4" />
               </button>
             </div>
@@ -193,6 +200,49 @@ export function StudentDetailsDrawer({
                   </>
                 )}
               </section>
+
+              {!loading && assignments.length > 0 && (
+                <section aria-label="Assignments" className="space-y-3">
+                  <h3 className="text-sm font-semibold">
+                    Assignments <span className="font-medium tabular-nums text-muted-foreground">{assignments.length}</span>
+                  </h3>
+                  <ul className="divide-y divide-border rounded-lg border border-border">
+                    {assignmentsSorted.map(a => {
+                      const state = workState(a.status === 'not_started' ? null : { status: a.status, released_at: a.released ? 'x' : null })
+                      const inner = (
+                        <>
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-sm font-semibold">{a.title}</p>
+                            {a.submittedAt && (
+                              <p className="text-xs text-muted-foreground">
+                                Handed in {new Date(a.submittedAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
+                              </p>
+                            )}
+                          </div>
+                          {a.isLate && a.status !== 'in_progress' && <LateBadge />}
+                          {a.status === 'evaluated' && a.total ? (
+                            <span className="shrink-0 rounded-md bg-primary-soft px-2 py-0.5 text-xs font-bold tabular-nums text-primary-text">{a.obtained}/{a.total}</span>
+                          ) : (
+                            <WorkBadge state={state} />
+                          )}
+                          {a.submissionId && a.status !== 'in_progress' && <ChevronRight className="size-3.5 shrink-0 text-muted-foreground" />}
+                        </>
+                      )
+                      return (
+                        <li key={a.assignmentId}>
+                          {a.submissionId && a.status !== 'in_progress' ? (
+                            <Link href={`/teacher/assignments/${a.assignmentId}/submissions/${a.submissionId}`} className="flex items-center gap-3 px-3 py-2.5 outline-none transition-colors hover:bg-secondary focus-visible:bg-foreground/5">
+                              {inner}
+                            </Link>
+                          ) : (
+                            <div className="flex items-center gap-3 px-3 py-2.5">{inner}</div>
+                          )}
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </section>
+              )}
 
               <section aria-label="Login link" className="space-y-3">
                 <div className="flex items-center gap-2">

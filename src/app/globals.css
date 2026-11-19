@@ -60,6 +60,8 @@
   --radius-control: 8px;
   --radius-card: 20px;
   --shadow-card: none;
+  --shadow-drawer: -12px 0 40px -12px rgb(27 26 26 / 0.2);
+  --shadow-drawer-left: 12px 0 40px -12px rgb(27 26 26 / 0.2);
   --shadow-raised: 0 2px 4px -1px rgb(53 51 53 / 0.06), 0 12px 24px -8px rgb(53 51 53 / 0.16);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
@@ -105,6 +107,7 @@
   --sidebar-border: #ece5cc;
   --sidebar-ring: #826400;
   --primary-hover: #d4a615;
+  --logo: #d4a615;
   --primary-soft: #faf4df;
   --primary-text: #826400;
   --ink-strong: #353335;
@@ -154,6 +157,7 @@
   --sidebar-border: #2e2b26;
   --sidebar-ring: #f0c94a;
   --primary-hover: #f0c94a;
+  --logo: #d4a615;
   --primary-soft: #2a2410;
   --primary-text: #f0c94a;
   --ink-strong: #faf8f2;

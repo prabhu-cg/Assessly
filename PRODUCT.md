@@ -8,11 +8,11 @@ web
 
 ## Users
 
-Teachers, who create tests, manage student accounts (name and year, such as "Year 4"), and grade submissions from a signed-in dashboard organised around what needs their marks. Students, who join or open tests via an invite code or personal link, work through a To do and Completed list that may grow long, and take tests in a fullscreen exam view. The teacher's situation (school class, tutor, trainer) is not yet confirmed; treat it as open.
+Teachers, who create tests and assignments, manage student accounts (name and year, such as "Year 4"), and grade submissions from a signed-in dashboard organised around what needs their marks. Students, who join or open tests via an invite code or personal link, work through a To do and Completed list that may grow long, take tests in a fullscreen exam view, and hand in assignments (written work and files) before a due date. The teacher's situation (school class, tutor, trainer) is not yet confirmed; treat it as open.
 
 ## Product Purpose
 
-Assessly is an online examination platform: teachers build tests, share them with students, and grade the results; students take timed tests and see their results once released. Success is a teacher going from blank test to released grades with little busywork, and a student completing an exam without friction or doubt that answers were saved.
+Assessly is an online examination and assignment platform: teachers build tests and assignments, share them with students, and grade the results; students take timed tests, hand in assignments, and see their results once released. Success is a teacher going from blank test to released grades with little busywork, and a student completing an exam without friction or doubt that answers were saved.
 
 ## Positioning
 
@@ -24,11 +24,11 @@ Teachers work in a desktop browser: a work-queue dashboard (submissions waiting,
 
 ## Capabilities and Constraints
 
-Stack: Next.js 16 App Router, TypeScript, Tailwind v4, shadcn/ui on base-ui, Supabase auth and Postgres with row-level security, hosted on Vercel. Preserve the existing features and flows: test lifecycle, three question types with an optional image per question (stored in the public `question-images` Supabase bucket, URL in `questions.image_url`, added by `supabase/migrations/2026-11-add-question-image.sql`), student management (including the optional year label stored in `profiles.year_level`, added by `supabase/migrations/2026-10-add-profile-year-level.sql`), submissions list and evaluation with a sticky summary, drawers for create, edit, preview and student details. Teachers can read only the students they created, plus students who joined one of their tests (`supabase/migrations/2026-11-limit-teacher-student-visibility.sql`). Students have no sign-out control by design: they use a personal link. Terminology: test, question, submission, evaluation, invite code, focus violation.
+Stack: Next.js 16 App Router, TypeScript, Tailwind v4, shadcn/ui on base-ui, Supabase auth and Postgres with row-level security, hosted on Vercel. Preserve the existing features and flows: test lifecycle, three question types with an optional image per question (stored in the public `question-images` Supabase bucket, URL in `questions.image_url`, added by `supabase/migrations/2026-11-add-question-image.sql`), student management (including the optional year label stored in `profiles.year_level`, added by `supabase/migrations/2026-10-add-profile-year-level.sql`), submissions list and evaluation with a sticky summary, drawers for create, edit, preview and student details. Teachers can read only the students they created, plus students who joined one of their tests (`supabase/migrations/2026-11-limit-teacher-student-visibility.sql`). Students have no sign-out control by design: they use a personal link. Assignments (migration `supabase/migrations/2026-11-add-assignments.sql`): a brief, optional files and questions, a due date, students picked by the teacher, late work accepted and flagged, one submission per student that the teacher can return for revision, and a per-student share step before marks and comments are visible. Their files live in the private `assignment-files` bucket, and students read assignment data only through server actions. Terminology: test, assignment, question, submission, hand in, evaluation, return for revision, share a result, invite code, focus violation.
 
 ## Brand Commitments
 
-Name: Assessly, tagline "Assess smarter. Teach better." Binding: the SiteNest "Butter" tokens shared with Aemora (amber #e8b923 as a fill, ochre #826400 for accent text, desk #fcfaf3), Newsreader for headlines with DM Sans for everything else, the shield-check logo mark in amber, and pill buttons. Light is the default; dark is a warm charcoal ramp. A toggle switches between them, with no system option.
+Name: Assessly, tagline "Assess smarter. Teach better." Binding: the SiteNest "Butter" tokens shared with Aemora (amber #e8b923 as a fill, ochre #826400 for accent text, desk #fcfaf3), Newsreader for headlines with DM Sans for everything else, the shield-check logo mark in deep amber (#d4a615, the `--logo` token, also the favicon), and pill buttons. Light is the default; dark is a warm charcoal ramp. A toggle switches between them, with no system option.
 
 ## Evidence on Hand
 

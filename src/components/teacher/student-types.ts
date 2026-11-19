@@ -14,4 +14,18 @@ export type StudentRow = {
   created_at: string
   year_level: string | null
   tests: StudentTestEntry[]
+  assignments: StudentAssignmentEntry[]
+}
+
+export type StudentAssignmentEntry = {
+  assignmentId: string
+  submissionId: string | null
+  title: string
+  status: 'not_started' | 'in_progress' | 'submitted' | 'returned' | 'evaluated'
+  released: boolean
+  isLate: boolean
+  obtained: number | null
+  total: number | null
+  submittedAt: string | null
+  dueAt: string | null
 }

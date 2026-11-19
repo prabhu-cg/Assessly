@@ -14,6 +14,8 @@ interface ConfirmDialogProps {
   confirmLabel?: string
   onConfirm: () => void
   isPending?: boolean
+  /** `primary` is for confirming a positive action (hand in, publish) rather than a deletion. */
+  tone?: 'destructive' | 'primary'
 }
 
 export function ConfirmDialog({
@@ -24,14 +26,15 @@ export function ConfirmDialog({
   confirmLabel = 'Delete',
   onConfirm,
   isPending = false,
+  tone = 'destructive',
 }: ConfirmDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent showCloseButton={false} className="max-w-sm">
+      <DialogContent showCloseButton={false} className="max-w-md">
         <DialogHeader>
           <div className="flex items-start gap-3">
-            <div className="h-9 w-9 rounded-full bg-destructive-soft flex items-center justify-center shrink-0 mt-0.5">
-              <TriangleAlert className="h-4 w-4 text-destructive" />
+            <div className={tone === 'primary' ? 'h-9 w-9 rounded-full bg-primary-soft flex items-center justify-center shrink-0 mt-0.5' : 'h-9 w-9 rounded-full bg-destructive-soft flex items-center justify-center shrink-0 mt-0.5'}>
+              <TriangleAlert className={tone === 'primary' ? 'h-4 w-4 text-primary-text' : 'h-4 w-4 text-destructive'} />
             </div>
             <div className="space-y-1 pt-1">
               <DialogTitle>{title}</DialogTitle>
@@ -49,7 +52,7 @@ export function ConfirmDialog({
             Cancel
           </Button>
           <Button
-            className="bg-destructive text-white hover:bg-destructive/90"
+            variant={tone === 'primary' ? 'default' : 'destructive'}
             onClick={onConfirm}
             disabled={isPending}
           >

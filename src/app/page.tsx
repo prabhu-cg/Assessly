@@ -5,7 +5,7 @@ import {
   CheckCircle2,
   ClipboardList,
   BarChart3,
-  ShieldCheck,
+  NotebookPen,
   ImagePlus,
   SunMoon,
   ArrowRight,
@@ -48,12 +48,12 @@ const FEATURES = [
   {
     icon: BarChart3,
     title: 'Submission tracking',
-    description: 'See who has attempted, submitted, or still needs to take a test, grouped clearly across every attempt.',
+    description: 'See who has attempted, submitted, or still needs to take a test or assignment, with late work flagged.',
   },
   {
-    icon: ShieldCheck,
-    title: 'Role-based access',
-    description: 'Teachers and students each get a dashboard scoped to exactly what they need — nothing more, nothing less.',
+    icon: NotebookPen,
+    title: 'Assignments',
+    description: 'Set homework with a brief, files and optional questions. Track who has handed in, mark it, comment, then share results with each student.',
   },
   {
     icon: ImagePlus,
@@ -98,6 +98,10 @@ const FAQS = [
   {
     question: 'What kinds of questions can I add to a test?',
     answer: 'Multiple-choice (2–6 options), short-answer, and long-answer questions, mixed freely within the same test.',
+  },
+  {
+    question: 'Can I set assignments as well as tests?',
+    answer: "Yes. An assignment has a brief, optional files and questions, and a due date. You pick the students, see who has handed in (late work is flagged), mark it, leave comments, and share each result when you are ready. You can also send work back for a revision.",
   },
   {
     question: 'How does grading work?',

@@ -80,12 +80,12 @@ function initials(name: string) {
 
 const drawerClass = (open: boolean) => cn(
   'fixed top-0 right-0 h-full w-full max-w-[440px] bg-background z-[61]',
-  'flex flex-col border-l border-border shadow-2xl',
-  'transition-transform duration-300 ease-in-out',
+  'flex flex-col border-l border-border shadow-drawer rounded-l-card',
+  'transition-transform duration-[220ms] ease-[cubic-bezier(0.16,1,0.3,1)]',
   open ? 'translate-x-0' : 'translate-x-full',
 )
 const backdropClass = (open: boolean) => cn(
-  'fixed inset-0 bg-black/40 z-[60] transition-opacity duration-300',
+  'fixed inset-0 bg-black/40 z-[60] transition-opacity duration-[180ms]',
   open ? 'opacity-100' : 'opacity-0',
 )
 
@@ -320,7 +320,7 @@ export function TestStudents({ testId, testStatus, enrolled, available, blocked 
       </Card>
 
       <Dialog open={confirmRemove !== null} onOpenChange={open => { if (!open) setConfirmRemove(null) }}>
-        <DialogContent className="sm:max-w-sm">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>Remove {confirmRemove?.name}?</DialogTitle>
             <DialogDescription>
@@ -344,6 +344,7 @@ export function TestStudents({ testId, testStatus, enrolled, available, blocked 
           addedDate={details?.created_at ?? ''}
           yearLevel={details?.year_level ?? null}
           tests={details?.tests ?? []}
+          assignments={details?.assignments ?? []}
           loading={!details}
           open={detailsOpen}
           onOpenChange={setDetailsOpen}
@@ -357,7 +358,7 @@ export function TestStudents({ testId, testStatus, enrolled, available, blocked 
           <div className={drawerClass(drawer.open)}>
             <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
               <div>
-                <h2 className="text-base font-semibold">Assign Students</h2>
+                <h2 className="text-2xl leading-tight">Assign Students</h2>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   {available.length} student{available.length !== 1 ? 's' : ''} available
                   {blocked.length > 0 && `, ${blocked.length} unavailable`}
@@ -366,7 +367,7 @@ export function TestStudents({ testId, testStatus, enrolled, available, blocked 
               <button
                 type="button"
                 onClick={drawer.closeDrawer}
-                className="h-8 w-8 flex items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                className="h-8 w-8 flex items-center justify-center rounded-full text-muted-foreground hover:bg-secondary hover:text-ink-strong transition-colors"
               >
                 <X className="h-4 w-4" />
               </button>

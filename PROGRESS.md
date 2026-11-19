@@ -35,7 +35,8 @@ src/
 │   ├── (auth)/login/          — Login page (client component)
 │   ├── (student)/             — Student-protected layout + pages
 │   │   └── student/
-│   │       ├── dashboard/     — Available & completed tests
+│   │       ├── dashboard/     — Available & completed tests, link to assignments
+│   │       ├── assignments/   — List, and [id] to work on, hand in and read feedback
 │   │       ├── join/          — Enter invite code
 │   │       └── tests/[id]/
 │   │           ├── instructions/  — Pre-test info page
@@ -45,13 +46,16 @@ src/
 │   │   └── teacher/
 │   │       ├── dashboard/     — Overview + quick actions
 │   │       ├── tests/         — List, create, edit, questions
+│   │       ├── assignments/   — List, [id] workspace (students, questions, files), submissions/[submissionId] review
 │   │       ├── students/      — List + create student accounts
 │   │       └── submissions/   — View + evaluate submissions
 │   └── actions/               — Server actions
 │       ├── auth.ts            — login, logout, createStudent
 │       ├── tests.ts           — createTest, updateTest, joinTest, etc.
 │       ├── questions.ts       — createQuestion, updateQuestion, deleteQuestion
-│       └── submissions.ts     — startSubmission, saveAnswer, submitTest, evaluateAnswer
+│       ├── submissions.ts     — startSubmission, saveAnswer, submitTest, evaluateAnswer
+│       ├── assignments.ts     — teacher: assignment CRUD, assign, questions, files, review, return, share
+│       └── assignment-submissions.ts — student: draft, files, hand in (service role, own rows only)
 ├── components/
 │   ├── shared/
 │   │   ├── top-nav.tsx        — Header + tab navigation (replaces sidebar)
@@ -85,8 +89,17 @@ src/
 | `submissions` | Multiple attempts per student per test — tracks status + scores |
 | `answers` | One per question per submission — autosaved |
 | `test_access` | Which students can access which tests (invite code gated) |
+| `assignments` | Assignment brief, due date, status, marks for written work |
+| `assignment_questions` | Optional questions (MCQ/short/long) |
+| `assignment_files` | Teacher files attached for students (private bucket `assignment-files`) |
+| `assignment_assignees` | Which students were given which assignment |
+| `assignment_submissions` | One per student per assignment: status, response, late flag, marks, feedback, `released_at` |
+| `assignment_answers` | Per-question answers, marks and teacher comments |
+| `assignment_submission_files` | Files a student attached |
 
 Schema file: `supabase/schema.sql` — run this in Supabase SQL editor to set up.
+
+Existing projects: run `supabase/migrations/2026-11-add-assignments.sql` once to add the assignments tables, then `supabase/migrations/2026-11-add-assignment-question-image.sql` for question images (both safe to re-run). Until it has run, the Assignments pages show a one-line setup notice.
 
 ---
 
@@ -164,6 +177,7 @@ Since students are created via the app, the first teacher must be set up manuall
 - [x] Question images: choose, drag in, or paste a screenshot (PNG/JPG/WebP/GIF, up to 5 MB, one per question); files are deleted with the question, the image or the test
 - [x] Teachers limited to their own students by row-level security
 - [x] Landing page: sample-data screenshots in light and dark, images and dark-mode features, FAQ, SiteNest-style footer
+- [x] Assignments module: teacher builds, assigns, tracks, reviews, comments, returns and shares; student works, hands in and reads feedback (see FEATURES.md). Needs the 2026-11-add-assignments migration
 - [x] TypeScript clean (0 errors)
 - [x] Git initialized, initial commit made
 

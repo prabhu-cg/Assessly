@@ -9,6 +9,7 @@ import { LogOut, ChevronDown } from 'lucide-react'
 import { LogoMark } from '@/components/shared/logo'
 import { ThemeToggle } from '@/components/shared/theme-toggle'
 import { teacherLinks } from '@/components/shared/sidebar'
+import { MobileMenu } from '@/components/shared/mobile-menu'
 import type { Profile } from '@/types/database'
 
 export function AppSidebar() {
@@ -70,10 +71,13 @@ export function AppTopbar({ profile }: { profile: Profile }) {
 
   return (
     <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center justify-between border-b border-border bg-background/85 px-4 backdrop-blur-md lg:px-6">
-      <Link href="/teacher/dashboard" className="md:invisible flex items-center gap-2.5">
-        <LogoMark className="h-6 w-auto" />
-        <span className="font-display text-xl text-ink-strong">Assessly</span>
-      </Link>
+      <div className="flex items-center gap-1 md:invisible">
+        <MobileMenu links={teacherLinks} label="Teacher" above={768} className="-ml-2 md:hidden" />
+        <Link href="/teacher/dashboard" aria-label="Assessly home" className="flex items-center gap-2.5 rounded-full px-1 outline-none focus-visible:ring-3 focus-visible:ring-ring/50">
+          <LogoMark className="h-6 w-auto" />
+          <span className="font-display text-xl text-ink-strong">Assessly</span>
+        </Link>
+      </div>
 
       <div className="flex items-center gap-1">
       <ThemeToggle />

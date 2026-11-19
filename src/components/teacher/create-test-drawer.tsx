@@ -48,7 +48,7 @@ export function CreateTestDrawer({ label = 'New Test', defaultOpen = false }: Cr
         <>
           <div
             className={cn(
-              'fixed inset-0 bg-black/40 z-[60] transition-opacity duration-300',
+              'fixed inset-0 bg-black/40 z-[60] transition-opacity duration-[180ms]',
               open ? 'opacity-100' : 'opacity-0',
             )}
             onClick={requestClose}
@@ -56,14 +56,14 @@ export function CreateTestDrawer({ label = 'New Test', defaultOpen = false }: Cr
           <div
             className={cn(
               'fixed top-0 right-0 h-full w-full max-w-[640px] bg-background z-[61]',
-              'flex flex-col border-l border-border shadow-2xl',
-              'transition-transform duration-300 ease-in-out',
+              'flex flex-col border-l border-border shadow-drawer rounded-l-card',
+              'transition-transform duration-[220ms] ease-[cubic-bezier(0.16,1,0.3,1)]',
               open ? 'translate-x-0' : 'translate-x-full',
             )}
           >
             <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
               <div>
-                <h2 className="text-base font-semibold">Create New Test</h2>
+                <h2 className="text-2xl leading-tight">Create New Test</h2>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   Fill in the details. You can add questions after saving.
                 </p>
@@ -71,7 +71,7 @@ export function CreateTestDrawer({ label = 'New Test', defaultOpen = false }: Cr
               <button
                 type="button"
                 onClick={requestClose}
-                className="h-8 w-8 flex items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                className="h-8 w-8 flex items-center justify-center rounded-full text-muted-foreground hover:bg-secondary hover:text-ink-strong transition-colors"
               >
                 <X className="h-4 w-4" />
               </button>

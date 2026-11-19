@@ -3,7 +3,8 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Plus, UserPlus, ChevronRight, Clock, ClipboardCheck, BookOpen } from 'lucide-react'
+import { LocalDate } from '@/components/shared/local-date'
+import { Plus, UserPlus, ChevronRight, Clock, ClipboardCheck, BookOpen, NotebookPen } from 'lucide-react'
 
 const QUEUE_LIMIT = 6
 const ACTIVE_LIMIT = 6
@@ -55,10 +56,41 @@ export default async function TeacherDashboard() {
   const enrolled = new Map<string, number>()
   for (const a of access ?? []) enrolled.set(a.test_id, (enrolled.get(a.test_id) ?? 0) + 1)
 
+  // Assignments: what is waiting for review, and what is out with students. Empty until the assignments migration has run.
+  const { data: assignmentRows } = await supabase
+    .from('assignments').select('id, title, status, due_at').eq('teacher_id', user.id)
+  const myAssignments = assignmentRows ?? []
+  const assignmentIds = myAssignments.map(a => a.id)
+  const [{ data: aSubs }, { data: aAssignees }] = assignmentIds.length
+    ? await Promise.all([
+        supabase.from('assignment_submissions').select('assignment_id, status, submitted_at').in('assignment_id', assignmentIds).eq('status', 'submitted'),
+        supabase.from('assignment_assignees').select('assignment_id').in('assignment_id', assignmentIds),
+      ])
+    : [{ data: [] }, { data: [] }]
+
+  const aWaiting = new Map<string, { waiting: number; oldest: string | null }>()
+  for (const x of aSubs ?? []) {
+    const e = aWaiting.get(x.assignment_id) ?? { waiting: 0, oldest: null }
+    e.waiting++
+    if (x.submitted_at && (!e.oldest || x.submitted_at < e.oldest)) e.oldest = x.submitted_at
+    aWaiting.set(x.assignment_id, e)
+  }
+  const aAssigned = new Map<string, number>()
+  for (const x of aAssignees ?? []) aAssigned.set(x.assignment_id, (aAssigned.get(x.assignment_id) ?? 0) + 1)
+  const aTitle = new Map(myAssignments.map(a => [a.id, a.title]))
+  const assignmentQueue = [...aWaiting.entries()].map(([id, v]) => ({
+    kind: 'assignment' as const, id, title: aTitle.get(id) ?? 'Untitled assignment', waiting: v.waiting, live: 0, oldest: v.oldest,
+  }))
+  const publishedAssignments = myAssignments
+    .filter(a => a.status === 'published')
+    .map(a => ({ ...a, assigned: aAssigned.get(a.id) ?? 0, waiting: aWaiting.get(a.id)?.waiting ?? 0 }))
+    .sort((x, y) => (x.due_at ?? '9999').localeCompare(y.due_at ?? '9999'))
+
   const titleOf = new Map(allTests.map(t => [t.id, t.title]))
-  const queue = [...byTest.entries()]
+  const testQueue = [...byTest.entries()]
     .filter(([, v]) => v.waiting > 0)
-    .map(([id, v]) => ({ id, title: titleOf.get(id) ?? 'Untitled test', ...v }))
+    .map(([id, v]) => ({ kind: 'test' as const, id, title: titleOf.get(id) ?? 'Untitled test', ...v }))
+  const queue = [...testQueue, ...assignmentQueue]
     .sort((a, b) => (a.oldest ?? '').localeCompare(b.oldest ?? ''))
   const totalWaiting = queue.reduce((n, q) => n + q.waiting, 0)
 
@@ -79,10 +111,14 @@ export default async function TeacherDashboard() {
               : 'Nothing is waiting for your marks.'}
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button variant="outline" render={<Link href="/teacher/students?new=true" />} className="gap-2">
             <UserPlus className="h-4 w-4" />
             Add student
+          </Button>
+          <Button variant="outline" render={<Link href="/teacher/assignments?new=true" />} className="gap-2">
+            <NotebookPen className="h-4 w-4" />
+            New assignment
           </Button>
           <Button render={<Link href="/teacher/tests?new=true" />} className="gap-2">
             <Plus className="h-4 w-4" />
@@ -111,14 +147,14 @@ export default async function TeacherDashboard() {
           ) : (
             <ul className="border-t border-border">
               {queue.slice(0, QUEUE_LIMIT).map(q => (
-                <li key={q.id} className="border-b border-border last:border-b-0">
+                <li key={`${q.kind}-${q.id}`} className="border-b border-border last:border-b-0">
                   <Link
-                    href={`/teacher/submissions?test=${q.id}&status=submitted`}
+                    href={q.kind === 'assignment' ? `/teacher/assignments/${q.id}` : `/teacher/submissions?test=${q.id}&status=submitted`}
                     className="flex items-center gap-4 px-5 py-3 hover:bg-secondary transition-colors"
                   >
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-semibold">{q.title}</p>
-                      <p className="text-xs text-muted-foreground">Oldest waiting {ago(q.oldest)}</p>
+                      <p className="text-xs text-muted-foreground">{q.kind === 'assignment' ? 'Assignment' : 'Test'} · oldest waiting {ago(q.oldest)}</p>
                     </div>
                     <span className="shrink-0 rounded-full border border-primary px-2.5 py-0.5 text-xs font-bold text-primary-text tabular-nums">
                       {q.waiting} to grade
@@ -129,7 +165,7 @@ export default async function TeacherDashboard() {
               ))}
               {queue.length > QUEUE_LIMIT && (
                 <li className="px-5 py-3 text-xs text-muted-foreground">
-                  +{queue.length - QUEUE_LIMIT} more tests with submissions waiting.{' '}
+                  +{queue.length - QUEUE_LIMIT} more with submissions waiting.{' '}
                   <Link href="/teacher/submissions?status=submitted" className="font-semibold text-primary-text hover:underline">See all</Link>
                 </li>
               )}
@@ -137,8 +173,9 @@ export default async function TeacherDashboard() {
           )}
         </section>
 
+        <div className="space-y-5 lg:col-span-2">
         {/* Published tests */}
-        <section className="lg:col-span-2 rounded-xl border border-border bg-card" aria-labelledby="active-h">
+        <section className="rounded-xl border border-border bg-card" aria-labelledby="active-h">
           <div className="flex items-center justify-between px-5 py-4">
             <h2 id="active-h" className="text-base font-semibold flex items-center gap-2">
               <BookOpen className="h-4 w-4 text-primary-text" />
@@ -181,6 +218,43 @@ export default async function TeacherDashboard() {
             </ul>
           )}
         </section>
+
+          {/* Published assignments */}
+          <section className="rounded-xl border border-border bg-card" aria-labelledby="assign-h">
+            <div className="flex items-center justify-between px-5 py-4">
+              <h2 id="assign-h" className="text-base font-semibold flex items-center gap-2">
+                <NotebookPen className="h-4 w-4 text-primary-text" />
+                Assignments out
+                <Badge variant="secondary" className="tabular-nums">{publishedAssignments.length}</Badge>
+              </h2>
+              <Link href="/teacher/assignments" className="text-sm font-semibold text-primary-text hover:underline">All assignments</Link>
+            </div>
+            {publishedAssignments.length === 0 ? (
+              <p className="border-t border-border px-5 py-10 text-center text-sm text-muted-foreground">
+                No published assignments yet. Publish one and assigned students can start.
+              </p>
+            ) : (
+              <ul className="border-t border-border">
+                {publishedAssignments.slice(0, ACTIVE_LIMIT).map(a => (
+                  <li key={a.id} className="border-b border-border last:border-b-0">
+                    <Link href={`/teacher/assignments/${a.id}`} className="flex items-center gap-3 px-5 py-3 hover:bg-secondary transition-colors">
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-semibold">{a.title}</p>
+                        <p className="text-xs text-muted-foreground">
+                          <span className="tabular-nums">{a.assigned}</span> {a.assigned === 1 ? 'student' : 'students'}
+                          {a.due_at && <> · due <LocalDate iso={a.due_at} /></>}
+                        </p>
+                      </div>
+                      {a.waiting > 0 && (
+                        <span className="shrink-0 rounded-full border border-primary px-2 py-0.5 text-xs font-bold text-primary-text tabular-nums">{a.waiting} to review</span>
+                      )}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        </div>
       </div>
     </div>
   )

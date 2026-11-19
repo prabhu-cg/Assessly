@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent } from '@/components/ui/card'
 import { PageHeader } from '@/components/shared/page-header'
 import type { StudentRow, StudentTestEntry } from '@/components/teacher/student-types'
+import { loadAssignmentEntries } from '@/lib/student-assignment-entries'
 import { StudentsBrowser } from '@/components/teacher/students-browser'
 import { Users } from 'lucide-react'
 import { CreateStudentDrawer } from '@/components/teacher/create-student-drawer'
@@ -48,11 +49,13 @@ export default async function StudentsPage({
     : [{ data: [] }, { data: [] }]
 
   const subMap = new Map((subs ?? []).map(x => [`${x.student_id}:${x.test_id}`, x]))
+  const assignmentsBy = await loadAssignmentEntries(supabase, user.id, ids)
   const rows: StudentRow[] = list.map(st => ({
     id: st.id,
     full_name: st.full_name,
     created_at: st.created_at,
     year_level: st.year_level ?? null,
+    assignments: assignmentsBy.get(st.id) ?? [],
     tests: (access ?? [])
       .filter(a => a.student_id === st.id)
       .flatMap(a => {

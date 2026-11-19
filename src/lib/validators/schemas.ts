@@ -70,6 +70,21 @@ export const evaluationSchema = z.object({
   teacher_comment: z.string().max(500).optional(),
 })
 
+export const assignmentSchema = z.object({
+  title: z.string().min(3, 'Title must be at least 3 characters').max(200),
+  description: z.string().max(1000).optional(),
+  instructions: z.string().max(4000).optional(),
+  due_at: z.string().optional(),
+  response_marks: z.coerce.number().int().min(0, 'Marks cannot be negative').max(1000),
+  pass_mark: z.coerce.number().min(0, 'Pass mark cannot be negative').optional(),
+})
+
+export const assignmentReviewSchema = z.object({
+  response_marks_obtained: z.coerce.number().int().min(0).nullable().optional(),
+  overall_feedback: z.string().max(2000).optional(),
+})
+
+export type AssignmentInput = z.infer<typeof assignmentSchema>
 export type LoginInput = z.infer<typeof loginSchema>
 export type CreateStudentInput = z.infer<typeof createStudentSchema>
 export type UpdateStudentInput = z.infer<typeof updateStudentSchema>

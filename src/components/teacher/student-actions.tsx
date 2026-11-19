@@ -13,7 +13,7 @@ import { RowMenu } from '@/components/shared/row-menu'
 import { Portal } from '@/components/shared/portal'
 import { DropdownMenuItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 import { YearOptions } from '@/components/teacher/year-options'
-import type { StudentTestEntry } from '@/components/teacher/student-types'
+import type { StudentAssignmentEntry, StudentTestEntry } from '@/components/teacher/student-types'
 import { StudentDetailsDrawer, useDrawerState, drawerClass, backdropClass } from '@/components/teacher/student-details-drawer'
 import { Pencil, Trash2, Loader2, X, Eye } from 'lucide-react'
 import { toast } from 'sonner'
@@ -24,12 +24,13 @@ interface StudentActionsProps {
   addedDate: string
   yearLevel: string | null
   tests: StudentTestEntry[]
+  assignments?: StudentAssignmentEntry[]
   detailsOpen: boolean
   onDetailsOpenChange: (open: boolean) => void
 }
 
 export function StudentActions({
-  studentId, studentName, addedDate, yearLevel, tests, detailsOpen, onDetailsOpenChange,
+  studentId, studentName, addedDate, yearLevel, tests, assignments = [], detailsOpen, onDetailsOpenChange,
 }: StudentActionsProps) {
   const [editOpen, setEditOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
@@ -98,6 +99,7 @@ export function StudentActions({
         addedDate={addedDate}
         yearLevel={yearLevel}
         tests={tests}
+        assignments={assignments}
         open={detailsOpen}
         onOpenChange={onDetailsOpenChange}
       />
