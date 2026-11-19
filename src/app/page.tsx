@@ -7,8 +7,8 @@ import {
   BarChart3,
   NotebookPen,
   ImagePlus,
-  SunMoon,
   ArrowRight,
+  Eye,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { LogoMark, Wordmark } from '@/components/shared/logo'
@@ -56,14 +56,14 @@ const FEATURES = [
     description: 'Set homework with a brief, files and optional questions. Track who has handed in, mark it, comment, then share results with each student.',
   },
   {
+    icon: Eye,
+    title: 'Preview files in place',
+    description: 'Open a brief, a PDF, an image or a text file in a side drawer without leaving the page, or pop it into a new tab.',
+  },
+  {
     icon: ImagePlus,
     title: 'Images in questions',
     description: 'Add a diagram, graph or photo to any question. Choose a file, drag one in, or paste a screenshot straight from your clipboard.',
-  },
-  {
-    icon: SunMoon,
-    title: 'Light and dark mode',
-    description: 'Switch themes in one click, for teachers and students, on any device. Your choice is remembered.',
   },
 ]
 
@@ -105,7 +105,7 @@ const FAQS = [
   },
   {
     question: 'Can students upload files?',
-    answer: "Yes, on assignments. Students can type their work, attach up to five files (PDF, Word, Excel, PowerPoint, text, image or zip, 10 MB each), or both. You can open PDFs, images and text files right in the page without downloading them.",
+    answer: "Yes, on assignments. Students can type their work, attach up to five files (PDF, Word, Excel, PowerPoint, text, image or zip, 10 MB each), or both. PDFs, images and text files open in a preview drawer, with an option to open them in a new tab.",
   },
   {
     question: 'How does grading work?',
@@ -117,7 +117,7 @@ const FAQS = [
   },
   {
     question: 'Can I add images to questions?',
-    answer: "Yes. Every question can carry one image: choose a file, drag it in, or paste a screenshot from your clipboard (⌘V or Ctrl+V). PNG, JPG, WebP and GIF are supported, up to 5 MB each; large PNG and JPG images are resized automatically.",
+    answer: "Yes. Every question, in tests and assignments, can carry one image: choose a file, drag it in, or paste a screenshot from your clipboard (⌘V or Ctrl+V). PNG, JPG, WebP and GIF are supported, up to 5 MB each; large PNG and JPG images are resized automatically.",
   },
   {
     question: 'Is there a dark mode?',

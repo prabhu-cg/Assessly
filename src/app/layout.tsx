@@ -17,7 +17,7 @@ const newsreader = Newsreader({
 });
 
 export const metadata: Metadata = {
-  title: "Assessly — Online Examination Platform",
+  title: "Assessly — Tests and Assignments for Your Classroom",
   description: "A modern platform for tests and assignments, for teachers and students",
 };
 

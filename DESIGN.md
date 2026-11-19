@@ -135,7 +135,7 @@ The system covers two modes. The landing page persuades: desk and white bands al
 - **Selection is butter, not grey.** A selected tab, nav item, list item or segment uses `accent-tint` with `accent-text`. Hover uses `sand`. Grey washes (`foreground` at low opacity) are not used.
 - **Light or dark, nothing else.** Light is the default; there is no system option. A pill sun/moon toggle sits in the landing header, both app top bars and both sign-in pages, and the choice is stored in the browser (`assessly-theme`). Dark is the warm charcoal ramp (`#141312` ground, `#1c1b19` cards), never neutral grey.
 - **Honest about what is simulated.** Landing screenshots are labelled as sample data and are captured from fictional sample content.
-- **Motion explains state.** A 180ms page fade, a capped card/row stagger, drawer slides (300ms), and a 2% press scale on buttons. Reduced motion keeps meaning without travel.
+- **Motion explains state.** A 180ms page fade, a capped card/row stagger, drawer slides (220ms), and a 2% press scale on buttons. Reduced motion keeps meaning without travel.
 
 ## Colors
 
@@ -258,6 +258,10 @@ Clicking a student's name opens a drawer: avatar, name, year, date added; every 
 ### Assignments
 
 The teacher's assignment page is a workspace under the title: a pill segmented control (Students, Questions, Brief and files) beside a hairline "At a glance" column of plain definition lists (no metric tiles). The Students tab is a tracker: one 20px panel of hairline rows, each with initials, name, a status badge (Not started `muted`, In progress outlined, Handed in default, Returned outlined in `warning`, Marked `secondary`, Shared `success`), an outlined `warning` Late badge, the score, and a primary Review pill for work waiting. Files are rows with a `primary-soft` icon tile, name, size and a download or remove button; the upload zone is dashed, drag or choose, with the limits stated. The review page keeps the test evaluation layout (sticky summary on the right with live score and one primary action), adds Return for revision as a quiet red-text ghost, and marks and comments sit under each answer. For students, an assignment row is a 72px card like a test row with the due date and a coloured urgency word (Overdue in `destructive`, due within a day in `warning`); the work page is a pill segmented control with three tabs (Brief, Questions with a count, Your files with a count; Questions is omitted when there are none) over a sticky bar with the autosave status, Save draft and the one primary Hand in. A returned assignment opens with a `warning-soft` note from the teacher; a handed-in one shows a `warning-soft` Waiting for marks banner until the result is shared, then a score, percentage and a `primary-soft` feedback block.
+
+### File preview drawer
+
+Any attached file (a teacher's brief files, a student's own files in review and in results) opens in a right-hand drawer over the same flat scrim. PDFs, PNG, JPG, WebP, GIF and text files show in place; Word, Excel, PowerPoint and zip files cannot be previewed, so the drawer says so plainly and offers Download. The header carries the file name and two real links styled as pills: Open in new tab and Download. File rows pair a `primary-soft` icon tile with name, type label and size, and a quick download button.
 
 ### Mobile menu
 
