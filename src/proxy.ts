@@ -50,9 +50,10 @@ export async function proxy(request: NextRequest) {
       if (pathname === '/student-login' && profile?.role === 'student') {
         return NextResponse.redirect(new URL('/student/dashboard', request.url))
       }
-      if (pathname === '/') {
-        const dest = profile?.role === 'teacher' ? '/teacher/dashboard' : '/student/dashboard'
-        return NextResponse.redirect(new URL(dest, request.url))
+      // The landing page sends teachers to their dashboard, but a signed-in student can still open it
+      // (and reach "Teacher sign in") instead of being bounced back to the student portal.
+      if (pathname === '/' && profile?.role === 'teacher') {
+        return NextResponse.redirect(new URL('/teacher/dashboard', request.url))
       }
     }
     return supabaseResponse

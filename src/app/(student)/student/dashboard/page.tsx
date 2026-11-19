@@ -64,7 +64,7 @@ export default async function StudentDashboard({ searchParams }: StudentDashboar
   const firstName = profile?.full_name?.split(' ')[0] ?? 'there'
 
   return (
-    <div className="mx-auto w-full max-w-3xl">
+    <div className="w-full">
       <Suspense><NoticeToast /></Suspense>
       {openAssignments.length > 0 && (
         <Link

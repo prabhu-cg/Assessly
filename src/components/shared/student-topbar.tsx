@@ -20,7 +20,7 @@ export function StudentTopbar({ fullName }: { fullName: string }) {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur-md">
-      <div className="app-page flex h-16 items-center gap-3 px-4 sm:grid sm:grid-cols-[1fr_auto_1fr] sm:px-5 lg:px-6">
+      <div className="mx-auto w-full max-w-5xl flex h-16 items-center gap-3 px-4 sm:grid sm:grid-cols-[1fr_auto_1fr] sm:px-5 lg:px-6">
         <div className="flex items-center gap-3 sm:justify-self-start">
           <MobileMenu links={links} label="Student" above={640} className="-ml-2 sm:hidden" />
           <Link href="/student/dashboard" aria-label="Assessly home" className="flex shrink-0 items-center gap-2.5">

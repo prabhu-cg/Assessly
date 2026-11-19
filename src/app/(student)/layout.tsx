@@ -4,6 +4,8 @@ import { StudentTopbar } from '@/components/shared/student-topbar'
 import { Footer } from '@/components/shared/footer'
 import type { Profile } from '@/types/database'
 
+export const metadata = { title: 'Student' }
+
 export default async function StudentLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -17,7 +19,7 @@ export default async function StudentLayout({ children }: { children: React.Reac
   return (
     <div className="min-h-screen flex flex-col bg-surface">
       <StudentTopbar fullName={(profile as Profile).full_name} />
-      <main className="app-page flex-1 px-4 sm:px-5 lg:px-6 py-6">
+      <main className="mx-auto w-full max-w-5xl flex-1 px-4 sm:px-5 lg:px-6 py-6">
         {children}
       </main>
       <Footer audience="student" />

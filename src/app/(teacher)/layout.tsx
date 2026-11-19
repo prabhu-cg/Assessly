@@ -4,6 +4,8 @@ import { AppSidebar, AppTopbar } from '@/components/shared/app-sidebar'
 import { PageTransition } from '@/components/shared/page-transition'
 import type { Profile } from '@/types/database'
 
+export const metadata = { title: 'Teacher' }
+
 export default async function TeacherLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

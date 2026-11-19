@@ -15,8 +15,8 @@ const STUDENT_LINKS = [
 export function Footer({ audience = 'public' }: { audience?: 'public' | 'student' }) {
   const LINKS = audience === 'student' ? STUDENT_LINKS : PUBLIC_LINKS
   return (
-    <footer className="shrink-0 border-t border-border bg-background px-6">
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 py-12 sm:flex-row sm:justify-between">
+    <footer className="shrink-0 border-t border-border bg-background">
+      <div className={`mx-auto flex ${audience === 'student' ? 'max-w-5xl px-4 sm:px-5 lg:px-6' : 'max-w-6xl px-6'} flex-col items-center gap-4 py-12 sm:flex-row sm:justify-between`}>
         <Link href="/" className="flex items-center gap-3">
           <LogoMark className="h-7 w-auto" />
           <div className="flex flex-col leading-none">

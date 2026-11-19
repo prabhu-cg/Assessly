@@ -14,7 +14,7 @@ export default async function StudentAssignmentsPage({ searchParams }: { searchP
   if (missingTables) return <SetupNotice />
 
   return (
-    <div className="mx-auto w-full max-w-3xl">
+    <div className="w-full">
       <StudentAssignments items={items} initialTab={tab === 'done' ? 'done' : 'todo'} />
     </div>
   )
