@@ -44,7 +44,7 @@ function Header({ data }: { data: LoadedStudentAssignment }) {
   )
 }
 
-function Brief({ data, showEmpty = false }: { data: LoadedStudentAssignment; showEmpty?: boolean }) {
+function Brief({ data, showEmpty = false, titled = true }: { data: LoadedStudentAssignment; showEmpty?: boolean; titled?: boolean }) {
   const { instructions } = data.assignment
   if (!instructions && !data.resources.length) {
     return showEmpty
@@ -53,12 +53,12 @@ function Brief({ data, showEmpty = false }: { data: LoadedStudentAssignment; sho
   }
   return (
     <section className="space-y-3 rounded-card border bg-card p-5" aria-labelledby="brief-h">
-      <h2 id="brief-h" className="text-base">The brief</h2>
+      <h2 id="brief-h" className={titled ? 'text-base' : 'sr-only'}>The brief</h2>
       {instructions && <p className="max-w-prose whitespace-pre-wrap text-sm leading-relaxed">{instructions}</p>}
       {data.resources.length > 0 && (
         <div className="space-y-2">
-          <p className="text-xs font-semibold text-muted-foreground">Files from your teacher. Click one to preview it.</p>
-          <FileList files={data.resources} />
+          <p className="text-xs font-semibold text-muted-foreground">Attached by your teacher. Click one to preview it.</p>
+          <FileList files={data.resources} plain />
         </div>
       )}
     </section>
@@ -292,7 +292,7 @@ function Editor({ data }: { data: LoadedStudentAssignment }) {
       <AssignmentWorkspace
         initial={briefHasContent ? 'brief' : data.questions.length ? 'questions' : 'files'}
         tabs={[
-          { key: 'brief', label: 'Brief', content: <Brief data={data} showEmpty /> },
+          { key: 'brief', label: 'Brief', content: <Brief data={data} showEmpty titled={false} /> },
           ...(data.questions.length
             ? [{
                 key: 'questions',
@@ -397,7 +397,7 @@ function Editor({ data }: { data: LoadedStudentAssignment }) {
         ]}
       />
 
-      <div className="sticky bottom-0 z-10 -mx-4 flex flex-wrap items-center gap-3 border-t border-border bg-background/90 px-4 py-3 backdrop-blur-md sm:-mx-5 sm:px-5 md:bottom-0">
+      <div className="sticky bottom-3 z-10 flex flex-wrap items-center gap-3 rounded-card border border-border bg-card px-4 py-3 shadow-raised sm:px-5">
         <p className="flex basis-full items-center gap-2 text-sm text-muted-foreground sm:mr-auto sm:basis-auto" role="status" aria-live="polite">
           {saving ? <><Loader2 className="size-4 animate-spin" /> Saving…</> : dirty ? 'Unsaved changes' : savedAt ? <><CheckCircle2 className="size-4 text-success" /> Saved</> : 'Your work saves as you type.'}
         </p>
@@ -431,7 +431,7 @@ export function AssignmentWork({ data }: { data: LoadedStudentAssignment }) {
   const status = data.submission?.status
   const editable = !status || status === 'in_progress' || status === 'returned'
   return (
-    <div className="mx-auto w-full max-w-3xl space-y-6">
+    <div className="w-full space-y-6">
       <Header data={data} />
       {editable && overdueNotice(data)}
       {editable ? <Editor data={data} /> : <><Brief data={data} /><ReadOnly data={data} /></>}

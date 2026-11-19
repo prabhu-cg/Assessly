@@ -150,7 +150,9 @@ export function FileList({
   onRemove,
   removingId,
   empty,
+  plain = false,
 }: {
+  plain?: boolean
   files: AssignmentFile[]
   onRemove?: (id: string) => void
   removingId?: string | null
@@ -165,18 +167,18 @@ export function FileList({
     <>
       <ul className="space-y-2">
         {files.map(f => (
-          <li key={f.id} className="flex items-center gap-1 rounded-xl border border-border bg-card pr-2 transition-colors hover:border-border-strong">
+          <li key={f.id} className={cn('flex items-center gap-1 rounded-xl pr-2 transition-colors', plain ? '-mx-3 hover:bg-secondary' : 'border border-border bg-card hover:border-border-strong')}>
             <button
               type="button"
               onClick={() => { setShown(f); setOpen(true) }}
               aria-label={`Preview ${f.name}`}
-              className="flex min-w-0 flex-1 items-center gap-3 rounded-xl px-3 py-2.5 text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+              className="group/file flex min-w-0 flex-1 cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
             >
               <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary-soft">
                 <FileText className="size-4 text-primary-text" aria-hidden />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-sm font-semibold" title={f.name}>{f.name}</span>
+                <span className="block truncate text-sm font-semibold text-primary-text underline decoration-primary-text/35 decoration-1 underline-offset-4 transition-colors group-hover/file:decoration-primary-text" title={f.name}>{f.name}</span>
                 <span className="block text-xs tabular-nums text-muted-foreground">
                   {formatBytes(f.size_bytes)} · {previewKind(f) === 'none' ? 'Download to open' : 'Click to preview'}
                 </span>
