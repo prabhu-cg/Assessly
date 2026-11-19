@@ -18,7 +18,7 @@ const newsreader = Newsreader({
 
 export const metadata: Metadata = {
   title: "Assessly — Online Examination Platform",
-  description: "A modern online examination platform for teachers and students",
+  description: "A modern platform for tests and assignments, for teachers and students",
 };
 
 export default function RootLayout({

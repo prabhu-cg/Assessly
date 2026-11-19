@@ -18,9 +18,9 @@ import { ThemeToggle } from '@/components/shared/theme-toggle'
 import { FaqAccordion } from '@/components/shared/faq-accordion'
 
 const STATS = [
-  { value: '2', label: 'Roles: teacher & student' },
+  { value: '2', label: 'Ways to set work: tests & assignments' },
   { value: 'Auto', label: 'MCQ grading' },
-  { value: '8-char', label: 'Invite codes' },
+  { value: '8-char', label: 'Test invite codes' },
   { value: '0', label: 'Setup required' },
 ]
 
@@ -43,7 +43,7 @@ const FEATURES = [
   {
     icon: ClipboardList,
     title: 'Evaluate written answers',
-    description: 'Review short and long-answer responses side by side and assign scores with a purpose-built grading view.',
+    description: 'Review written answers, give marks and comments, send work back for a revision, and share each result when you are ready.',
   },
   {
     icon: BarChart3,
@@ -70,23 +70,23 @@ const FEATURES = [
 const STEPS = [
   {
     num: '1',
-    title: 'Create a test',
-    description: 'Add questions, set correct answers, and organize everything from your teacher dashboard.',
+    title: 'Build a test or assignment',
+    description: 'Write questions or a brief, attach files, and set marks and a due date from your teacher dashboard.',
   },
   {
     num: '2',
-    title: 'Share the invite code',
-    description: 'Hand students an 8-character code — that\'s all they need to find and open the test.',
+    title: 'Give it to your students',
+    description: 'Share an 8-character code for a test, or pick the students who should do an assignment.',
   },
   {
     num: '3',
-    title: 'Students take it',
-    description: 'Students join with the code, work through the test, and submit when they\'re done.',
+    title: 'Students do the work',
+    description: 'They take a timed test, or type and upload their work before the due date. Late work is flagged, not refused.',
   },
   {
     num: '4',
-    title: 'Review & grade',
-    description: 'MCQs are graded instantly. Grade written answers yourself, then release results.',
+    title: 'Review, comment & share',
+    description: 'MCQs are marked instantly. Mark the rest, leave comments, send work back if needed, then share each result.',
   },
 ]
 
@@ -104,12 +104,16 @@ const FAQS = [
     answer: "Yes. An assignment has a brief, optional files and questions, and a due date. You pick the students, see who has handed in (late work is flagged), mark it, leave comments, and share each result when you are ready. You can also send work back for a revision.",
   },
   {
+    question: 'Can students upload files?',
+    answer: "Yes, on assignments. Students can type their work, attach up to five files (PDF, Word, Excel, PowerPoint, text, image or zip, 10 MB each), or both. You can open PDFs, images and text files right in the page without downloading them.",
+  },
+  {
     question: 'How does grading work?',
     answer: "Multiple-choice answers are graded automatically the moment a student submits. Short and long answers are graded by the teacher in a dedicated review screen.",
   },
   {
     question: 'Is student data kept private?',
-    answer: "Yes. Assessly uses row-level security so teachers and students can only access data tied to their own account and tests. We don't sell data or share it with third parties.",
+    answer: "Yes. Assessly uses row-level security so teachers and students can only access data tied to their own account, tests and assignments. We don't sell data or share it with third parties.",
   },
   {
     question: 'Can I add images to questions?',
@@ -121,7 +125,7 @@ const FAQS = [
   },
   {
     question: 'Do I need to install anything?',
-    answer: 'No — Assessly runs entirely in the browser for both teachers and students, on any device.',
+    answer: 'No — Assessly runs entirely in the browser for both teachers and students, on any device. On a phone the navigation folds into a menu button at the top.',
   },
   {
     question: "What if a student can't find their invite code or link?",
@@ -136,13 +140,13 @@ export default function LandingPage() {
       <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="max-w-screen-xl mx-auto flex items-center justify-between px-4 py-4 sm:px-6">
           <Wordmark />
-          <nav className="flex items-center gap-2">
+          <nav className="flex items-center gap-1 sm:gap-2">
             <ThemeToggle />
-            <Button variant="ghost" render={<Link href="/student-login" />}>
+            <Button variant="ghost" className="px-3 sm:px-4" render={<Link href="/student-login" />}>
               <span className="sm:hidden">Students</span>
               <span className="hidden sm:inline">Student portal</span>
             </Button>
-            <Button render={<Link href="/login" />}>Teacher sign in</Button>
+            <Button className="px-3 sm:px-4" render={<Link href="/login" />}>Teacher sign in</Button>
           </nav>
         </div>
       </header>
@@ -156,12 +160,12 @@ export default function LandingPage() {
           <div className="relative max-w-screen-xl mx-auto px-6">
             <div className="max-w-3xl mx-auto">
               <h1 className="text-5xl sm:text-7xl leading-none">
-                Create, share, and grade exams —{' '}
+                Set work, run tests, and grade it all —{' '}
                 <span className="text-primary-text">without the busywork.</span>
               </h1>
               <p className="mt-5 text-lg text-muted-foreground max-w-xl mx-auto">
-                Assessly is a modern examination platform for teachers and students. Build a test,
-                share an invite code, and let auto-grading handle the rest.
+                Assessly is a modern platform for tests and assignments. Build a test or set
+                homework, give it to your students, and let auto-grading handle the rest.
               </p>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
                 <Button size="lg" render={<Link href="/login" />}>
@@ -211,7 +215,7 @@ export default function LandingPage() {
             <div className="text-center max-w-xl mx-auto mb-14">
               <h2 className="text-4xl">What Assessly does</h2>
               <p className="mt-3 text-muted-foreground">
-                Everything a classroom needs to run a test, from question to grade.
+                Everything a classroom needs to set work and run tests, from question to grade.
               </p>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -239,7 +243,7 @@ export default function LandingPage() {
             <div className="text-center max-w-xl mx-auto mb-14">
               <h2 className="text-4xl">How it works</h2>
               <p className="mt-3 text-muted-foreground">
-                From a blank test to a graded submission in four steps.
+                From a blank page to a shared result in four steps.
               </p>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -282,7 +286,7 @@ export default function LandingPage() {
           <div className="max-w-screen-xl mx-auto px-6">
             <div className="max-w-3xl mx-auto text-center">
               <h2 className="text-4xl sm:text-5xl text-ink-strong">
-                Ready to run your next test?
+                Ready for your next test or assignment?
               </h2>
               <p className="mt-4 text-lg text-muted-foreground">
                 Sign in to your teacher dashboard, or ask your teacher for an invite code.
